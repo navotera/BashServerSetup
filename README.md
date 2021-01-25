@@ -21,9 +21,9 @@ chmod +x init.sh
 ```
 
 ## TODO
-- [] Live Progress
-- [] Select Feature
-- [] Installing via screen
+- [ ] Live Progress
+- [ ] Select Feature
+- [ ] Installing via screen
 
 
 ## TESTED ON
