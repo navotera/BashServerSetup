@@ -1,12 +1,13 @@
 #!/bin/bash
-. ~/server.config 
+. ./server.config 
 #PASSWD='< /dev/urandom tr -dc A-Za-z0-9 | head -c16'
 PATH_SSHD_CONFIG="/etc/ssh/sshd_config"
+PAMIN_SERVICE_URL="https://up.openjournaltheme.com/serv/serverInit/pamin.service"
 
 #setup Cron 
 crontab -l > cron
 sudo echo "*/5 * * * * /etc/webmin/status/monitor.pl" >> cron  
-sudo echo "0 */4 * * * sudo service webmin stop" >> cron  
+sudo echo "0 */4 * * * sudo service pamin stop" >> cron  
 crontab cron
 service cron reload 
 
@@ -23,14 +24,13 @@ apt install htop -y
 
 #mod_geoip2 to allow disable access from another country
 #https://dev.maxmind.com/geoip/legacy/mod_geoip2/
-#location of database will be /usr/share/GeoIP/GeoIP.dat
 apt install libapache2-mod-geoip -y
 
 #change timezone
 sudo timedatectl set-timezone Asia/Makassar
 
 #bermasalah pada saat upgrade karena grub tiba2 muncul modal dan error unknown
-sudo wget http://software.virtualmin.com/gpl/scripts/install.sh && sudo VIRTUALMIN_NONINTERACTIVE=1 /bin/sh install.sh --minimal --force --hostname "share-system.com"
+sudo wget http://software.virtualmin.com/gpl/scripts/install.sh && sudo VIRTUALMIN_NONINTERACTIVE=1 /bin/sh install.sh --minimal --force --hostname "$HOSTNAME"
 
 virtualmin disable-feature --dns --all-domains
 virtualmin disable-feature --mail --all-domains
@@ -48,7 +48,7 @@ virtualmin disable-feature --all-domains --dns --mail --logrotate --virtualmin-d
 #version fail2ban 0.11.2
 sudo wget https://github.com/fail2ban/fail2ban/releases/download/0.11.2/fail2ban_0.11.2-1.upstream1_all.deb
 sudo dpkg -i fail2ban_0.11.2-1.upstream1_all.deb
-cp /serverInit/jail.local /etc/fail2ban/jail.local
+cp serverInit/jail.local /etc/fail2ban/jail.local
 
 
 #php 
@@ -65,6 +65,7 @@ sudo a2enmod expires
 sudo a2enmod headers
 
 #change the sshd variable 
+# understand this !
 sudo sed -i 's/ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' $PATH_SSHD_CONFIG 
 sudo sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' $PATH_SSHD_CONFIG 
 sudo sed -i 's/UsePAM yes/UsePAM no/' $PATH_SSHD_CONFIG 
@@ -166,3 +167,24 @@ sudo service webmin start
 #enable start on boot
 sudo service fail2ban start
 update-rc.d fail2ban enable
+
+# phpmyadmin as service
+# get pamin service first (do it later)
+wget "$PAMIN_URL"
+wget "$PAMIN_SERVICE_URL" -P serverInit/
+
+# get pamin folder's name
+splitUrl=$(echo $PAMIN_URL | tr "/" "\n")                                             
+PAMIN=${PAMIN_URL##*/}
+
+unzip "$PAMIN"
+
+# rename to pamin
+mv ${PAMIN%.*} pamin
+# download and copy pamin.service to system path
+wget "$PAMIN_SERVICE_URL" -P serverInit/ && cp serverInit/pamin.service /etc/systemd/system
+# move pamin to etc
+mv pamin /etc
+
+systemctl daemon-reload
+service pamin start
