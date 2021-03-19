@@ -1,0 +1,15 @@
+[Unit]
+Description=PHPMyAdmin Service
+Documentation=https://openjournaltheme.com
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/etc/pamin/
+ExecStart=/usr/bin/env php -S 0.0.0.0:9292
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
