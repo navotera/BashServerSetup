@@ -17,7 +17,7 @@ service pamin start
 ```unix
 wget https://up.openjournaltheme.com/serv/init.sh
 chmod +x init.sh
-./init.sh
+sh init.sh
 ```
 
 ## TODO
