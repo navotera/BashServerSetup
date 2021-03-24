@@ -2,7 +2,7 @@
 . ./server.config 
 #PASSWD='< /dev/urandom tr -dc A-Za-z0-9 | head -c16'
 PATH_SSHD_CONFIG="/etc/ssh/sshd_config"
-PAMIN_SERVICE_URL="https://up.openjournaltheme.com/serv/serverInit/pamin.service"
+PAMIN_SERVICE_URL="https://raw.githubusercontent.com/navotera/serverAutomation/master/serverInit/pamin.service"
 
 #setup Cron 
 crontab -l > cron
