@@ -8,6 +8,8 @@ PAMIN_SERVICE_URL="https://up.openjournaltheme.com/serv/serverInit/pamin.service
 crontab -l > cron
 sudo echo "*/5 * * * * /etc/webmin/status/monitor.pl" >> cron  
 sudo echo "0 */4 * * * sudo service pamin stop" >> cron  
+sudo echo "0 */4 * * * sudo service webmin stop" >> cron  
+sudo echo "0 */4 * * * sudo service usermin stop" >> cron  
 crontab cron
 service cron reload 
 
