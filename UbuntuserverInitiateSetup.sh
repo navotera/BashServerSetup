@@ -13,8 +13,8 @@
 #webmin pass : can be found on server.config file
 #created by navotera : share-system.com
 
-JAIL_CONFIG_URL="https://up.openjournaltheme.com/serv/serverInit/jail.local"
-CORE_FILE_URL="https://up.openjournaltheme.com/serv/UbuntuServerInitiateBeforeReboot.sh"
+JAIL_CONFIG_URL="https://raw.githubusercontent.com/navotera/serverAutomation/master/serverInit/jail.local"
+CORE_FILE_URL="https://raw.githubusercontent.com/navotera/serverAutomation/master/UbuntuServerInitiateBeforeReboot.sh"
 # shoud call it dynamically
 # fix this later
 
