@@ -94,7 +94,7 @@ echo
 
 cd /usr/share/webmin/
 changepass.pl /etc/webmin root $PASSWD
-cd ..
+cd 
 
 
 sudo rm Ubuntu* 
