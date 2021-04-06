@@ -92,10 +92,7 @@ echo
 echo "${GREEN}rebooting..${NC}"
 echo 
 
-cd /usr/share/webmin/
-changepass.pl /etc/webmin root $PASSWD
-cd 
-
+/usr/share/webmin/changepass.pl /etc/webmin root $PASSWD
 
 sudo rm Ubuntu* 
 sudo rm fail2ban*
