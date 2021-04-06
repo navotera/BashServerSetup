@@ -21,6 +21,7 @@ sudo -E apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--f
 sudo -E apt-get -qy autoclean
 
 apt-get install imagemagick -y ; apt install libmagickwand-dev imagemagick php-dev -y ; printf "\n" | pecl install imagemagick
+apt install libdigest-perl-md5-perl
 #others utilites
 apt install htop -y
 
