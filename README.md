@@ -15,7 +15,7 @@ service pamin start
 
 ## How to use ?
 ```unix
-wget https://up.openjournaltheme.com/serv/init.sh
+wget https://raw.githubusercontent.com/navotera/serverAutomation/master/init.sh
 chmod +x init.sh
 sh init.sh
 ```
