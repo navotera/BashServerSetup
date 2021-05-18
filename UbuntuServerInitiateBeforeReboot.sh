@@ -69,11 +69,11 @@ sudo a2enmod headers
 
 #change the sshd variable 
 # understand this !
-sudo sed -i 's/ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' $PATH_SSHD_CONFIG 
-sudo sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' $PATH_SSHD_CONFIG 
-sudo sed -i 's/UsePAM yes/UsePAM no/' $PATH_SSHD_CONFIG 
-sudo sed -i 's/#PubkeyAuthentication/PubkeyAuthentication/' $PATH_SSHD_CONFIG 
-sudo sed -i 's/#AuthorizedKeysFile/AuthorizedKeysFile/' $PATH_SSHD_CONFIG 
+#sudo sed -i 's/ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' $PATH_SSHD_CONFIG 
+#sudo sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' $PATH_SSHD_CONFIG 
+#sudo sed -i 's/UsePAM yes/UsePAM no/' $PATH_SSHD_CONFIG 
+#sudo sed -i 's/#PubkeyAuthentication/PubkeyAuthentication/' $PATH_SSHD_CONFIG 
+#sudo sed -i 's/#AuthorizedKeysFile/AuthorizedKeysFile/' $PATH_SSHD_CONFIG 
 echo "#edited by serverAutomation by navotera :: share-system.com"  >> $PATH_SSHD_CONFIG
 echo "ClientAliveInterval 1200" >> $PATH_SSHD_CONFIG 
 echo "ClientAliveCountMax 3" >> $PATH_SSHD_CONFIG 
