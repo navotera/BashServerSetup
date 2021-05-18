@@ -67,9 +67,9 @@ echo "${GREEN}Please enjoy and wait for about 15 to 25 minutes to finish all the
 sleep 5
 
 #creating log file : install.log
-exec 3>&1 4>&2
-trap 'exec 2>&4 1>&3' 0 1 2 3
-exec 1>installServer.log 2>&1
+#exec 3>&1 4>&2
+#trap 'exec 2>&4 1>&3' 0 1 2 3
+#exec 1>installServer.log 2>&1
 
 # check if its exsist
 mkdir serverInit
