@@ -77,14 +77,14 @@ sudo sed -i 's/#AuthorizedKeysFile/AuthorizedKeysFile/' $PATH_SSHD_CONFIG
 echo "#edited by serverAutomation by navotera :: share-system.com"  >> $PATH_SSHD_CONFIG
 echo "ClientAliveInterval 1200" >> $PATH_SSHD_CONFIG 
 echo "ClientAliveCountMax 3" >> $PATH_SSHD_CONFIG 
-echo "IgnoreRhosts yes" >> $PATH_SSHD_CONFIG 
-echo "IgnoreUserKnownHosts no" >> $PATH_SSHD_CONFIG 
-echo "StrictModes yes" >> $PATH_SSHD_CONFIG 
-echo "RSAAuthentication yes" >> $PATH_SSHD_CONFIG 
-echo "AllowUsers root" >> $PATH_SSHD_CONFIG 
+#echo "IgnoreRhosts yes" >> $PATH_SSHD_CONFIG 
+#echo "IgnoreUserKnownHosts no" >> $PATH_SSHD_CONFIG 
+#echo "StrictModes yes" >> $PATH_SSHD_CONFIG 
+#echo "RSAAuthentication yes" >> $PATH_SSHD_CONFIG 
+#echo "AllowUsers root" >> $PATH_SSHD_CONFIG 
 
 # Disable root SSH login with password
-sed --in-place 's/^PermitRootLogin.*/PermitRootLogin prohibit-password/g' /etc/ssh/sshd_config
+#sed --in-place 's/^PermitRootLogin.*/PermitRootLogin prohibit-password/g' /etc/ssh/sshd_config
 if sshd -t -q; then
     systemctl restart sshd
 fi
