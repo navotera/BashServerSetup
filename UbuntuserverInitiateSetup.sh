@@ -92,6 +92,7 @@ echo
 echo "${GREEN}rebooting..${NC}"
 echo 
 
+# Doesn't work
 /usr/share/webmin/changepass.pl /etc/webmin root $PASSWD
 
 sudo rm Ubuntu* 
