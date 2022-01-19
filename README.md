@@ -21,9 +21,8 @@ wget https://raw.githubusercontent.com/navotera/serverAutomation/master/init.sh 
 ## After success installing 
 Access password on **server.config** or Change passsword 
 ```sudo -i passwd```
-
 Access the webmin to initiate the configuration 
-http://ip:9191
+https://ip_address:9191
 
 ## TODO
 - [ ] Live Progress
