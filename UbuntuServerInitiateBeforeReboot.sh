@@ -148,6 +148,11 @@ echo "mysql      soft  nofile   20480" >> /etc/security/limits.conf
 echo "mysql      soft  nproc    16384" >> /etc/security/limits.conf
 echo "mysql      soft  fsize    unlimited" >> /etc/security/limits.conf
 
+# php-cli yang dijalankan oleh root
+# Ref : https://raazkumar.com/tutorials/linux/linux-security-limits-conf/
+# echo "root     soft  nproc    1000000 >> /etc/security/limits.conf"
+# echo "root     soft  nofile   100000 >> /etc/security/limits.conf"
+
 echo "session required pam_limits.so"  >> /etc/pam.d/common-session
 echo "fs.file-max = 2097152"  >> /etc/sysctl.conf
 echo "fs.nr_open = 1048576"  >> /etc/sysctl.conf
