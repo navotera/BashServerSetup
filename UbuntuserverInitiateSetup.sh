@@ -35,15 +35,11 @@ IP_ADDRESS=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[
 
 # custom hostname
 # add validation hostname next
-read -p "Please enter your hostname (ex:share-system.com) : " hostname
-read -p "Put PhpMyAdmin Latest URL : " PAMIN_URL
-echo "You're host name is ${hostname}, are you sure ? (Y/n)"
-read ans
+hostname="opensynergic"
 
-if [[ "$ans" != "y" && "$ans" != "Y" ]]; then
-    echo "Ok, bye"
-    exit 0
-fi
+PMA_LATEST_VERSION_INFO_URL="https://www.phpmyadmin.net/home_page/version.php"
+PMA_VERSION=$(wget -q -O /tmp/pma_lastest.html $PMA_LATEST_VERSION_INFO_URL && sed -ne '1p' /tmp/pma_lastest.html);
+PAMIN_URL="https://files.phpmyadmin.net/phpMyAdmin/${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.tar.gz"
 
 echo "HOSTNAME=$hostname" > server.config
 echo "PAMIN_URL=$PAMIN_URL" >> server.config
