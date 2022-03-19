@@ -15,7 +15,7 @@ service pamin start
 
 ## How to use ?
 ```unix
-wget https://raw.githubusercontent.com/navotera/serverAutomation/master/init.sh && chmod +x init.sh && sh init.sh
+curl https://raw.githubusercontent.com/navotera/serverAutomation/master/init.sh | bash
 ```
 
 ## After success installing 
