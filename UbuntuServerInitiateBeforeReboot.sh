@@ -58,6 +58,7 @@ cp serverInit/jail.local /etc/fail2ban/jail.local
 sudo apt install software-properties-common -y ; sudo add-apt-repository ppa:ondrej/php -y && sudo apt update ;
 sudo apt install -y php7.3 php7.3-fpm php7.3-imagick php7.3-common php7.3-mysql php7.3-xml php7.3-curl php7.3-mbstring php7.3-mcrypt -y 
 sudo apt install -y php7.4 php7.4-fpm php7.4-common php7.4-mysql php7.4-xml php7.4-mbstring php7.4-imagick php7.4-curl php7.4-mcrypt -y
+sudo apt install -y php8.1 php8.1-fpm php8.1-common php8.1-mysql php8.1-xml php8.1-mbstring php8.1-imagick php8.1-curl php8.1-mcrypt -y
 
 #change webmin port
 sed -i 's/port=10000/port=9191/' /etc/webmin/miniserv.conf 
