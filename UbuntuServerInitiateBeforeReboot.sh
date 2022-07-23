@@ -190,11 +190,14 @@ PAMIN=${PAMIN_URL##*/}
 tar -xvzf "$PAMIN"
 
 # rename to pamin
-mv ${PAMIN%.*} pamin
+PAMIN_FOLDER=$(basename $PAMIN .tar.gz)
+
+mv $PAMIN_FOLDER pamin
 # download and copy pamin.service to system path
-wget "$PAMIN_SERVICE_URL" -P serverInit/ && cp serverInit/pamin.service /etc/systemd/system
-# move pamin to etc
-mv pamin /etc
+ wget "$PAMIN_SERVICE_URL" -P serverInit/ && cp serverInit/pamin.service /etc/systemd/system
+# # move pamin to etc
+ mv pamin /etc
 
 systemctl daemon-reload
 service pamin start
+
