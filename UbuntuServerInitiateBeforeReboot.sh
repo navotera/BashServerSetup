@@ -186,7 +186,8 @@ wget "$PAMIN_SERVICE_URL" -P serverInit/
 splitUrl=$(echo $PAMIN_URL | tr "/" "\n")                                             
 PAMIN=${PAMIN_URL##*/}
 
-unzip "$PAMIN"
+#unzip "$PAMIN", unzip not work
+tar -xvzf "$PAMIN"
 
 # rename to pamin
 mv ${PAMIN%.*} pamin
