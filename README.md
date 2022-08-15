@@ -1,5 +1,6 @@
 # Server Automation by Openjournalteam ⭐
 To help you setup you're server 😊
+Include : Webmin, Apache server and others
 
 ## What this script does ?
 - Installing Virtualmin with port 9191
