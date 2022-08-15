@@ -201,3 +201,7 @@ mv $PAMIN_FOLDER pamin
 systemctl daemon-reload
 service pamin start
 
+#remove server banner 
+sed -i '/^[^#]*\<pam_motd.so\>/s/^/#/' /etc/pam.d/sshd
+
+
