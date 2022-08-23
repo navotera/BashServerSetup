@@ -80,7 +80,9 @@ wget "$CORE_FILE_URL" && chmod +x UbuntuServerInitiateBeforeReboot.sh
 sh -x UbuntuServerInitiateBeforeReboot.sh
 
 #create user root_db with credential provided
-service mysql start && sudo echo "CREATE USER 'root_db'@'localhost' IDENTIFIED BY '$PASSWD'; GRANT ALL PRIVILEGES ON * . * TO 'root_db'@'localhost'; FLUSH PRIVILEGES;" | mysql  
+service mysql start && sudo echo "CREATE USER 'root_db'@'localhost' IDENTIFIED BY '$PASSWD'; ALTER USER 'root_db'@'localhost' IDENTIFIED WITH mysql_native_password BY '$PASSWD'; GRANT ALL PRIVILEGES ON * . * TO 'root_db'@'localhost'; FLUSH PRIVILEGES;" | mysql  
+
+
 
 #cannot change password for webmin on bash
 #sudo sh -c 'echo root:$ROOT_PASSWORD | chpasswd'
