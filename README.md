@@ -40,3 +40,8 @@ https://ip_address:9191
 ## TESTED ON
 - Ubuntu 20.04 x64 ✔
 - Ubuntu 20.10 x64 ❌ (virtualmin not compatible yet)
+
+
+###Notes : 
+If you are using GCP server please follow this video to open port 9191 and 9292 : 
+https://www.youtube.com/watch?v=XFxdECTpiEg
