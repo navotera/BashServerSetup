@@ -13,7 +13,7 @@ Run with caution because this will **remove all your database** on the server.
 ![#f03c15](https://via.placeholder.com/15/f03c15/f03c15.png) Backup your data first before run this bash command!
 
 ```unix
-wget https://github.com/navotera/BashServerSetup/raw/master/app/mysql/init.sh && bash init.sh
+wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/mysql/init.sh | bash
 ``` 
 
 Wait for the interactive modal along the process of this command. 
