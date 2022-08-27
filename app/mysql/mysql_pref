@@ -1,0 +1,19 @@
+Package: mysql-server
+Pin: version 5.7*
+Pin-Priority: 1001
+
+Package: mysql-client
+Pin: version 5.7*
+Pin-Priority: 1001
+
+Package: mysql-community-server
+Pin: version 5.7*
+Pin-Priority: 1001
+
+Package: mysql-community-client
+Pin: version 5.7*
+Pin-Priority: 1001
+
+Package: libmysqlclient-dev
+Pin: version 5.7*
+Pin-Priority: 1001
