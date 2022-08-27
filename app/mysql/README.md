@@ -12,8 +12,9 @@ https://bugs.mysql.com/bug.php?id=97709
 
 ![#f03c15](https://via.placeholder.com/15/f03c15/f03c15.png) Backup your data first before run this bash command!
 
-
-`wget https://github.com/navotera/BashServerSetup/raw/master/app/mysql/downgrade_mysql.sh | bash` 
+```unix
+wget https://github.com/navotera/BashServerSetup/raw/master/app/mysql/downgrade_mysql.sh | bash
+``` 
 
 Wait for the interactive modal along the process of this command. 
 
