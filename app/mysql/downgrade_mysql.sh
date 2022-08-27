@@ -2,6 +2,9 @@
 # ini akan menghapus seluruh database, pastikan anda sudah melakukan backup 
 # Select Ubuntu Bionic upon modal pop up
 # run by => bash downgrade_mysql.sh
+
+
+
 export DEBIAN_FRONTEND=noninteractive
 
 debconf-set-selections <<< 'mysql-apt-config mysql-apt-config/repo-codename select bionic'
