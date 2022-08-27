@@ -8,9 +8,9 @@ https://bugs.mysql.com/bug.php?id=97709
 
 ### How to use 
 
-**Run with caution because this will <span style="color: red"> remove all your database </span> on the server.** 
+**Run with caution because this will remove all your database on the server.** 
 
-<span style="color: red"> Backup your data first before run this bash command!</span>
+![#f03c15](https://via.placeholder.com/15/f03c15/f03c15.png) Backup your data first before run this bash command!
 
 
 `wget https://github.com/navotera/BashServerSetup/raw/master/app/mysql/downgrade_mysql.sh | bash` 
