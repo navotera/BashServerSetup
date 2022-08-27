@@ -8,7 +8,7 @@ https://bugs.mysql.com/bug.php?id=97709
 
 ### How to use 
 
-**Run with caution because this will remove all your database on the server.** 
+Run with caution because this will **remove all your database** on the server.
 
 ![#f03c15](https://via.placeholder.com/15/f03c15/f03c15.png) Backup your data first before run this bash command!
 
