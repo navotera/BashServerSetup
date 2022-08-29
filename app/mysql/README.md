@@ -17,8 +17,9 @@ wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/mysql/init_
 ``` 
 
 Wait for the interactive modal along the process of this command. 
-[] Select Ubuntu bionic 
-[] Select Mysql 8 -> Select Mysql 5.7 -> Ok
+
+[ ] Select Ubuntu bionic 
+[ ] Select Mysql 8 -> Select Mysql 5.7 -> Ok
 
 The installation may take 5 to 10 minutes
 
