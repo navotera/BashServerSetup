@@ -10,6 +10,9 @@ Include : Webmin, Apache server and others.
 
 ## What this script does ?
 - Installing Virtualmin with port 9191
+```unix
+service webmin start
+```
 - Registering Phpmyadmin as service so you can running it by executing this command and access it with port 9292 🆕
 ```unix
 service pamin start
