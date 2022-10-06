@@ -4,7 +4,7 @@ GREEN="\e[32m"
 
 apt update
 sudo apt install g++ flex bison curl apache2-dev doxygen libyajl-dev ssdeep liblua5.2-dev libgeoip-dev libtool dh-autoreconf libcurl4-gnutls-dev libxml2 libpcre++-dev libxml2-dev git -y
-
+cd ..
 rm -rf modsecurity
 mkdir -p modsecurity
 mkdir -p /var/cache/modsecurity
@@ -60,6 +60,7 @@ mv init.conf /etc/apache2/modsecurity.d/init.conf
 source /etc/apache2/envvars
 
 cd ..
-rm -rf modsecurity && echo -e "${GREEN}Finished, folder removed${ENDCOLOR}"
+#rm -rf modsecurity &&
+echo -e "${GREEN}Finished, folder removed${ENDCOLOR}"
 
 #https://kifarunix.com/install-libmodsecurity-with-apache-on-ubuntu-18-04/
