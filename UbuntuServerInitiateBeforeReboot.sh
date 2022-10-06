@@ -205,4 +205,10 @@ service pamin start
 #remove server banner 
 sed -i '/^[^#]*\<pam_motd.so\>/s/^/#/' /etc/pam.d/sshd
 
+firewall-cmd --zone=public --permanent --add-port=9191/tcp
+firewall-cmd --zone=public --permanent --add-port=9292/tcp
+firewall-cmd --zone=public --permanent --add-port=9393/tcp
+firewall-cmd --reload
+
+
 
