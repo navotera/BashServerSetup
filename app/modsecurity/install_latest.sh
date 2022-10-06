@@ -25,14 +25,13 @@ ModSecurityFolder=`ls`
 cd "$ModSecurityFolder"
 ##this will take some 20 minutes, be patient
 ./build.sh && ./configure && make && make install
+mkdir -p /etc/apache2/modsecurity.d
+mv -- "/modsecurity/$ModSecurityFolder/modsecurity.conf-recommended"  /etc/apache2/modsecurity.d/modsecurity.conf
 
-ModConnector='mod-connector'
-cd /modsecurity && git clone https://github.com/SpiderLabs/ModSecurity-apache mod-connector &&  cd /modsecurity/'$ModConnector'
+cd /modsecurity && git clone https://github.com/SpiderLabs/ModSecurity-apache mod-connector &&  cd /modsecurity/mod-connector
 ## make sure apache is available before running this command 
 ./autogen.sh && ./configure --with-libmodsecurity=/usr/local/modsecurity/ && make && make install
 echo "LoadModule security3_module /usr/lib/apache2/modules/mod_security3.so" | sudo tee -a /etc/apache2/apache2.conf
-mkdir -p /etc/apache2/modsecurity.d
-mv /modsecurity/"$ModSecurityFolder"/modsecurity.conf-recommended /etc/apache2/modsecurity.d/modsecurity.conf
 sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/apache2/modsecurity.d/modsecurity.conf
 
 ##coreruleset
@@ -57,6 +56,7 @@ echo '
 
 mv init.conf /etc/apache2/modsecurity.d/init.conf
 
+#source == . in sh
 . /etc/apache2/envvars
 
 cd ..
