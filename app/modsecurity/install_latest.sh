@@ -35,8 +35,6 @@ echo "LoadModule security3_module /usr/lib/apache2/modules/mod_security3.so" | s
 sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/apache2/modsecurity.d/modsecurity.conf
 
 ##coreruleset
-cd .. 
-cd modsecurity
 if [ ! -n "$(grep "^github.org " ~/.ssh/known_hosts)" ]; then ssh-keyscan github.org >> ~/.ssh/known_hosts 2>/dev/null; fi 
 git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/apache2/modsecurity.d/owasp-crs
 cp /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example  /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
@@ -60,7 +58,6 @@ mv init.conf /etc/apache2/modsecurity.d/init.conf
 . /etc/apache2/envvars
 
 cd ..
-#rm -rf modsecurity &&
-echo "${GREEN}Finished, folder removed${ENDCOLOR}"
+rm -rf modsecurity && echo "${GREEN}Finished, folder removed${ENDCOLOR}"
 
 #https://kifarunix.com/install-libmodsecurity-with-apache-on-ubuntu-18-04/
