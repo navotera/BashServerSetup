@@ -1,4 +1,5 @@
-#apt install apache2 && https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/install_latest.sh && sh install_latest.sh
+##run command : 
+##apt install apache2 -y && cd /tmp && wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/install_latest.sh && sh install_latest.sh
 
 RED="\e[31m"
 ENDCOLOR="\e[0m"
