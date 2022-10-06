@@ -24,8 +24,7 @@ cd "$ModSecurityFolder"
 ./build.sh && ./configure && make && make install
 
 ModConnector='ModSecurity-apache'
-git clone https://github.com/SpiderLabs/ModSecurity-apache
-cd '$ModConnector'
+cd /modsecurity && git clone https://github.com/SpiderLabs/ModSecurity-apache &&  cd '$ModConnector'
 ## make sure apache is available before running this command 
 ./autogen.sh && ./configure --with-libmodsecurity=/usr/local/modsecurity/ && make && make install
 echo "LoadModule security3_module /usr/lib/apache2/modules/mod_security3.so" | sudo tee -a /etc/apache2/apache2.conf
