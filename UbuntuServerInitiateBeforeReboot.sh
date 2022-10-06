@@ -130,7 +130,7 @@ echo 'Protocols h2 http/1.1' >>  /etc/apache2/apache2.conf                      
 # sudo sed -i 's#</IfModule>#\tIncludeOptional /usr/share/modsecurity-crs/crs-setup.conf\n</IfModule>#'  /etc/apache2/mods-enabled/security2.conf
 # sudo sed -i 's#</IfModule>#\tIncludeOptional /usr/share/modsecurity-crs/rules/*.conf\n</IfModule>#'  /etc/apache2/mods-enabled/security2.conf
 
-wget https://raw.githubusercontent.com/nicolargo/glances/develop/conf/glances.conf -P /tmp/
+wget https://raw.githubusercontent.com/navotera/BashServerSetup/master/app/modsecurity/install_latest.sh -P /tmp/
 chmod +x /tmp/install_latest.sh
 source install_latest.sh
 
