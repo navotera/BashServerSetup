@@ -60,6 +60,6 @@ mv init.conf /etc/apache2/modsecurity.d/init.conf
 
 cd ..
 #rm -rf modsecurity &&
-echo -e "${GREEN}Finished, folder removed${ENDCOLOR}"
+echo "${GREEN}Finished, folder removed${ENDCOLOR}"
 
 #https://kifarunix.com/install-libmodsecurity-with-apache-on-ubuntu-18-04/
