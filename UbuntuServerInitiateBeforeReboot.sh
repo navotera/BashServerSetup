@@ -131,7 +131,7 @@ echo 'Protocols h2 http/1.1' >>  /etc/apache2/apache2.conf                      
 # sudo sed -i 's#</IfModule>#\tIncludeOptional /usr/share/modsecurity-crs/rules/*.conf\n</IfModule>#'  /etc/apache2/mods-enabled/security2.conf
 
 #modsecurity latest security3_module
-cd /tmp && wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/install_latest.sh && sh install_latest.sh
+wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/install_latest.sh -P /tmp/ && sh /tmp/install_latest.sh
 
 #setup the swap for 1G
 sudo swapoff /swapfile
