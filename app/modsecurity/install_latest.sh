@@ -55,9 +55,14 @@ echo '
 mv init.conf /etc/apache2/modsecurity.d/init.conf
 
 #source == . in sh
-. /etc/apache2/envvars
+source /etc/apache2/envvars
 
 cd ..
 rm -rf modsecurity && echo "${GREEN}Finished, folder removed${ENDCOLOR}"
 
 #https://kifarunix.com/install-libmodsecurity-with-apache-on-ubuntu-18-04/
+
+
+## add this in apache2 virtual host configuration: 
+#modsecurity on 
+#modsecurity_rules_file /etc/apache2/modsecurity.d/init.conf
