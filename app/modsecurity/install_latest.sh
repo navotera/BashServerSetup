@@ -66,3 +66,7 @@ rm -rf modsecurity && echo "${GREEN}Finished, folder removed${ENDCOLOR}"
 ## add this in apache2 virtual host configuration: 
 #modsecurity on 
 #modsecurity_rules_file /etc/apache2/modsecurity.d/init.conf
+
+# <IfModule security3_module>
+#    modsecurity off
+# </IfModule>
