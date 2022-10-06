@@ -23,11 +23,12 @@ sudo -E apt-get -qy autoclean
 apt-get install imagemagick -y ; apt install libmagickwand-dev imagemagick php-dev -y ; printf "\n" | pecl install imagemagick
 apt install libdigest-perl-md5-perl
 #others utilites
-apt install htop -y
+apt install htop -y ; apt install ncdu -y ; apt install zip -y ; apt install screen -y ; apt install nfs-common -y
 
 #mod_geoip2 to allow disable access from another country
 #https://dev.maxmind.com/geoip/legacy/mod_geoip2/
 apt install libapache2-mod-geoip -y
+
 
 #change timezone
 sudo timedatectl set-timezone Asia/Makassar
@@ -209,5 +210,11 @@ service pamin start
 
 #remove server banner 
 sed -i '/^[^#]*\<pam_motd.so\>/s/^/#/' /etc/pam.d/sshd
+
+firewall-cmd --zone=public --permanent --add-port=9191/tcp
+firewall-cmd --zone=public --permanent --add-port=9292/tcp
+firewall-cmd --zone=public --permanent --add-port=9393/tcp
+firewall-cmd --reload
+
 
 
