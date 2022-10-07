@@ -42,8 +42,7 @@ cp /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example  /etc/apache2/mod
 cd /etc/apache2/modsecurity.d
 wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping
 
-echo '
-        # Default Debian dir for modsecurity persistent data
+echo ' # Default Debian dir for modsecurity persistent data
         SecDataDir /var/cache/modsecurity  
 
         # Include OWASP ModSecurity CRS rules if installed        
