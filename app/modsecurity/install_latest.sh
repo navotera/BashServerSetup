@@ -54,8 +54,11 @@ echo '
 
 mv init.conf /etc/apache2/modsecurity.d/init.conf
 
-#source == . in sh
+echo '#!/bin/bash
 source /etc/apache2/envvars
+' > /tmp/source_apache
+
+bash /tmp/source_apache
 
 cd ..
 rm -rf modsecurity && echo "${GREEN}Finished, folder removed${ENDCOLOR}"
