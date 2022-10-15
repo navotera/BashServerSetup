@@ -14,12 +14,14 @@ crontab cron
 service cron reload 
 
 #upgrade the package
-DEBIAN_FRONTEND=noninteractive \
-  apt-get \
-  -o Dpkg::Options::=--force-confold \
-  -o Dpkg::Options::=--force-confdef \
-  -y --allow-downgrades --allow-remove-essential --allow-change-held-packages
+#DEBIAN_FRONTEND=noninteractive \
+ # apt-get \
+  #-o Dpkg::Options::=--force-confold \
+  #-o Dpkg::Options::=--force-confdef \
+  #-y --allow-downgrades --allow-remove-essential --allow-change-held-packages
+sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade
 sudo -E apt-get -qy autoclean
+
 
 
 
