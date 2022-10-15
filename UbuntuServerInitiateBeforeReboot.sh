@@ -19,7 +19,7 @@ service cron reload
   #-o Dpkg::Options::=--force-confold \
   #-o Dpkg::Options::=--force-confdef \
   #-y --allow-downgrades --allow-remove-essential --allow-change-held-packages
-sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade
+sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" -o "Dpkg::Options::=--force-confnew" upgrade
 sudo -E apt-get -qy autoclean
 
 
