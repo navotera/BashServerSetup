@@ -14,11 +14,19 @@ crontab cron
 service cron reload 
 
 #upgrade the package
-export DEBIAN_FRONTEND=noninteractive
-export DEBIAN_PRIORITY=critical
-sudo -E apt-get -qy update
-sudo -E apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade
-sudo -E apt-get -qy autoclean
+DEBIAN_FRONTEND=noninteractive \
+  apt-get \
+  -o Dpkg::Options::=--force-confold \
+  -o Dpkg::Options::=--force-confdef \
+  -y --allow-downgrades --allow-remove-essential --allow-change-held-packages
+
+
+
+#export DEBIAN_FRONTEND=noninteractive
+#export DEBIAN_PRIORITY=critical
+#sudo -E apt-get -qy update
+#sudo -E apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade
+#sudo -E apt-get -qy autoclean
 
 apt-get install imagemagick -y ; apt install libmagickwand-dev imagemagick php-dev -y ; printf "\n" | pecl install imagemagick
 apt install libdigest-perl-md5-perl
