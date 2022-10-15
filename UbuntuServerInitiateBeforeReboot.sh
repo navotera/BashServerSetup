@@ -19,6 +19,7 @@ DEBIAN_FRONTEND=noninteractive \
   -o Dpkg::Options::=--force-confold \
   -o Dpkg::Options::=--force-confdef \
   -y --allow-downgrades --allow-remove-essential --allow-change-held-packages
+sudo -E apt-get -qy autoclean
 
 
 
