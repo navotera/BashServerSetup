@@ -14,6 +14,7 @@ crontab cron
 service cron reload 
 
 #upgrade the package
+#if you find the error A new version (/tmp/ABC) of configuration file /etc/ssh/sshd_config is available, you should run below command manually
 export DEBIAN_FRONTEND=noninteractive
 export DEBIAN_PRIORITY=critical
 sudo -E apt-get -qy update
