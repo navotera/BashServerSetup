@@ -50,6 +50,8 @@ sudo apt-cache policy mysql-server
 apt install -f --allow-downgrades mysql-client=5.7* mysql-community-server=5.7* mysql-server=5.7* -y
 mkdir -p /etc/mysql/conf.d/
 
+#jika dapat error "Plugin 'auth_socket' is not loaded"" maka coba uninstall mysql dan reinstall lagi dengan paste perintah diatas dengan manual
+
 
 
 
