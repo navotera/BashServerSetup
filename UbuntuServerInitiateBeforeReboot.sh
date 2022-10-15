@@ -24,7 +24,10 @@ sudo -E apt-get -qy autoclean
 apt-get install imagemagick -y ; apt install libmagickwand-dev imagemagick php-dev -y ; printf "\n" | pecl install imagemagick
 apt install libdigest-perl-md5-perl
 #others utilites
-apt install htop -y ; apt install ncdu -y ; apt install zip -y ; apt install screen -y ; apt install nfs-common -y
+apt install htop -y ; apt install ncdu -y ; apt install zip -y ; apt install screen -y ; apt install nfs-common -y ; apt install nethogs -y
+sudo add-apt-repository ppa:bashtop-monitor/bashtop
+sudo apt update
+sudo apt install bashtop -y
 
 #mod_geoip2 to allow disable access from another country
 #https://dev.maxmind.com/geoip/legacy/mod_geoip2/
