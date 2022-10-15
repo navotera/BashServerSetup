@@ -47,8 +47,9 @@ sudo apt-key adv --keyserver pgp.mit.edu --recv-keys 467B942D3A79BD29
 
 sudo apt-get update -q
 sudo apt-cache policy mysql-server
-mkdir -p /etc/mysql/conf.d/
 apt install -f --allow-downgrades mysql-client=5.7* mysql-community-server=5.7* mysql-server=5.7* -y
+mkdir -p /etc/mysql/conf.d/
+
 
 
 
