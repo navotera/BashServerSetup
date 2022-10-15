@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
 # how to run 
-# wget https://raw.githubusercontent.com/jsmoriss/check-httpd-limits/master/mpm_event.pl && chmod +x mpm_event.pl && ./mpm_event.pl -verbose
-
+# wget https://github.com/navotera/BashServerSetup/raw/master/manual_optimization/mpm_event.pl && chmod +x mpm_event.pl && ./mpm_event.pl -verbose
+# cp /etc/apache2/mods-available/mpm_event.conf /etc/apache2/mods-available/mpm_event.conf.bak &&  nano /etc/apache2/mods-available/mpm_event.conf
+# apache2 -t (test config)
 
 
 
