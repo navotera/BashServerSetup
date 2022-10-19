@@ -40,22 +40,22 @@
     retries: 5
     until: install_needed is success
 
-  # - name: Wget the file 
-  #   shell: |
-  #     wget {{ latest_version }} && tar -xvf {{tar_folder}}.tar.gz && mv {{ tar_folder}} modsecurity
+  - name: Wget the file 
+    shell: |
+      wget {{ latest_version }} && tar -xvf {{tar_folder}}.tar.gz && mv {{ tar_folder}} modsecurity
   
-  # - name: Run build 
-  #   shell: cd /tmp/modsecurity/ && ./autogen.sh
+  - name: Run build 
+    shell: cd /tmp/modsecurity/ && ./autogen.sh
 
-  # - name: Make install 
-  #   shell : |
-  #     cd /tmp/modsecurity && ./configure && make && make install 
-  #   register: make_install
-  #   retries: 10
-  #   until: make_install is success
-  #   debugger: on_failed
-  #   async: 1800
-  #   poll: 10
+  - name: Make install 
+    shell : |
+      cd /tmp/modsecurity && ./configure && make && make install 
+    register: make_install
+    retries: 10
+    until: make_install is success
+    debugger: on_failed
+    async: 1800
+    poll: 10
 
 
   - name: Download crs and unicode
@@ -63,6 +63,7 @@
       git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/apache2/modsecurity.d/owasp-crs
       cp /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example  /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
       wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v2/master/unicode.mapping -P /etc/apache2/modsecurity.d/
+      wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/files/v2/init.conf -P /etc/apache2/modsecurity.d/
 
 
   - name: copy the mod_security2.so to apache2 folder 
@@ -81,29 +82,5 @@
         - { line: Include /etc/apache2/modsecurity.d/init.conf } 
 
 
-  # - name: Clone the mod
-  #   shell: |
-  #     cd /tmp/
-  #     rm -rf Modsecurity
-  #     git clone https://github.com/SpiderLabs/ModSecurity.git
-  #     sh /tmp/ModSecurity/build.sh
-  #     cd /tmp/ModSecurity/ &&   git submodule init && git submodule update 
 
-  # - name: Run build 
-  #   shell: cd /tmp/ModSecurity/ && ./build.sh
-
-  # - name: Make install 
-  #   shell : |
-  #     cd /tmp/ModSecurity && ./configure && make && make install 
-  #   register: make_install
-  #   retries: 10
-  #   until: make_install is success
-  #   debugger: on_failed
-  #   async: 1800
-  #   poll: 10
-
-  # - name: copy the mod_security2.so to apache2 folder 
-  #   shell : |
-  #     mkdir -p /etc/apache2/modsecurity.d
-  #     cp /usr/local/modsecurity/lib/mod_security2.so /etc/apache2/modsecurity.d/
 
