@@ -40,16 +40,17 @@
     retries: 5
     until: install_needed is success
 
-  - name: Wget the file 
+  - name: "Clone the mod "
     shell: |
-      wget {{ latest_version }} && tar -xvf {{tar_folder}}.tar.gz && mv {{ tar_folder}} modsecurity
-  
-  - name: Run build 
-    shell: cd /tmp/modsecurity/ && ./autogen.sh
+      cd /tmp/
+      git clone https://github.com/SpiderLabs/ModSecurity.git
+      cd Modsecurity
+      ./build.sh
+      git submodule init 
+      git submodule update 
 
   - name: Make install 
-    shell : |
-      cd /tmp/modsecurity && ./configure && make && make install 
+    shell : cd /tmp/Modsecurity && ./configure && make && make install 
     register: make_install
     retries: 10
     until: make_install is success
@@ -57,22 +58,40 @@
     async: 1800
     poll: 10
 
+
+
+
+  # - name: Wget the file 
+  #   shell: |
+  #     wget {{ latest_version }} && tar -xvf {{tar_folder}}.tar.gz && mv {{ tar_folder}} modsecurity
+  
+  # - name: Run build 
+  #   shell: cd /tmp/modsecurity/ && ./autogen.sh
+
+  # - name: Make install 
+  #   shell : |
+  #     cd /tmp/modsecurity && ./configure && make && make install 
+  #   register: make_install
+  #   retries: 10
+  #   until: make_install is success
+  #   debugger: on_failed
+  #   async: 1800
+  #   poll: 10
+
   - name: Download crs and unicode
     shell : |
+      mkdir -p /etc/apache2/modsecurity.d
       git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/apache2/modsecurity.d/owasp-crs
       cp /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example  /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
-      wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v2/master/unicode.mapping -P /etc/apache2/modsecurity.d/
+      wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v2/master/unicode.mapping -P /etc/apache2/conf-available/
       wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/files/v2/init.conf -P /etc/apache2/modsecurity.d/
       mkdir -p /etc/apache2/modsecurity.d/exception
       wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/files/exception/_ojs.conf -P /etc/apache2/modsecurity.d/exception
 
   - name: copy the mod_security2.so to apache2 folder 
-    shell : |
-      mkdir -p /etc/apache2/modsecurity.d
-      cp /usr/local/modsecurity/lib/mod_security2.so /etc/apache2/modsecurity.d/
-      cp /tmp/modsecurity/modsecurity.conf-recommended /etc/apache2/modsecurity.d/modsecurity2.conf
+    shell : cp /tmp/modsecurity/modsecurity.conf-recommended /etc/apache2/modsecurity.d/modsecurity2.conf
 
-  - name: Add Brotli module to the start of Nginx config
+  - name: Activate mod security
     lineinfile:
         path: /etc/apache2/apache2.conf
         insertafter: EOF
