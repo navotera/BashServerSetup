@@ -64,6 +64,8 @@
       cp /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example  /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
       wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v2/master/unicode.mapping -P /etc/apache2/modsecurity.d/
       wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/files/v2/init.conf -P /etc/apache2/modsecurity.d/
+      mkdir -p /etc/apache2/modsecurity.d/exception
+      wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/files/exception/_ojs.conf -P /etc/apache2/modsecurity.d/exception
 
 
   - name: copy the mod_security2.so to apache2 folder 
