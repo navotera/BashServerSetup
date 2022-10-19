@@ -1,35 +1,109 @@
-- name: "install Modsecurity 2 latest version"
+- name: install Modsecurity 2 latest version
   hosts: localhost
   connection: local 
   tasks:
-  - name: Install prerequisites
-    apt: name={{ item }} update_cache=yes state=latest force_apt_get=yes
-    loop: [ 'aptitude' ]
+
+  - name : URL of latest version 
+    set_fact : 
+      latest_version : https://github.com/SpiderLabs/ModSecurity/releases/download/v2.9.6/modsecurity-2.9.6.tar.gz
+      tar_folder : modsecurity-2.9.6     
 
   - name: Install Apache
-    apt: name=apache2 update_cache=yes state=latest
-    state: present
+    ansible.builtin.apt:
+      name: apache2
+      state: present
+      
+  - name: Install a list of packages
+    ansible.builtin.apt:
+      pkg:
+      - apache2-dev
+      - python
+      - apt-utils
+      - autoconf
+      - automake
+      - build-essential
+      - libpcre3-dev
+      - libcurl4-openssl-dev
+      - libgeoip-dev
+      - liblmdb-dev
+      - libpcre++-dev
+      - libtool 
+      - libyajl-dev
+      - libxml2-dev
+      - pkgconf
+      - zlib1g-dev
+      - doxygen
+      - valgrind  
+      state: present
+      update_cache: yes
+    register: install_needed
+    retries: 5
+    until: install_needed is success
 
-  - name: "Clone the mod "
-    shell: |
-      cd /tmp/
-      git clone https://github.com/SpiderLabs/ModSecurity.git
-      cd Modsecurity
-      ./build.sh
-      git submodule init 
-      git submodule update 
+  # - name: Wget the file 
+  #   shell: |
+  #     wget {{ latest_version }} && tar -xvf {{tar_folder}}.tar.gz && mv {{ tar_folder}} modsecurity
+  
+  # - name: Run build 
+  #   shell: cd /tmp/modsecurity/ && ./autogen.sh
 
-  - name: Make install 
-    shell : ./configure && make && make install 
-    register: make_install
-    retries: 10
-    until: make_install is success
-    debugger: on_failed
-    async: 1800
-    poll: 10
+  # - name: Make install 
+  #   shell : |
+  #     cd /tmp/modsecurity && ./configure && make && make install 
+  #   register: make_install
+  #   retries: 10
+  #   until: make_install is success
+  #   debugger: on_failed
+  #   async: 1800
+  #   poll: 10
+
+
+  - name: Download crs and unicode
+    shell : |
+      git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/apache2/modsecurity.d/owasp-crs
+      cp /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example  /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
+      wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v2/master/unicode.mapping -P /etc/apache2/modsecurity.d/
+
 
   - name: copy the mod_security2.so to apache2 folder 
     shell : |
-      makedir -p /etc/apache2/modsecurity.d
+      mkdir -p /etc/apache2/modsecurity.d
       cp /usr/local/modsecurity/lib/mod_security2.so /etc/apache2/modsecurity.d/
+      cp /tmp/modsecurity/modsecurity.conf-recommended /etc/apache2/modsecurity.d/modsecurity2.conf
+
+  - name: Add Brotli module to the start of Nginx config
+    lineinfile:
+        path: /etc/apache2/apache2.conf
+        insertafter: EOF
+        line: "{{ item.line }}"
+    with_items:
+        - { line: LoadModule security2_module /usr/lib/apache2/modules/mod_security2.so }
+        - { line: Include /etc/apache2/modsecurity.d/init.conf } 
+
+
+  # - name: Clone the mod
+  #   shell: |
+  #     cd /tmp/
+  #     rm -rf Modsecurity
+  #     git clone https://github.com/SpiderLabs/ModSecurity.git
+  #     sh /tmp/ModSecurity/build.sh
+  #     cd /tmp/ModSecurity/ &&   git submodule init && git submodule update 
+
+  # - name: Run build 
+  #   shell: cd /tmp/ModSecurity/ && ./build.sh
+
+  # - name: Make install 
+  #   shell : |
+  #     cd /tmp/ModSecurity && ./configure && make && make install 
+  #   register: make_install
+  #   retries: 10
+  #   until: make_install is success
+  #   debugger: on_failed
+  #   async: 1800
+  #   poll: 10
+
+  # - name: copy the mod_security2.so to apache2 folder 
+  #   shell : |
+  #     mkdir -p /etc/apache2/modsecurity.d
+  #     cp /usr/local/modsecurity/lib/mod_security2.so /etc/apache2/modsecurity.d/
 
