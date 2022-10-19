@@ -57,7 +57,6 @@
     async: 1800
     poll: 10
 
-
   - name: Download crs and unicode
     shell : |
       git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/apache2/modsecurity.d/owasp-crs
@@ -66,7 +65,6 @@
       wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/files/v2/init.conf -P /etc/apache2/modsecurity.d/
       mkdir -p /etc/apache2/modsecurity.d/exception
       wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/files/exception/_ojs.conf -P /etc/apache2/modsecurity.d/exception
-
 
   - name: copy the mod_security2.so to apache2 folder 
     shell : |
@@ -81,8 +79,7 @@
         line: "{{ item.line }}"
     with_items:
         - { line: LoadModule security2_module /usr/lib/apache2/modules/mod_security2.so }
-        - { line: Include /etc/apache2/modsecurity.d/init.conf } 
-
+        - { line: Include /etc/apache2/modsecurity.d/init.conf }
 
   #https://raspi.emawind.com/devnote/linux-modsecurity-install-howto.html
   - name: Add module unique on apache2
