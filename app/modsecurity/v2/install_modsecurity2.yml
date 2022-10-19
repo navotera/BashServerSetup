@@ -84,5 +84,13 @@
         - { line: Include /etc/apache2/modsecurity.d/init.conf } 
 
 
+  #https://raspi.emawind.com/devnote/linux-modsecurity-install-howto.html
+  - name: Add module unique on apache2
+    shell: |
+      cd /etc/apache2/mods-enabled
+      ln -s ../mods-available/unique_id.load .
+      service apache2 reload       
+
+
 
 

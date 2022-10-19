@@ -2,16 +2,14 @@
 To help you setup you're server 😊
 Include : Webmin, Apache server and others. 
 
-- Integrated with ModSecurity 3 (automatically enabled) 
+- Integrated with ModSecurity 2.9.6 from source (automatically enabled) 
   To disable add : `SecRuleEngine Off` to the virtualhost
 - Fail2ban
 - Server Optimization
 - php installation from 7.3 to 8.1
 
 Example to disable : 
-`<IfModule security3_module>
-    modsecurity off
- </IfModule>`
+`SecRuleEngine Off`
 
 ## What this script does ?
 - Installing Virtualmin with port 9191
