@@ -40,42 +40,41 @@
     retries: 5
     until: install_needed is success
 
-  - name: "Clone the mod "
-    shell: |
-      cd /tmp/
-      git clone https://github.com/SpiderLabs/ModSecurity.git
-      cd /tmp/ModSecurity/ && ./build.sh      
-      cd /tmp/ModSecurity/ && git submodule init 
-      cd /tmp/ModSecurity/ && git submodule update      
-
-  - name: Make install 
-    shell : cd /tmp/ModSecurity && ./configure && make && make install 
-    register: make_install
-    retries: 10
-    until: make_install is success
-    debugger: on_failed
-    async: 1800
-    poll: 10
-
-
-
-
-  # - name: Wget the file 
+  #gagal karena terinstall modsecurity versi 3
+  # - name: "Clone the mod "
   #   shell: |
-  #     wget {{ latest_version }} && tar -xvf {{tar_folder}}.tar.gz && mv {{ tar_folder}} modsecurity
-  
-  # - name: Run build 
-  #   shell: cd /tmp/modsecurity/ && ./autogen.sh
+  #     cd /tmp/
+  #     git clone https://github.com/SpiderLabs/ModSecurity.git
+  #     cd /tmp/ModSecurity/ && ./build.sh      
+  #     cd /tmp/ModSecurity/ && git submodule init 
+  #     cd /tmp/ModSecurity/ && git submodule update      
 
   # - name: Make install 
-  #   shell : |
-  #     cd /tmp/modsecurity && ./configure && make && make install 
+  #   shell : cd /tmp/ModSecurity && ./configure && make && make install 
   #   register: make_install
   #   retries: 10
   #   until: make_install is success
   #   debugger: on_failed
   #   async: 1800
   #   poll: 10
+
+
+  - name: Wget the file 
+    shell: |
+      wget {{ latest_version }} && tar -xvf {{tar_folder}}.tar.gz && mv {{ tar_folder}} modsecurity
+  
+  - name: Run build 
+    shell: cd /tmp/modsecurity/ && ./autogen.sh
+
+  - name: Make install 
+    shell : |
+      cd /tmp/modsecurity && ./configure && make && make install 
+    register: make_install
+    retries: 10
+    until: make_install is success
+    debugger: on_failed
+    async: 1800
+    poll: 10
 
   - name: Download crs and unicode
     shell : |
