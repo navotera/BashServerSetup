@@ -40,23 +40,22 @@
     retries: 5
     until: install_needed is success
 
-  - name: "Clone the mod "
-    shell: |
-      cd /tmp/
-      git clone https://github.com/SpiderLabs/ModSecurity.git
-      cd Modsecurity
-      ./build.sh
-      git submodule init 
-      git submodule update 
+  # - name: "Clone the mod "
+  #   shell: |
+  #     cd /tmp/
+  #     git clone https://github.com/SpiderLabs/ModSecurity.git
+  #     cd /tmp/ModSecurity/ && ./build.sh      
+  #     cd /tmp/ModSecurity/ && git submodule init 
+  #     cd /tmp/ModSecurity/ && git submodule update      
 
-  - name: Make install 
-    shell : cd /tmp/Modsecurity && ./configure && make && make install 
-    register: make_install
-    retries: 10
-    until: make_install is success
-    debugger: on_failed
-    async: 1800
-    poll: 10
+  # - name: Make install 
+  #   shell : cd /tmp/ModSecurity && ./configure && make && make install 
+  #   register: make_install
+  #   retries: 10
+  #   until: make_install is success
+  #   debugger: on_failed
+  #   async: 1800
+  #   poll: 10
 
 
 
