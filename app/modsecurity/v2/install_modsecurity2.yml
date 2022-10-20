@@ -34,6 +34,7 @@
       - zlib1g-dev
       - doxygen
       - valgrind  
+      - net-tools
       state: present
       update_cache: yes
     register: install_needed
