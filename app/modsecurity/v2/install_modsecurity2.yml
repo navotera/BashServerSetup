@@ -81,6 +81,7 @@
     shell : |
       mkdir -p /etc/apache2/modsecurity.d
       mkdir -p /etc/apache2/modsecurity.d/exception
+      mkdir -p /var/cache/modsecurity
       git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/apache2/modsecurity.d/owasp-crs
       cp /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example  /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
       wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v2/master/unicode.mapping -P /etc/apache2/modsecurity.d/
