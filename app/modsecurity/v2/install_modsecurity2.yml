@@ -82,12 +82,12 @@
       mkdir -p /etc/apache2/modsecurity.d/exception
       git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/apache2/modsecurity.d/owasp-crs
       cp /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example  /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
-      wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v2/master/unicode.mapping -P /etc/apache2/conf-available/
+      wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v2/master/unicode.mapping -P /etc/apache2/modsecurity.d/
       wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/files/v2/init.conf -P /etc/apache2/modsecurity.d/    
       wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/files/exception/_ojs.conf -P /etc/apache2/modsecurity.d/exception
 
   - name: copy the mod_security2.so to apache2 folder 
-    shell : cp /tmp/Modsecurity/modsecurity.conf-recommended /etc/apache2/modsecurity.d/modsecurity2.conf
+    shell : cp /tmp/modsecurity/modsecurity.conf-recommended /etc/apache2/modsecurity.d/modsecurity2.conf
 
   - name: Activate mod security
     lineinfile:
