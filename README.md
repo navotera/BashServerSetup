@@ -44,6 +44,7 @@ https://ip_address:9191
 
 
 ## TESTED ON
+- Ubuntu 22.04 x64 ✔
 - Ubuntu 20.04 x64 ✔
 - Ubuntu 18.04 LTS x64 ✔
 - Ubuntu 20.10 x64 ❌ (virtualmin not compatible yet)
