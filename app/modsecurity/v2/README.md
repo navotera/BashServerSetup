@@ -32,6 +32,7 @@ wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity
 
 
 ## TESTED ON
+- Ubuntu 22.04 x64 ✔
 - Ubuntu 20.04 x64 ✔
 - Ubuntu 18.04 LTS x64 ✔ (need to test)
 
