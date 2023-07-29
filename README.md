@@ -49,7 +49,7 @@ https://ip_address:9191
 - Ubuntu 18.04 LTS x64 ✔
 - Ubuntu 20.10 x64 ❌ (virtualmin not compatible yet)
 
+### Notes :  sx
 
-### Notes :  s
 If you are using GCP server please follow this video to open port 9191 and 9292 : 
 https://www.youtube.com/watch?v=XFxdECTpiEg
