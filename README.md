@@ -53,7 +53,7 @@ https://ip_address:9191
 <<<<<<< HEAD
 ### Notes :  s
 =======
-### Notes :  x
+### Notes :
 >>>>>>> 0399b27... Testing commiit
 If you are using GCP server please follow this video to open port 9191 and 9292 : 
 https://www.youtube.com/watch?v=XFxdECTpiEg
