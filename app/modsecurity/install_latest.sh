@@ -36,7 +36,7 @@ sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/apache2/modsecurit
 
 ##coreruleset
 if [ ! -n "$(grep "^github.org " ~/.ssh/known_hosts)" ]; then ssh-keyscan github.org >> ~/.ssh/known_hosts 2>/dev/null; fi 
-git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /etc/apache2/modsecurity.d/owasp-crs
+git clone https://github.com/coreruleset/coreruleset.git /etc/apache2/modsecurity.d/owasp-crs
 cp /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example  /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
 
 cd /etc/apache2/modsecurity.d
