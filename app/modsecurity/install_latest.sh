@@ -39,6 +39,9 @@ if [ ! -n "$(grep "^github.org " ~/.ssh/known_hosts)" ]; then ssh-keyscan github
 git clone https://github.com/coreruleset/coreruleset.git /etc/apache2/modsecurity.d/owasp-crs
 cp /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example  /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
 
+##coreruleset for plugins 
+git clone https://github.com/coreruleset/wordpress-rule-exclusions-plugin.git /etc/apache2/modsecurity.d/owasp-crs/plugins/wordpress-rule-exclusions-plugin
+
 cd /etc/apache2/modsecurity.d
 wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping
 
