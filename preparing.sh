@@ -15,7 +15,7 @@
 
 JAIL_CONFIG_URL="/tmp/BashServerSetup/serverInit/jail.local"
 CORE_FILE_URL="/tmp/BashServerSetup/core.sh"
-SETUP_PATH = "/tmp/BashServerSetup/"
+SETUP_PATH="/tmp/BashServerSetup/"
 # shoud call it dynamically
 # fix this later
 
