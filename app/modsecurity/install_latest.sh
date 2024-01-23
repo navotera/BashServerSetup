@@ -75,3 +75,9 @@ rm -rf modsecurity && echo "${GREEN}Finished, folder removed${ENDCOLOR}"
 # <IfModule security3_module>
 #    modsecurity off
 # </IfModule>
+
+
+
+#copy all the modsecurity to exception folder 
+mkdir /etc/apache2/modsecurity.d/exception
+cp 
