@@ -13,10 +13,14 @@
 #webmin pass : can be found on server.config file
 #created by navotera : share-system.com
 
-JAIL_CONFIG_URL="https://raw.githubusercontent.com/navotera/serverAutomation/master/serverInit/jail.local"
-CORE_FILE_URL="https://raw.githubusercontent.com/navotera/serverAutomation/master/UbuntuServerInitiateBeforeReboot.sh"
+JAIL_CONFIG_URL="/tmp/BashServerSetup/serverInit/jail.local"
+CORE_FILE_URL="/tmp/BashServerSetup/core.sh"
+SETUP_PATH = "/tmp/BashServerSetup/"
 # shoud call it dynamically
 # fix this later
+
+#clone first 
+cd /tmp && git clone https://github.com/navotera/BashServerSetup.git
 
 
 # collor config
@@ -70,16 +74,17 @@ sleep 5
 #exec 1>installServer.log 2>&1
 
 # check if its exsist
-mkdir serverInit
+#mkdir serverInit
 #cd serverInit
-wget "$JAIL_CONFIG_URL" -P serverInit/
-chmod 755 serverInit/jail.local
+#wget "$JAIL_CONFIG_URL" -P serverInit/
+
+chmod 755 "$SETUP_PATH"serverInit/jail.local
 
 
 
 #get and initiate the  
-wget "$CORE_FILE_URL" && chmod +x UbuntuServerInitiateBeforeReboot.sh 
-sh -x UbuntuServerInitiateBeforeReboot.sh
+wget "$CORE_FILE_URL" && chmod +x core.sh 
+sh -x "$SETUP_PATH" core.sh
 
 #create user root_db with credential provided
 service mysql start && sudo echo "CREATE USER 'root_db'@'localhost' IDENTIFIED BY '$PASSWD'; ALTER USER 'root_db'@'localhost' IDENTIFIED WITH mysql_native_password BY '$PASSWD'; GRANT ALL PRIVILEGES ON * . * TO 'root_db'@'localhost'; FLUSH PRIVILEGES;" | mysql  
@@ -95,10 +100,7 @@ echo
 # Doesn't work
 /usr/share/webmin/changepass.pl /etc/webmin root $PASSWD
 
-sudo rm Ubuntu* 
-sudo rm fail2ban*
-sudo rm install.sh
-sudo rm -rf serverInit
+sudo rm -rf "$SETUP_PATH"
 
 #disable other user read this file
 chmod 640 server.config 
