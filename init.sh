@@ -10,7 +10,7 @@
 apt update && apt upgrade -y && apt install zip -y
 
 #clone first 
-cd /tmp && git clone https://github.com/navotera/BashServerSetup.git
+cd /tmp && git clone -b optimization https://github.com/navotera/BashServerSetup.git
 chmod +x /tmp/BashServerSetup/preparing.sh && bash /tmp/BashServerSetup/preparing.sh
 
 
