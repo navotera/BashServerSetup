@@ -79,9 +79,8 @@ chmod 755 "$SETUP_PATH"serverInit/jail.local
 
 
 
-#get and initiate the  
-wget "$CORE_FILE_URL" && chmod +x core.sh 
-sh -x "$SETUP_PATH" core.sh
+#get and initiate the core installation file
+chmod +x "$CORE_FILE_URL" && sh -x "$CORE_FILE_URL"
 
 #create user root_db with credential provided
 service mysql start && sudo echo "CREATE USER 'root_db'@'localhost' IDENTIFIED BY '$PASSWD'; ALTER USER 'root_db'@'localhost' IDENTIFIED WITH mysql_native_password BY '$PASSWD'; GRANT ALL PRIVILEGES ON * . * TO 'root_db'@'localhost'; FLUSH PRIVILEGES;" | mysql  
