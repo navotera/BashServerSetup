@@ -15,3 +15,5 @@ cd /usr/bin && ls -lrth python* && unlink python3 && ln -s /usr/bin/python3.8 py
 
 
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml
+
+
