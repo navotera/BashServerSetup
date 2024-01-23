@@ -2,7 +2,8 @@
 . ./server.config 
 #PASSWD='< /dev/urandom tr -dc A-Za-z0-9 | head -c16'
 PATH_SSHD_CONFIG="/etc/ssh/sshd_config"
-PAMIN_SERVICE_URL="https://raw.githubusercontent.com/navotera/serverAutomation/master/serverInit/pamin.service"
+SETUP_PATH="/tmp/BashServerSetup/"
+
 
 #setup Cron 
 crontab -l > cron
@@ -15,11 +16,11 @@ service cron reload
 
 #upgrade the package
 #if you find the error A new version (/tmp/ABC) of configuration file /etc/ssh/sshd_config is available, you should run below command manually
-export DEBIAN_FRONTEND=noninteractive
-export DEBIAN_PRIORITY=critical
-sudo -E apt-get -qy update
-sudo -E apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade
-sudo -E apt-get -qy autoclean
+#export DEBIAN_FRONTEND=noninteractive
+#export DEBIAN_PRIORITY=critical
+#sudo -E apt-get -qy update
+#sudo -E apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade
+#sudo -E apt-get -qy autoclean
 
 apt-get install imagemagick -y ; apt install libmagickwand-dev imagemagick php-dev -y ; printf "\n" | pecl install imagemagick
 apt install libdigest-perl-md5-perl
@@ -194,8 +195,8 @@ update-rc.d fail2ban enable
 
 # phpmyadmin as service
 # get pamin service first (do it later)
-wget "$PAMIN_URL"
-wget "$PAMIN_SERVICE_URL" -P serverInit/
+
+
 
 # get pamin folder's name
 splitUrl=$(echo $PAMIN_URL | tr "/" "\n")                                             
@@ -209,7 +210,7 @@ PAMIN_FOLDER=$(basename $PAMIN .tar.gz)
 
 mv $PAMIN_FOLDER pamin
 # download and copy pamin.service to system path
- wget "$PAMIN_SERVICE_URL" -P serverInit/ && cp serverInit/pamin.service /etc/systemd/system
+cp "$SETUP_PATH"/serverInit/pamin.service /etc/systemd/system
 # # move pamin to etc
  mv pamin /etc
 
