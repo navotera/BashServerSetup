@@ -14,9 +14,7 @@
 #created by navotera : share-system.com
 
 #in ubuntu 22.04 should change this to disable interactive mode that stop automatic process in this script
-sed -i 's/# $nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/needrestart/needrestart.conf
-
-
+sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/needrestart/needrestart.conf
 
 JAIL_CONFIG_URL="/tmp/BashServerSetup/serverInit/jail.local"
 CORE_FILE_URL="/tmp/BashServerSetup/core.sh"
@@ -107,7 +105,7 @@ sudo rm -rf "$SETUP_PATH"
 chmod 640 server.config 
 
 #restore the setting : 
-sed -i 's/# $nrconf{restart} = '\''a'\'';/\$nrconf{restart} = '\''i'\'';/' /etc/needrestart/needrestart.conf
+sed -i 's/#$nrconf{restart} = '\''a'\'';/\$nrconf{restart} = '\''i'\'';/' /etc/needrestart/needrestart.conf
 
 sudo reboot
 # reboot here  
