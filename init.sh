@@ -8,7 +8,7 @@ add-apt-repository --yes --update ppa:ansible/ansible
 add-apt-repository --yes --update ppa:deadsnakes/ppa
 apt-get update
 apt-get install python3.6 -y && apt-get install python3.7 -y && apt-get install python3.8 -y
-apt install python3-pip
+apt install python3-pip -y
 
 cd /usr/bin && ls -lrth python* && unlink python && ln -s /usr/bin/python3.8 python
 cd /usr/bin && ls -lrth python* && unlink python3 && ln -s /usr/bin/python3.8 python3
