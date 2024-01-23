@@ -28,7 +28,7 @@ service pamin start
 
 ## How to use ?
 ```unix
-curl https://raw.githubusercontent.com/navotera/BashServerSetup/optimization/init.sh | bash
+curl https://raw.githubusercontent.com/navotera/BashServerSetup/optimization/init.sh | bash | tee /tmp/install.log
 ```
 
 ## After success installing 

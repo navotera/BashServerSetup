@@ -141,8 +141,8 @@ echo 'Protocols h2 http/1.1' >>  /etc/apache2/apache2.conf                      
 #modsecurity latest security2_module
 #wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/install_latest.sh -P /tmp/ && sh /tmp/install_latest.sh
 
-
-wget https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/v2/init.sh  -P /tmp/ && sh /tmp/init.sh
+chmod +x "$SETUP_PATH"/app/modsecurity/v2/init.sh
+sh  "$SETUP_PATH"/app/modsecurity/v2/init.sh
 
 
 #setup the swap for 1G
