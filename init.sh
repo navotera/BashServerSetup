@@ -1,18 +1,17 @@
-#! /usr/bin/sh
-#apt update && apt upgrade -y && apt install zip -y
+#!/bin/bash
 
-#wget https://raw.githubusercontent.com/navotera/serverAutomation/master/UbuntuserverInitiateSetup.sh
-#chmod +x UbuntuserverInitiateSetup.sh
-#bash UbuntuserverInitiateSetup.sh
-
-
-#! /usr/bin/sh
-apt update && apt install zip -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get -yq upgrade
-
-#clone first 
+# wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/v2/init.sh  | bash
 cd /tmp && git clone -b optimization https://github.com/navotera/BashServerSetup.git
-chmod +x /tmp/BashServerSetup/core.sh
-chmod +x /tmp/BashServerSetup/preparing.sh && bash /tmp/BashServerSetup/preparing.sh
+apt update
+apt install software-properties-common -y
+add-apt-repository --yes --update ppa:ansible/ansible
+add-apt-repository --yes --update ppa:deadsnakes/ppa
+apt-get update
+apt-get install python3.6 && apt-get install python3.7 && apt-get install python3.8
+apt install python3-pip
+
+cd /usr/bin && ls -lrth python* && unlink python && ln -s /usr/bin/python3.8 python
+cd /usr/bin && ls -lrth python* && unlink python3 && ln -s /usr/bin/python3.8 python3
 
 
+apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml

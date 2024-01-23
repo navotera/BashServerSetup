@@ -1,0 +1,68 @@
+---
+- hosts: localhost
+  become: yes
+  vars:
+    JAIL_CONFIG_URL: "/tmp/BashServerSetup/serverInit/jail.local"
+    CORE_FILE_URL: "/tmp/BashServerSetup/core.sh"
+    SETUP_PATH: "/tmp/BashServerSetup/"
+    PASSWD: "{{ lookup('password', '/dev/urandom chars=ascii_letters,digits length=18') }}"
+    PMA_LATEST_VERSION_INFO_URL: "https://www.phpmyadmin.net/home_page/version.php"
+    PMA_VERSION: "{{ lookup('url', PMA_LATEST_VERSION_INFO_URL).split('\n')[0] }}"
+    PAMIN_URL: "https://files.phpmyadmin.net/phpMyAdmin/{{ PMA_VERSION }}/phpMyAdmin-{{ PMA_VERSION }}-all-languages.tar.gz"
+    IP_ADDRESS: "{{ ansible_default_ipv4.address }}"
+
+  tasks:
+    #- name: Change needrestart configuration
+    #  lineinfile:
+    #    path: /etc/needrestart/needrestart.conf
+    #    regexp: '#\$nrconf{restart} = '\''i'\'';'
+    #    line: '$nrconf{restart} = '\''a'\'';'
+
+    - name: Clone the repository
+      git:
+        repo: https://github.com/navotera/BashServerSetup.git
+        dest: /tmp/BashServerSetup
+        version: optimization
+
+    - name: Set custom hostname
+      hostname:
+        name: "{{ ansible_default_ipv4.address.split('.')[3] }}.opensynergic.com"
+
+    - name: Create server.config file
+      lineinfile:
+        path: ~/server.config
+        line: "{{ item }}"
+      loop:
+        - "HOSTNAME={{ ansible_hostname }}"
+        - "PAMIN_URL={{ PAMIN_URL }}"
+        - "PASSWORD={{ PASSWD }}"
+
+    - name: Set execute permissions for core.sh
+      file:
+        path: /tmp/BashServerSetup/core.sh
+        mode: '+x'
+
+    - name: Set execute permissions for preparing.sh and run it
+      command: bash /tmp/BashServerSetup/preparing.sh
+      args:
+        chdir: /tmp/BashServerSetup
+
+    - name: Start MySQL service
+      service:
+        name: mysql
+        state: started
+
+    - name: Create MySQL user root_db
+      mysql_user:
+        name: root_db
+        host: localhost
+        password: "{{ PASSWD }}"
+        priv: '*.*:ALL'
+
+    - name: Start webmin
+      command: /usr/share/webmin/changepass.pl /etc/webmin root "{{ PASSWD }}"
+
+    - name: Reboot the server
+      command: reboot
+      async: 0
+      poll: 0

@@ -1,0 +1,310 @@
+- hosts: all
+  tasks:
+    - name: Set up cron jobs
+      cron:
+        name: "Run /etc/webmin/status/monitor.pl every 5 minutes"
+        minute: "*/5"
+        job: "/etc/webmin/status/monitor.pl"
+        state: present
+
+    - name: Add cron job to stop services
+      cron:
+        name: "Stop services every 4 hours"
+        minute: "0"
+        hour: "*/4"
+        job: "sudo service pamin stop"
+        state: present
+
+    - name: Upgrade the package
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - imagemagick
+        - libmagickwand-dev
+        - imagemagick
+        - php-dev
+        - libdigest-perl-md5-perl
+        - htop
+        - ncdu
+        - zip
+        - screen
+        - nfs-common
+        - nethogs
+      become: true
+
+    - name: Add bashtop repository and install bashtop
+      apt_repository:
+        repo: ppa:bashtop-monitor/bashtop
+      apt:
+        name: bashtop
+        state: present
+      become: true
+
+    - name: Install libapache2-mod-geoip
+      apt:
+        name: libapache2-mod-geoip
+        state: present
+      become: true
+    
+    - name: Set timezone to Asia/Makassar
+      command: timedatectl set-timezone Asia/Makassar
+      become: true
+
+    - name: Download and run Virtualmin installation script
+      get_url:
+        url: http://software.virtualmin.com/gpl/scripts/install.sh
+        dest: /tmp/install.sh
+      become: true
+    
+    - name: Run Virtualmin installation script
+      command: VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install.sh --minimal --force --hostname "{{ ansible_hostname }}"
+      become: true
+
+    - name: Disable specific features in Virtualmin
+      block:
+        - name: Disable DNS feature
+          command: virtualmin disable-feature --dns --all-domains
+          become: true
+
+        - name: Disable Mail feature
+          command: virtualmin disable-feature --mail --all-domains
+          become: true
+
+        - name: Disable Virtualmin DAV feature
+          command: virtualmin disable-feature --virtualmin-dav --all-domains
+          become: true
+      become: true
+
+
+    - name: Stop services
+      service:
+        name: "{{ item }}"
+        state: stopped
+      with_items:
+        - mysql
+        - fail2ban
+        - sshd
+      become: true
+
+    - name: Modify PHP configuration for all domains
+      command: virtualmin modify-php-ini --all-domains --ini-name {{ item.ini_name }} --ini-value {{ item.ini_value }}
+      with_items:
+        - { ini_name: "memory_limit", ini_value: "128M" }
+        - { ini_name: "upload_max_filesize", ini_value: "500M" }
+        - { ini_name: "post_max_size", ini_value: "500M" }
+      become: true
+
+    - name: Install PHP and its dependencies
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - software-properties-common
+        - php7.3
+        - php7.3-fpm
+        - php7.3-imagick
+        - php7.3-common
+        - php7.3-mysql
+        - php7.3-xml
+        - php7.3-curl
+        - php7.3-mbstring
+        - php7.3-mcrypt
+        - php7.3-gmp
+        - php7.4
+        - php7.4-fpm
+        - php7.4-common
+        - php7.4-mysql
+        - php7.4-xml
+        - php7.4-mbstring
+        - php7.4-imagick
+        - php7.4-curl
+        - php7.4-mcrypt
+        - php7.4-gmp
+        - php8.1
+        - php8.1-fpm
+        - php8.1-common
+        - php8.1-mysql
+        - php8.1-xml
+        - php8.1-mbstring
+        - php8.1-imagick
+        - php8.1-curl
+        - php8.1-mcrypt
+        - php8.1-gmp
+      become: true
+
+    - name: Change Webmin port
+      replace:
+        path: /etc/webmin/miniserv.conf
+        regexp: 'port=10000'
+        replace: 'port=9191'
+      become: true
+
+    - name: Enable Apache modules
+      command: a2enmod {{ item }}
+      with_items:
+        - expires
+        - headers
+      become: true
+
+
+    - name: Update SSHD configuration
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        line: "{{ item }}"
+      with_items:
+        - "#edited by serverAutomation by navotera :: share-system.com"
+        - "ClientAliveInterval 1200"
+        - "ClientAliveCountMax 3"
+      notify: Restart SSH service
+      become: true
+
+    - name: Disable root SSH login with password
+      replace:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin.*'
+        replace: 'PermitRootLogin prohibit-password'
+      notify: Restart SSH service
+      become: true
+
+    - name: Change root password
+      user:
+        name: root
+        password: "{{ ROOT_PASSWORD | password_hash('sha512') }}"
+      become: true
+
+    - name: Update Virtualmin configuration for new domain creation
+      lineinfile:
+        path: /etc/webmin/virtual-server/config
+        line: "{{ item }}"
+      with_items:
+        - "home_format=$DOM"
+        - "wizard_run=1"
+      become: true
+
+    - name: Install rclone
+      command: "curl https://rclone.org/install.sh | sudo bash"
+
+    - name: Enable HTTP/2 globally
+      lineinfile:
+        path: /etc/apache2/apache2.conf
+        line: "Protocols h2 http/1.1"
+      become: true
+
+    #- name: Set execute permission and run init.sh script
+    #  command: "{{ item }}"
+    #  vars:
+    #    SETUP_PATH: /your/setup/path   # Replace with the actual setup path
+    #  with_items:
+    #    - "chmod +x {{ SETUP_PATH }}/app/modsecurity/v2/init.sh"
+    #    - "sh {{ SETUP_PATH }}/app/modsecurity/v2/init.sh"
+
+    - name: Setup swap for 2G
+      command: "{{ item }}"
+      with_items:
+        - "sudo swapoff /swapfile"
+        - "sudo fallocate -l 2G /swapfile"
+        - "ls -lh /swapfile"
+        - "sudo mkswap /swapfile"
+        - "sudo swapon /swapfile"
+
+    - name: Optimize limits for www-data and mysql
+      blockinfile:
+        path: /etc/security/limits.conf
+        block: |
+          #optimized by navotera - share-system.com
+          www-data   soft  nofile   1048576
+          www-data   soft  nproc   1048576
+          nginx      soft  nofile   1048576
+          nginx      soft  nproc   1048576
+          mysql      soft  memlock   unlimited
+          mysql      hard  memlock   unlimited
+          mysql      hard  nofile   30720
+          mysql      soft  nofile   20480
+          mysql      soft  nproc    16384
+          mysql      soft  fsize    unlimited
+      become: true
+
+    - name: Configure system settings
+      blockinfile:
+        path: "{{ item.path }}"
+        block: "{{ item.block }}"
+      with_items:
+        - { path: "/etc/pam.d/common-session", block: "session required pam_limits.so" }
+        - { path: "/etc/sysctl.conf", block: "fs.file-max = 2097152\nfs.nr_open = 1048576" }
+      become: true
+
+    - name: Configure Apache MPM and modules
+      shell: |
+        sudo a2enmod proxy_fcgi setenvif && sudo a2enconf php7.0-fpm ; sudo a2enconf php7.1-fpm ; sudo a2enconf php7.2-fpm ; sudo a2enconf php7.3-fpm ; sudo a2enconf php7.4-fpm
+        sudo a2dismod php7.0  ; sudo a2dismod php7.1 ; sudo a2dismod php7.2 ; sudo a2dismod php7.3 ; sudo a2dismod php7.4
+        sudo kill -9 `sudo ps -ef | grep php-fpm | grep -v grep | awk '{print $2}'`
+        sudo a2enmod http2
+        sudo service apache2 restart
+        sudo a2dismod mpm_prefork && sudo a2enmod mpm_event
+        sudo service apache2 restart
+        sudo service php7.2-fpm restart ; sudo service php7.3-fpm restart ; sudo service php7.4-fpm restart
+        apt remove php5.4-fpm
+        sudo service sshd restart
+        sudo service webmin start
+      become: true
+
+    - name: Enable start on boot for fail2ban
+      service:
+        name: fail2ban
+        state: started
+        enabled: true
+
+
+    - name: Get pamin folder's name
+      shell: |
+        splitUrl=$(echo "{{ PAMIN_URL }}" | tr "/" "\n")
+        PAMIN=${PAMIN_URL##*/}
+      register: pamin_folder
+      changed_when: false
+
+    - name: Unzip and rename pamin folder
+      unarchive:
+        src: "{{ PAMIN }}"
+        dest: "{{ SETUP_PATH }}/serverInit"
+        remote_src: yes
+      become: true
+      when: pamin_folder is succeeded
+
+    - name: Move pamin to /etc and copy pamin.service
+      command: "{{ item }}"
+      with_items:
+        - "mv {{ SETUP_PATH }}/serverInit/{{ pamin_folder.stdout }} /etc/pamin"
+        - "cp {{ SETUP_PATH }}/serverInit/pamin.service /etc/systemd/system"
+      become: true
+      when: pamin_folder is succeeded
+
+    - name: Reload systemd and start pamin service
+      systemd:
+        daemon_reload: yes
+        name: pamin
+        state: started
+        enabled: yes
+      become: true
+      when: pamin_folder is succeeded
+
+    - name: Remove server banner from sshd
+      lineinfile:
+        path: /etc/pam.d/sshd
+        state: present
+        backrefs: yes
+        regexp: '^[^#]*\<pam_motd.so\>'
+        line: "#&"
+      become: true
+
+    - name: Add ports to firewall
+      firewalld:
+        zone: public
+        permanent: yes
+        state: enabled
+        port: "{{ item }}/tcp"
+      with_items:
+        - 9191
+        - 9292
+        - 9393
+      become: true
