@@ -7,10 +7,12 @@
 
 
 #! /usr/bin/sh
-apt update && apt upgrade -y && apt install zip -y
+apt update && apt install zip -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get -yq upgrade
 
 #clone first 
 cd /tmp && git clone -b optimization https://github.com/navotera/BashServerSetup.git
+chmod +x /tmp/BashServerSetup/core.sh
 chmod +x /tmp/BashServerSetup/preparing.sh && bash /tmp/BashServerSetup/preparing.sh
 
 

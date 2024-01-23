@@ -19,9 +19,6 @@ SETUP_PATH = "/tmp/BashServerSetup/"
 # shoud call it dynamically
 # fix this later
 
-#clone first 
-cd /tmp && git clone https://github.com/navotera/BashServerSetup.git
-
 
 # collor config
 # ref : https://stackoverflow.com/a/20983251
