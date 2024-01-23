@@ -57,7 +57,9 @@ virtualmin disable-feature --all-domains --dns --mail --logrotate --virtualmin-d
 sudo wget https://github.com/fail2ban/fail2ban/releases/download/0.11.2/fail2ban_0.11.2-1.upstream1_all.deb
 sudo dpkg -i fail2ban_0.11.2-1.upstream1_all.deb
 cp serverInit/jail.local /etc/fail2ban/jail.local
-
+cp serverInit/fail2ban/filter.d/modsec.conf /etc/fail2ban/fail2ban/filter.d/modsec.conf
+cp serverInit/fail2ban/filter.d/wordpress-auth.conf /etc/fail2ban/fail2ban/filter.d/wordpress-auth.conf
+cp serverInit/fail2ban/filter.d/wordpress-xmlrpc.conf /etc/fail2ban/fail2ban/filter.d/wordpress-xmlrpc.conf
 
 #php 
 sudo apt install software-properties-common -y ; sudo add-apt-repository ppa:ondrej/php -y && sudo apt update ;

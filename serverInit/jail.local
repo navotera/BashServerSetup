@@ -1,13 +1,21 @@
-# For Fail2ban 0.11
-# Created by Navotera@share-system
-# 
-#WARNING: heavily refactored in 0.9.0 release.  Please review and
+#
+# WARNING: heavily refactored in 0.9.0 release.  Please review and
 #          customize settings for your setup.
 #
 # Changes:  in most of the cases you should not modify this
 #           file, but provide customizations in jail.local file,
 #           or separate .conf files under jail.d/ directory, e.g.:
-# 
+#
+# HOW TO ACTIVATE JAILS:
+#
+# YOU SHOULD NOT MODIFY THIS FILE.
+#
+# It will probably be overwritten or improved in a distribution update.
+#
+# Provide customizations in a jail.local file or a jail.d/customisation.local.
+# For example to change the default bantime for all jails and to enable the
+# ssh-iptables jail the following (uncommented) would appear in the .local file.
+# See man 5 jail.conf for details.
 #
 # [DEFAULT]
 # bantime = 1h
@@ -31,6 +39,9 @@ before = paths-debian.conf
 # in each jail afterwards.
 
 [DEFAULT]
+bantime.increment = true
+bantime.factor = 1
+bantime.multipliers = 1 5 30 60 300 720 1440 2880
 
 #
 # MISCELLANEOUS OPTIONS
@@ -90,7 +101,7 @@ before = paths-debian.conf
 ignorecommand =
 
 # "bantime" is the number of seconds that a host is banned.
-bantime  = 30m
+bantime  = 10m
 
 # A host is banned if it has generated "maxretry" during the last "findtime"
 # seconds.
@@ -280,8 +291,8 @@ backend = %(sshd_backend)s
 enabled = true
 action = iptables-multiport[]
 maxretry = 3
-findtime = 5
-bantime = 100000
+findtime = 4
+bantime = 1000000
 
 
 [dropbear]
@@ -324,26 +335,29 @@ action = iptables-allports[]
 
 
 [apache-noscript]
-
+enabled = true
+findtime = 8m
+bantime = 1000h
 port     = http,https
 logpath  = %(apache_error_log)s
 
 
 [apache-overflows]
-
+enabled = true
+findtime = 8m
+bantime = 1000h
 port     = http,https
 logpath  = %(apache_error_log)s
 maxretry = 2
 
 
 [apache-nohome]
-
+enabled = true
+findtime = 8m
+bantime = 1000h
 port     = http,https
 logpath  = %(apache_error_log)s
-bantime  = 48h
-maxretry = 3
-enabled = true
-action = iptables-allports[]
+maxretry = 2
 
 
 [apache-botsearch]
@@ -351,27 +365,26 @@ action = iptables-allports[]
 port     = http,https
 logpath  = %(apache_error_log)s
 maxretry = 2
-enabled = true
 
 
 [apache-fakegooglebot]
 
 port     = http,https
 logpath  = %(apache_access_log)s
-maxretry = 2
+maxretry = 1
 ignorecommand = %(ignorecommands_dir)s/apache-fakegooglebot <ip>
 enabled = true
 action = abuseipdb[]
 
 
 [apache-modsecurity]
-
+enabled = true
+findtime = 10m
+bantime = 1000000
+maxretry = 3
 port     = http,https
 logpath  = %(apache_error_log)s
-enabled = true
-maxretry = 4
 action = iptables-multiport[]
-bantime = 100h
 
 
 [apache-shellshock]
@@ -604,6 +617,10 @@ mode    = more
 port    = smtp,465,submission
 logpath = %(postfix_log)s
 backend = %(postfix_backend)s
+enabled = true
+bantime = 100000
+findtime = 5
+action = iptables-multiport[protocol=tcp]
 
 
 [postfix-rbl]
@@ -693,7 +710,7 @@ backend  = %(syslog_backend)s
 
 
 [postfix-sasl]
-
+enabled = true
 filter   = postfix[mode=auth]
 port     = smtp,465,submission,imap,imaps,pop3,pop3s
 # You might consider monitoring /var/log/mail.warn instead if you are
@@ -832,7 +849,7 @@ logpath  = /var/log/mongodb/mongodb.log
 # 2. Increase dbpurgeage defined in fail2ban.conf to e.g. 648000 (7.5 days)
 #    to maintain entries for failed logins for sufficient amount of time
 [recidive]
-
+enabled = true
 logpath  = /var/log/fail2ban.log
 banaction = %(banaction_allports)s
 bantime  = 1w
@@ -982,3 +999,35 @@ logpath = %(apache_error_log)s
 # see `filter.d/traefik-auth.conf` for details and service example.
 port    = http,https
 logpath = /var/log/traefik/access.log
+
+
+[modsec]
+enabled  = false
+filter   = modsec
+action   = iptables-multiport[name=ModSec, port="http,https"]
+logpath  = /var/log/modsec_audit.log
+bantime  = 172800
+findtime = 5m
+maxretry = 3
+
+# Ban bot that bruteforce login
+[wordpress-auth]
+enabled = true
+port = http,https
+filter = wordpress-auth
+logpath = /var/log/virtualmin/openjournaltheme.com_access_log
+ignoreip = 127.0.0.1/8 
+bantime  = 4600
+findtime  = 15m
+maxretry = 8
+
+# Ban bot that access XMLRPC
+[wordpress-xmlrpc]
+enabled = true
+port = http,https
+filter = wordpress-xmlrpc
+logpath = /var/log/virtualmin/openjournaltheme.com_access_log
+ignoreip = 127.0.0.1/8 
+bantime  = 10h
+findtime  = 10m
+maxretry = 10
