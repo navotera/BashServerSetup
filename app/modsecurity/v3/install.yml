@@ -1,0 +1,181 @@
+  connection: local 
+  tasks:
+    - name: Update apt
+      apt:
+        upgrade: yes
+
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - g++
+        - flex
+        - bison
+        - curl
+        - apache2-dev
+        - doxygen
+        - libyajl-dev
+        - ssdeep
+        - liblua5.2-dev
+        - libgeoip-dev
+        - libtool
+        - dh-autoreconf
+        - libcurl4-gnutls-dev
+        - libxml2
+        - libpcre++-dev
+        - libxml2-dev
+        - git
+      update_cache: yes
+      register: install_needed
+      retries: 5
+      until: install_needed is success
+
+    - name: Create modsecurity directory
+      file:
+        path: /modsecurity
+        state: directory
+
+    - name: Download and extract ModSecurity
+      block:
+        - name: Get latest ModSecurity release URL
+          uri:
+            url: https://api.github.com/repos/SpiderLabs/ModSecurity/releases/latest
+            return_content: yes
+          register: modsec_release
+
+        - name: Download ModSecurity
+          get_url:
+            url: "{{ modsec_release.json.browser_download_url }}"
+            dest: /modsecurity/
+            mode: 0755
+
+        - name: Remove unnecessary files
+          file:
+            path: /modsecurity/{{ item }}
+            state: absent
+          with_items:
+            - "*.asc"
+            - "*.sha256"
+
+        - name: Extract ModSecurity
+          unarchive:
+            src: /modsecurity/{{ item }}
+            dest: /modsecurity/
+            remote_src: yes
+          register: modsec_extract
+          with_first_found:
+            - "{{ lookup('fileglob', '/modsecurity/*.tar.gz') }}"
+            - "{{ lookup('fileglob', '/modsecurity/*.tar.xz') }}"
+
+    - name: Build and install ModSecurity
+      command: >
+        ./build.sh && ./configure && make && make install
+      args:
+        chdir: /modsecurity/{{ modsec_extract.files[0].path }}
+
+    - name: Create modsecurity.d directory
+      file:
+        path: /etc/apache2/modsecurity.d
+        state: directory
+
+    - name: Move modsecurity.conf-recommended to modsecurity.d
+      command: >
+        mv /modsecurity/{{ modsec_extract.files[0].path }}/modsecurity.conf-recommended /etc/apache2/modsecurity.d/modsecurity.conf
+
+    - name: Clone ModSecurity apache connector
+      git:
+        repo: https://github.com/SpiderLabs/ModSecurity-apache
+        dest: /modsecurity/mod-connector
+        clone: yes
+
+    - name: Build and install ModSecurity apache connector
+      block:
+        - name: Install required packages for ModSecurity apache connector
+          apt:
+            name: "{{ item }}"
+            state: present
+          with_items:
+            - automake
+            - autoconf
+            - libtool
+
+        - name: Build and install ModSecurity apache connector
+          command: >
+            ./autogen.sh && ./configure --with-libmodsecurity=/usr/local/modsecurity/ && make && make install
+          args:
+            chdir: /modsecurity/mod-connector
+
+    - name: Add LoadModule directive to apache2.conf
+      lineinfile:
+        path: /etc/apache2/apache2.conf
+        line: "LoadModule security3_module /usr/lib/apache2/modules/mod_security3.so"
+
+    - name: Enable ModSecurity
+      replace:
+        path: /etc/apache2/modsecurity.d/modsecurity.conf
+        regexp: 'SecRuleEngine DetectionOnly'
+        replace: 'SecRuleEngine On'
+
+    - name: Clone OWASP ModSecurity CRS
+      git:
+        repo: https://github.com/coreruleset/coreruleset.git
+        dest: /etc/apache2/modsecurity.d/owasp-crs
+        clone: yes
+
+    - name: Copy crs-setup.conf.example to crs-setup.conf
+      command: >
+        cp /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example  /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
+
+    - name: Clone core rule set for WordPress
+      git:
+        repo: https://github.com/coreruleset/wordpress-rule-exclusions-plugin.git
+        dest: /etc/apache2/modsecurity.d/owasp-crs/plugins/wordpress-rule-exclusions-plugin
+        clone: yes
+
+    - name: Download unicode.mapping
+      get_url:
+        url: https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping
+        dest: /etc/apache2/modsecurity.d/unicode.mapping
+
+    - name: Create init.conf for ModSecurity
+      blockinfile:
+        path: /etc/apache2/modsecurity.d/init.conf
+        block: |
+          # Default Debian dir for modsecurity persistent data
+          SecDataDir /var/cache/modsecurity
+
+          # Include OWASP ModSecurity CRS rules if installed
+          Include "/etc/apache2/modsecurity.d/modsecurity.conf"
+          Include "/etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf"
+          Include "/etc/apache2/modsecurity.d/owasp-crs/rules/*.conf"
+
+    - name: Source Apache environment variables
+      copy:
+        content: |
+          #!/bin/bash
+          source /etc/apache2/envvars
+        dest: /tmp/source_apache
+        mode: '0755'
+
+    - name: Source Apache environment variables
+      command: /tmp/source_apache
+
+    - name: Remove modsecurity directory
+      file:
+        path: /modsecurity
+        state: absent
+      register: modsec_cleanup
+      notify: Finished message
+
+    - name: Copy <link>ModSecurity</link> exception files
+      command: cp /tmp/BashServerSetup/app/modsecurity/exception/{{ item }} /etc/apache2/modsecurity.d/exception/
+      with_fileglob:
+        - "*.conf"
+
+  handlers:
+    - name: Finished message
+      debug:
+        msg: "Finished, folder removed"
+
+  

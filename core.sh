@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./server.config 
+#. ./server.config 
 #PASSWD='< /dev/urandom tr -dc A-Za-z0-9 | head -c16'
 PATH_SSHD_CONFIG="/etc/ssh/sshd_config"
 SETUP_PATH="/tmp/BashServerSetup/"

@@ -19,6 +19,7 @@ sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/n
 JAIL_CONFIG_URL="/tmp/BashServerSetup/serverInit/jail.local"
 CORE_FILE_URL="/tmp/BashServerSetup/core.sh"
 SETUP_PATH="/tmp/BashServerSetup/"
+
 # shoud call it dynamically
 # fix this later
 
@@ -39,7 +40,10 @@ IP_ADDRESS=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[
 
 # custom hostname
 # add validation hostname next
-hostname="opensynergic.com"
+ip_address=$(ip addr show eth0 | awk '/inet / {split($2, a, "."); print a[3];}')
+combined_string="${ip_address}.opensynergic.com"
+hostname $combined_string
+#hostname="opensynergic.com"
 #hostnamectl set-hostname abc
 
 
@@ -47,9 +51,9 @@ PMA_LATEST_VERSION_INFO_URL="https://www.phpmyadmin.net/home_page/version.php"
 PMA_VERSION=$(wget -q -O /tmp/pma_lastest.html $PMA_LATEST_VERSION_INFO_URL && sed -ne '1p' /tmp/pma_lastest.html);
 PAMIN_URL="https://files.phpmyadmin.net/phpMyAdmin/${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.tar.gz"
 
-echo "HOSTNAME=$hostname" > server.config
-echo "PAMIN_URL=$PAMIN_URL" >> server.config
-echo "PASSWORD=$PASSWD" >> server.config 
+echo "HOSTNAME=$hostname" > ~/server.config
+echo "PAMIN_URL=$PAMIN_URL" >> ~/server.config
+echo "PASSWORD=$PASSWD" >> ~/server.config 
 echo 
 echo "${GREEN}Starting the installation process \n (php package 7.3-7.4, Webmin, ModGeoIP2, Fail2ban, timezone to Asia/Makassar,mysql root admin, webmin root authentication, mod security, ssh private keys and other optimization..${NC}"
 echo 
