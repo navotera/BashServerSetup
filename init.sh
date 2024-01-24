@@ -16,6 +16,8 @@ apt install python3-pip -y
 cd /usr/bin && ls -lrth python* && unlink python && ln -s /usr/bin/python3.12 python
 cd /usr/bin && ls -lrth python* && unlink python3 && ln -s /usr/bin/python3.12 python3
 
+service apport restart
+systemctl restart systemd-timedated
 
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml
 
