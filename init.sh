@@ -12,7 +12,7 @@ sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/n
 cd /tmp && rm -rf BashServerSetup && git clone -b optimization https://github.com/navotera/BashServerSetup.git
 apt update
 apt install software-properties-common -y
-add-apt-repository --yes --update ppa:ansible/ansible
+#add-apt-repository --yes --update ppa:ansible/ansible
 add-apt-repository --yes --update ppa:deadsnakes/ppa
 apt-get update
 
