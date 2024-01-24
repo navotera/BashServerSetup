@@ -13,8 +13,8 @@ apt-get update
 apt-get apt-get install python3.8 -y && apt-get install python3.12 -y
 apt install python3-pip -y
 
-cd /usr/bin && ls -lrth python* && unlink python && ln -s /usr/bin/python3.8 python
-cd /usr/bin && ls -lrth python* && unlink python3 && ln -s /usr/bin/python3.8 python3
+cd /usr/bin && ls -lrth python* && unlink python && ln -s /usr/bin/python3.12 python
+cd /usr/bin && ls -lrth python* && unlink python3 && ln -s /usr/bin/python3.12 python3
 
 
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml
