@@ -1,6 +1,6 @@
 - name: BashServer Setup Initiate
   hosts: localhost
-connection: local
+  connection: local
   become: yes
   tasks:
     # - name: Update apt package cache
