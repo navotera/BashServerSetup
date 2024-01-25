@@ -1,10 +1,17 @@
 - name: BashServerSetup Core setupx
   hosts: localhost
   connection: local
+  vars:    
+    SETUP_PATH: "/tmp/BashServerSetup/"
   tasks:
-    - name: Set custom hostname
-      hostname:
-        name: "{{ ansible_default_ipv4.address.split('.')[3] }}.opensynergic.com"
+    - name:  init 
+      script: "{{ SETUP_PATH }}playbook/sh/create_server_config.sh"
+      args:
+        executable: /bin/bash
+
+    - name: Print hostname
+      debug:
+        msg: "Hostname of the target host is {{ ansible_fqdn }}"
 
     - name: Set up cron jobs
       cron:
@@ -54,17 +61,15 @@
         state: present
 
     - name: Set timezone to Asia/Makassar
-      command: timedatectl set-timezone Asia/Makassar
+      command: timedatectl set-timezone Asia/Makassar    
 
-    - name: Download Virtualmin install script
-      get_url:
-        url: http://software.virtualmin.com/gpl/scripts/install.sh
-        dest: /tmp/install.sh
-
-    - name: Install Virtualmin
-      command: "/bin/sh /tmp/install.sh --minimal --force --hostname {{ ansible_hostname }}"
-      environment:
-        VIRTUALMIN_NONINTERACTIVE: "1"
+    - name:  init 
+      script: "{{ SETUP_PATH }}playbook/sh/install_virtualmin.sh"
+      args:
+        executable: /bin/bash
+      register: install_needed
+      retries: 5
+      until: install_needed is success
       become: true
 
     - name: Disable specific features in Virtualmin
@@ -248,38 +253,6 @@
         state: started
         enabled: true
 
-    - name: Get pamin folder's name
-      shell: |
-        splitUrl=$(echo "{{ PAMIN_URL }}" | tr "/" "\n")
-        PAMIN=${PAMIN_URL##*/}
-      register: pamin_folder
-      changed_when: false
-
-    - name: Unzip and rename pamin folder
-      unarchive:
-        src: "{{ PAMIN }}"
-        dest: "{{ SETUP_PATH }}/serverInit"
-        remote_src: yes
-
-      when: pamin_folder is succeeded
-
-    - name: Move pamin to /etc and copy pamin.service
-      command: "{{ item }}"
-      with_items:
-        - "mv {{ SETUP_PATH }}/serverInit/{{ pamin_folder.stdout }} /etc/pamin"
-        - "cp {{ SETUP_PATH }}/serverInit/pamin.service /etc/systemd/system"
-
-      when: pamin_folder is succeeded
-
-    - name: Reload systemd and start pamin service
-      systemd:
-        daemon_reload: yes
-        name: pamin
-        state: started
-        enabled: yes
-
-      when: pamin_folder is succeeded
-
     - name: Remove server banner from sshd
       lineinfile:
         path: /etc/pam.d/sshd
@@ -295,6 +268,6 @@
         state: enabled
         port: "{{ item }}/tcp"
       with_items:
-        - 9191
-        - 9292
-        - 9393
+        - 9191 #webmin
+        - 9292 #pamin
+        - 9393 #monitorix

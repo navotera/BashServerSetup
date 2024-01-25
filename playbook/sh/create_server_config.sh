@@ -18,10 +18,29 @@ IP_ADDRESS=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[
 
 
 # Get the current IPv4 address
-# IP_ADDRESS=$(hostname -I | awk '{print $1}')
-# LAST_THREE_DIGITS=$(echo "$IP_ADDRESS" | awk -F. '{print $NF}')
-# # Combine with "abc.com"
-# hostname "${LAST_THREE_DIGITS}opensynergic.com"
+IP_ADDRESS=$(hostname -I | awk '{print $1}')
+LAST_THREE_DIGITS=$(echo "$IP_ADDRESS" | awk -F. '{print $NF}')
+# Combine with "abc.com"
+hostname "${LAST_THREE_DIGITS}opensynergic.com"
+
+# get pamin folder's name
+splitUrl=$(echo $PAMIN_URL | tr "/" "\n")                                             
+PAMIN=${PAMIN_URL##*/}
+
+#unzip "$PAMIN", unzip not work
+tar -xvzf "$PAMIN"
+
+# rename to pamin
+PAMIN_FOLDER=$(basename $PAMIN .tar.gz)
+
+mv $PAMIN_FOLDER pamin
+# download and copy pamin.service to system path
+cp "$SETUP_PATH"/serverInit/pamin.service /etc/systemd/system
+# # move pamin to etc
+mv pamin /etc
+
+systemctl daemon-reload
+service pamin start
 
 
 echo "HOSTNAME=$hostname" > ~/server.config

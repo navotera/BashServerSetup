@@ -212,7 +212,7 @@ mv $PAMIN_FOLDER pamin
 # download and copy pamin.service to system path
 cp "$SETUP_PATH"/serverInit/pamin.service /etc/systemd/system
 # # move pamin to etc
- mv pamin /etc
+mv pamin /etc
 
 systemctl daemon-reload
 service pamin start
