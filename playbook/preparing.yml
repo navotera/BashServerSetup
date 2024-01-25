@@ -1,7 +1,5 @@
 ---
 - name: Preparing
-  hosts: localhost
-  connection: local 
   vars:
     JAIL_CONFIG_URL: "/tmp/BashServerSetup/serverInit/jail.local"
     CORE_FILE_URL: "/tmp/BashServerSetup/core.sh"
@@ -36,17 +34,7 @@
       loop:
         - "HOSTNAME={{ ansible_hostname }}"
         - "PAMIN_URL={{ PAMIN_URL }}"
-        - "PASSWORD={{ PASSWD }}"
-
-    - name: Set execute permissions for core.sh
-      file:
-        path: /tmp/BashServerSetup/core.sh
-        mode: '+x'
-
-    - name: Set execute permissions for preparing.sh and run it
-      command: bash /tmp/BashServerSetup/preparing.sh
-      args:
-        chdir: /tmp/BashServerSetup
+        - "PASSWORD={{ PASSWD }}"   
 
     - name: Start MySQL service
       service:
