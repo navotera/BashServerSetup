@@ -1,23 +1,15 @@
----
 - name: Preparing
   vars:
     JAIL_CONFIG_URL: "/tmp/BashServerSetup/serverInit/jail.local"
     CORE_FILE_URL: "/tmp/BashServerSetup/core.sh"
     SETUP_PATH: "/tmp/BashServerSetup/"
     IP_ADDRESS: "{{ ansible_default_ipv4.address }}"
-
   tasks:
     #- name: Change needrestart configuration
     #  lineinfile:
     #    path: /etc/needrestart/needrestart.conf
     #    regexp: '#\$nrconf{restart} = '\''i'\'';'
     #    line: '$nrconf{restart} = '\''a'\'';'
-
-    - name: Clone the repository
-      git:
-        repo: https://github.com/navotera/BashServerSetup.git
-        dest: /tmp/BashServerSetup
-        version: optimization
 
     - name: Set custom hostname
       hostname:

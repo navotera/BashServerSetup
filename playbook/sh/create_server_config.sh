@@ -1,8 +1,24 @@
 #!/bin/bash
 
+# collor config
+# ref : https://stackoverflow.com/a/20983251
+RED=`tput setaf 1`
+NC=`tput sgr0` # No Color
+GREEN=`tput setaf 2`
+YELLOW=`tput setaf 3`
+
 PMA_LATEST_VERSION_INFO_URL="https://www.phpmyadmin.net/home_page/version.php"
 PMA_VERSION=$(wget -q -O /tmp/pma_lastest.html $PMA_LATEST_VERSION_INFO_URL && sed -ne '1p' /tmp/pma_lastest.html);
 PAMIN_URL="https://files.phpmyadmin.net/phpMyAdmin/${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.tar.gz"
+
+# random password
+PASSWD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
+# check IP addres
+IP_ADDRESS=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[1]}')
+
+ip_address=$(ip addr show eth0 | awk '/inet / {split($2, a, "."); print a[3];}')
+combined_string="${ip_address}.opensynergic.com"
+hostname $combined_string
 
 echo "HOSTNAME=$hostname" > ~/server.config
 echo "PAMIN_URL=$PAMIN_URL" >> ~/server.config
