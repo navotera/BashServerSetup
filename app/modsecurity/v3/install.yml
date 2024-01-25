@@ -1,3 +1,5 @@
+- name: install Modsecurity 3 latest version
+  hosts: localhost
   connection: local 
   tasks:
     - name: Update apt
