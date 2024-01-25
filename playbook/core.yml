@@ -1,6 +1,6 @@
-- name: BashServerSetup Core setup
+- name: BashServerSetup Core setupx
   hosts: localhost
-  connection: local 
+  connection: local
   tasks:
     - name: Set up cron jobs
       cron:
@@ -33,7 +33,6 @@
         - screen
         - nfs-common
         - nethogs
-      become: true
 
     - name: Add bashtop repository and install bashtop
       apt_repository:
@@ -41,43 +40,33 @@
       apt:
         name: bashtop
         state: present
-      become: true
 
     - name: Install libapache2-mod-geoip
       apt:
         name: libapache2-mod-geoip
         state: present
-      become: true
-    
+
     - name: Set timezone to Asia/Makassar
       command: timedatectl set-timezone Asia/Makassar
-      become: true
 
     - name: Download and run Virtualmin installation script
       get_url:
         url: http://software.virtualmin.com/gpl/scripts/install.sh
         dest: /tmp/install.sh
-      become: true
-    
+
     - name: Run Virtualmin installation script
       command: VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install.sh --minimal --force --hostname "{{ ansible_hostname }}"
-      become: true
 
     - name: Disable specific features in Virtualmin
       block:
         - name: Disable DNS feature
           command: virtualmin disable-feature --dns --all-domains
-          become: true
 
         - name: Disable Mail feature
           command: virtualmin disable-feature --mail --all-domains
-          become: true
 
         - name: Disable Virtualmin DAV feature
           command: virtualmin disable-feature --virtualmin-dav --all-domains
-          become: true
-      become: true
-
 
     - name: Stop services
       service:
@@ -87,7 +76,6 @@
         - mysql
         - fail2ban
         - sshd
-      become: true
 
     - name: Modify PHP configuration for all domains
       command: virtualmin modify-php-ini --all-domains --ini-name {{ item.ini_name }} --ini-value {{ item.ini_value }}
@@ -95,7 +83,6 @@
         - { ini_name: "memory_limit", ini_value: "128M" }
         - { ini_name: "upload_max_filesize", ini_value: "500M" }
         - { ini_name: "post_max_size", ini_value: "500M" }
-      become: true
 
     - name: Install PHP and its dependencies
       apt:
@@ -133,22 +120,18 @@
         - php8.1-curl
         - php8.1-mcrypt
         - php8.1-gmp
-      become: true
 
     - name: Change Webmin port
       replace:
         path: /etc/webmin/miniserv.conf
-        regexp: 'port=10000'
-        replace: 'port=9191'
-      become: true
+        regexp: "port=10000"
+        replace: "port=9191"
 
     - name: Enable Apache modules
       command: a2enmod {{ item }}
       with_items:
         - expires
         - headers
-      become: true
-
 
     - name: Update SSHD configuration
       lineinfile:
@@ -159,21 +142,18 @@
         - "ClientAliveInterval 1200"
         - "ClientAliveCountMax 3"
       notify: Restart SSH service
-      become: true
 
     - name: Disable root SSH login with password
       replace:
         path: /etc/ssh/sshd_config
-        regexp: '^PermitRootLogin.*'
-        replace: 'PermitRootLogin prohibit-password'
+        regexp: "^PermitRootLogin.*"
+        replace: "PermitRootLogin prohibit-password"
       notify: Restart SSH service
-      become: true
 
     - name: Change root password
       user:
         name: root
         password: "{{ ROOT_PASSWORD | password_hash('sha512') }}"
-      become: true
 
     - name: Update Virtualmin configuration for new domain creation
       lineinfile:
@@ -182,7 +162,6 @@
       with_items:
         - "home_format=$DOM"
         - "wizard_run=1"
-      become: true
 
     - name: Install rclone
       command: "curl https://rclone.org/install.sh | sudo bash"
@@ -191,7 +170,6 @@
       lineinfile:
         path: /etc/apache2/apache2.conf
         line: "Protocols h2 http/1.1"
-      become: true
 
     #- name: Set execute permission and run init.sh script
     #  command: "{{ item }}"
@@ -225,16 +203,20 @@
           mysql      soft  nofile   20480
           mysql      soft  nproc    16384
           mysql      soft  fsize    unlimited
-      become: true
 
     - name: Configure system settings
       blockinfile:
         path: "{{ item.path }}"
         block: "{{ item.block }}"
       with_items:
-        - { path: "/etc/pam.d/common-session", block: "session required pam_limits.so" }
-        - { path: "/etc/sysctl.conf", block: "fs.file-max = 2097152\nfs.nr_open = 1048576" }
-      become: true
+        - {
+            path: "/etc/pam.d/common-session",
+            block: "session required pam_limits.so",
+          }
+        - {
+            path: "/etc/sysctl.conf",
+            block: "fs.file-max = 2097152\nfs.nr_open = 1048576",
+          }
 
     - name: Configure Apache MPM and modules
       shell: |
@@ -249,14 +231,12 @@
         apt remove php5.4-fpm
         sudo service sshd restart
         sudo service webmin start
-      become: true
 
     - name: Enable start on boot for fail2ban
       service:
         name: fail2ban
         state: started
         enabled: true
-
 
     - name: Get pamin folder's name
       shell: |
@@ -270,7 +250,7 @@
         src: "{{ PAMIN }}"
         dest: "{{ SETUP_PATH }}/serverInit"
         remote_src: yes
-      become: true
+
       when: pamin_folder is succeeded
 
     - name: Move pamin to /etc and copy pamin.service
@@ -278,7 +258,7 @@
       with_items:
         - "mv {{ SETUP_PATH }}/serverInit/{{ pamin_folder.stdout }} /etc/pamin"
         - "cp {{ SETUP_PATH }}/serverInit/pamin.service /etc/systemd/system"
-      become: true
+
       when: pamin_folder is succeeded
 
     - name: Reload systemd and start pamin service
@@ -287,7 +267,7 @@
         name: pamin
         state: started
         enabled: yes
-      become: true
+
       when: pamin_folder is succeeded
 
     - name: Remove server banner from sshd
@@ -297,7 +277,6 @@
         backrefs: yes
         regexp: '^[^#]*\<pam_motd.so\>'
         line: "#&"
-      become: true
 
     - name: Add ports to firewall
       firewalld:
@@ -309,4 +288,3 @@
         - 9191
         - 9292
         - 9393
-      become: true
