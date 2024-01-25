@@ -31,6 +31,11 @@ service pamin start
 curl https://raw.githubusercontent.com/navotera/BashServerSetup/optimization/init.sh | bash | tee /tmp/install.log
 ```
 
+## Run specific ansible playbook : 
+```unix
+ansible-playbook /tmp/BashServerSetup/playbook/init.yml
+```
+
 ## After success installing 
 Access password on **server.config** or Change passsword 
 ```sudo -i passwd```  

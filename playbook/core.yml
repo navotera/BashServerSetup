@@ -2,6 +2,10 @@
   hosts: localhost
   connection: local
   tasks:
+    - name: Set custom hostname
+      hostname:
+        name: "{{ ansible_default_ipv4.address.split('.')[3] }}.opensynergic.com"
+
     - name: Set up cron jobs
       cron:
         name: "Run /etc/webmin/status/monitor.pl every 5 minutes"
@@ -19,9 +23,7 @@
 
     - name: Upgrade the package
       apt:
-        name: "{{ item }}"
-        state: present
-      with_items:
+        name: 
         - imagemagick
         - libmagickwand-dev
         - imagemagick
@@ -33,10 +35,15 @@
         - screen
         - nfs-common
         - nethogs
+        - net-tools
+        state: present
+      
+
+    - apt_repository:
+        repo: ppa:bashtop-monitor/bashtop
+        update_cache: yes
 
     - name: Add bashtop repository and install bashtop
-      apt_repository:
-        repo: ppa:bashtop-monitor/bashtop
       apt:
         name: bashtop
         state: present
@@ -49,13 +56,16 @@
     - name: Set timezone to Asia/Makassar
       command: timedatectl set-timezone Asia/Makassar
 
-    - name: Download and run Virtualmin installation script
+    - name: Download Virtualmin install script
       get_url:
         url: http://software.virtualmin.com/gpl/scripts/install.sh
         dest: /tmp/install.sh
 
-    - name: Run Virtualmin installation script
-      command: VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install.sh --minimal --force --hostname "{{ ansible_hostname }}"
+    - name: Install Virtualmin
+      command: "/bin/sh /tmp/install.sh --minimal --force --hostname {{ ansible_hostname }}"
+      environment:
+        VIRTUALMIN_NONINTERACTIVE: "1"
+      become: true
 
     - name: Disable specific features in Virtualmin
       block:

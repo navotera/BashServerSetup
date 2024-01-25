@@ -1,4 +1,7 @@
-- name: Preparing
+- name: Preparing setup
+  hosts: localhost
+  connection: local
+  become: yes
   vars:
     JAIL_CONFIG_URL: "/tmp/BashServerSetup/serverInit/jail.local"
     CORE_FILE_URL: "/tmp/BashServerSetup/core.sh"

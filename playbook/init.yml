@@ -19,6 +19,3 @@
     #     force_apt_get: yes
     #     autoremove: yes
     #     autoclean: yes
-
-    - name: Run preparing
-      include_tasks: /tmp/BashServerSetup/playbook/preparing.yml
