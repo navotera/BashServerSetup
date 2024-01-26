@@ -46,7 +46,7 @@ service pamin start
 
 
 echo "HOSTNAME=$hostname" > ~/server.config
-echo "PAMIN_URL=$PAMIN_URL" >> ~/server.config
+echo "PAMIN_URL=${IP_ADDRESS}:9292" >> ~/server.config
 echo "PASSWORD=$PASSWD" >> ~/server.config 
 echo 
 echo "${GREEN}Starting the installation process \n (php package 7.3-7.4, Webmin, ModGeoIP2, Fail2ban, timezone to Asia/Makassar,mysql root admin, webmin root authentication, mod security, ssh private keys and other optimization..${NC}"
