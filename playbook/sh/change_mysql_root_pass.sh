@@ -1,32 +1,13 @@
 #!/bin/bash
-new_password=grep '^PASSWORD=' ~/server.config | cut -d'=' -f2
 
-# Prompt user for new password
-read -s -p "Enter the new password for MySQL root user: " new_password
-echo
+# Set new root password
+NEW_PASSWORD=grep '^PASSWORD=' ~/server.config | cut -d'=' -f2
 
-# Check if MySQL server is running
-if sudo systemctl is-active --quiet mysql
-then
-  # Stop MySQL server
-  sudo systemctl stop mysql
+# Connect to MariaDB without a password 
+mysql -u root <<EOF
+USE mysql;
+UPDATE user SET authentication_string=PASSWORD("$NEW_PASSWORD") WHERE User='root';
+FLUSH PRIVILEGES;
+EOF
 
-  # Start MySQL server with skip-grant-tables
-  sudo mysqld_safe --skip-grant-tables &
-  
-  # Sleep to allow MySQL to start with skip-grant-tables
-  sleep 3
-
-  # Change the root password
-  sudo mysql -e "UPDATE mysql.user SET authentication_string=PASSWORD('$new_password') WHERE User='root'; FLUSH PRIVILEGES;"
-
-  # Stop MySQL server
-  sudo pkill -f mysqld_safe
-
-  # Start MySQL server normally
-  sudo systemctl start mysql
-
-  echo "MySQL root password has been changed."
-else
-  echo "MySQL server is not running."
-fi
+echo "MariaDB root password changed to $NEW_PASSWORD"
