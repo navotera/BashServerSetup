@@ -1,5 +1,5 @@
 #!/bin/bash
-new_password='111'
+new_password=grep '^PASSWORD=' ~/server.config | cut -d'=' -f2
 
 # Prompt user for new password
 read -s -p "Enter the new password for MySQL root user: " new_password
