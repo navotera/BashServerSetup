@@ -10,6 +10,7 @@ YELLOW=`tput setaf 3`
 PMA_LATEST_VERSION_INFO_URL="https://www.phpmyadmin.net/home_page/version.php"
 PMA_VERSION=$(wget -q -O /tmp/pma_lastest.html $PMA_LATEST_VERSION_INFO_URL && sed -ne '1p' /tmp/pma_lastest.html);
 PAMIN_URL="https://files.phpmyadmin.net/phpMyAdmin/${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.tar.gz"
+SETUP_PATH="/tmp/BashServerSetup/"
 
 # random password
 PASSWD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
@@ -21,7 +22,8 @@ IP_ADDRESS=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[
 IP_ADDRESS=$(hostname -I | awk '{print $1}')
 LAST_THREE_DIGITS=$(echo "$IP_ADDRESS" | awk -F. '{print $NF}')
 # Combine with "abc.com"
-hostname "${LAST_THREE_DIGITS}opensynergic.com"
+hostname="${LAST_THREE_DIGITS}opensynergic.com"
+hostname $hostname
 
 # get pamin folder's name
 splitUrl=$(echo $PAMIN_URL | tr "/" "\n")                                             

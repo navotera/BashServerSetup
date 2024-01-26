@@ -45,6 +45,11 @@
         - net-tools
         state: present
       
+    - name: Install PyMySQL using pip
+      pip:
+        name: pymysql
+        state: present
+
 
     - apt_repository:
         repo: ppa:bashtop-monitor/bashtop
@@ -63,7 +68,7 @@
     - name: Set timezone to Asia/Makassar
       command: timedatectl set-timezone Asia/Makassar    
 
-    - name:  init 
+    - name:  Install virtualmin 
       script: "{{ SETUP_PATH }}playbook/sh/install_virtualmin.sh"
       args:
         executable: /bin/bash
@@ -101,9 +106,7 @@
 
     - name: Install PHP and its dependencies
       apt:
-        name: "{{ item }}"
-        state: present
-      with_items:
+        name: 
         - software-properties-common
         - php7.3
         - php7.3-fpm
