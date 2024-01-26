@@ -53,14 +53,14 @@
     - name: Set timezone to Asia/Makassar
       command: timedatectl set-timezone Asia/Makassar    
 
-    - name:  Install virtualmin 
-      script: "{{ SETUP_PATH }}playbook/sh/install_virtualmin.sh"
-      args:
-        executable: /bin/bash
-      register: install_needed
-      retries: 5
-      until: install_needed is success
-      become: true
+    # - name:  Install virtualmin 
+    #   script: "{{ SETUP_PATH }}playbook/sh/install_virtualmin.sh"
+    #   args:
+    #     executable: /bin/bash
+    #   register: install_needed
+    #   retries: 5
+    #   until: install_needed is success
+    #   become: true
 
     - name: Disable specific features in Virtualmin
       block:

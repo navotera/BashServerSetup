@@ -3,19 +3,19 @@
   connection: local
   become: yes
   tasks:
-    # - name: Update apt package cache
-    #   apt:
-    #     update_cache: yes
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
 
-    # - name: Install zip package
-    #   apt:
-    #     name: zip
-    #     state: present
+    - name: Install zip package
+      apt:
+        name: zip
+        state: present
 
-    # - name: Upgrade all packages
-    #   apt:
-    #     upgrade: yes
-    #     update_cache: yes
-    #     force_apt_get: yes
-    #     autoremove: yes
-    #     autoclean: yes
+    - name: Upgrade all packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        force_apt_get: yes
+        autoremove: yes
+        autoclean: yes

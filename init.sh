@@ -29,6 +29,7 @@ systemctl restart systemd-timedated
 
 echo "${GREEN}installing ansible..${NC}"
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml
+sh /tmp/BashServerSetup/playbook/install_virtualmin.sh
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/core.yml
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/finalize.yml
 
