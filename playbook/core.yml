@@ -11,22 +11,7 @@
 
     - name: Print hostname
       debug:
-        msg: "Hostname of the target host is {{ ansible_fqdn }}"
-
-    - name: Set up cron jobs
-      cron:
-        name: "Run /etc/webmin/status/monitor.pl every 5 minutes"
-        minute: "*/5"
-        job: "/etc/webmin/status/monitor.pl"
-        state: present
-
-    - name: Add cron job to stop services
-      cron:
-        name: "Stop services every 4 hours"
-        minute: "0"
-        hour: "*/4"
-        job: "sudo service pamin stop"
-        state: present
+        msg: "Hostname of the target host is {{ ansible_fqdn }}"   
 
     - name: Upgrade the package
       apt:

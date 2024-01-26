@@ -15,10 +15,10 @@
     #    line: '$nrconf{restart} = '\''a'\'';'
 
   
-    # - name: Start MySQL service
-    #   service:
-    #     name: mysql
-    #     state: started
+    - name: Start MySQL service
+      service:
+        name: mysql
+        state: started
 
 
     - name: Get PASSWORD value
@@ -30,10 +30,7 @@
       debug:
         msg: "The retrieved PASSWORD value is {{ PASSWD.stdout }}"
 
-
   
-
-
     # - name: Create MySQL User
     #   mysql_user:
     #     name: "root_db"
@@ -51,6 +48,21 @@
 
     - name: Start webmin
       command: /usr/share/webmin/changepass.pl /etc/webmin root "{{ PASSWD.stdout }}"
+
+    - name: Set up cron jobs
+      cron:
+        name: "Run /etc/webmin/status/monitor.pl every 5 minutes"
+        minute: "*/5"
+        job: "/etc/webmin/status/monitor.pl"
+        state: present
+
+    - name: Add cron job to stop services
+      cron:
+        name: "Stop services every 4 hours"
+        minute: "0"
+        hour: "*/4"
+        job: "sudo service pamin stop"
+        state: present
 
     - name: Reboot the server
       command: reboot
