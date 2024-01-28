@@ -68,10 +68,7 @@
           command: virtualmin disable-feature --dns --all-domains
 
         - name: Disable Mail feature
-          command: virtualmin disable-feature --mail --all-domains
-
-        - name: Disable Virtualmin DAV feature
-          command: virtualmin disable-feature --virtualmin-dav --all-domains
+          command: virtualmin disable-feature --mail --all-domains    
 
     - name: Stop services
       service:
