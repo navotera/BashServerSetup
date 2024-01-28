@@ -173,7 +173,7 @@
         - "wizard_run=1"
 
     - name: Install rclone
-      command: "curl https://rclone.org/install.sh && sudo bash"
+      shell: "curl https://rclone.org/install.sh && sudo bash"
 
     - name: Enable HTTP/2 globally
       lineinfile:
