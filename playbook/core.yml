@@ -137,14 +137,14 @@
         - "#edited by serverAutomation by navotera :: share-system.com"
         - "ClientAliveInterval 1200"
         - "ClientAliveCountMax 3"
-      notify: Restart SSH service
+      
 
     - name: Disable root SSH login with password
       replace:
         path: /etc/ssh/sshd_config
         regexp: "^PermitRootLogin.*"
         replace: "PermitRootLogin prohibit-password"
-      notify: Restart SSH service
+    
 
     - name: Change root password
       user:
@@ -257,3 +257,6 @@
       ansible.builtin.service:
         name: firewalld
         state: reloaded
+    
+    - name: Reload ssh
+      shell: service sshd restart
