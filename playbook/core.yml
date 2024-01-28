@@ -75,13 +75,6 @@
         - fail2ban
         - sshd
 
-    - name: Modify PHP configuration for all domains
-      command: virtualmin modify-php-ini --all-domains --ini-name {{ item.ini_name }} --ini-value {{ item.ini_value }}
-      with_items:
-        - { ini_name: "memory_limit", ini_value: "128M" }
-        - { ini_name: "upload_max_filesize", ini_value: "500M" }
-        - { ini_name: "post_max_size", ini_value: "500M" }
-
     - name: Install PHP and its dependencies
       apt:
         name: 
@@ -117,6 +110,14 @@
         - php8.1-mcrypt
         - php8.1-gmp
 
+    - name: Modify PHP configuration for all domains
+      command: virtualmin modify-php-ini --all-domains --ini-name {{ item.ini_name }} --ini-value {{ item.ini_value }}
+      with_items:
+        - { ini_name: "memory_limit", ini_value: "128M" }
+        - { ini_name: "upload_max_filesize", ini_value: "500M" }
+        - { ini_name: "post_max_size", ini_value: "500M" }
+
+
     - name: Change Webmin port
       replace:
         path: /etc/webmin/miniserv.conf
@@ -146,10 +147,15 @@
         replace: "PermitRootLogin prohibit-password"
     
 
+    - name: Get PASSWORD value
+      shell: grep '^PASSWORD=' ~/server.config | cut -d'=' -f2
+      register: PASSWD
+      no_log: true
+
     - name: Change root password
       user:
         name: root
-        password: "{{ ROOT_PASSWORD | password_hash('sha512') }}"
+        password: "{{ PASSWD.stdout | password_hash('sha512') }}"
 
     - name: Update Virtualmin configuration for new domain creation
       lineinfile:

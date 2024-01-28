@@ -4,14 +4,15 @@
   become: yes
   tasks: 
 
-  - name: Download Fail2ban deb package
-    get_url:
-      url: https://github.com/fail2ban/fail2ban/releases/download/0.11.2/fail2ban_0.11.2-1.upstream1_all.deb 
-      dest: /tmp/fail2ban_0.11.2-1.upstream1_all.deb
+  - name: Get PASSWORD value
+    shell: grep '^PASSWORD=' ~/server.config | cut -d'=' -f2
+    register: PASSWD
+    no_log: true
 
-  - name: Install Fail2ban
-    apt:
-      deb: /tmp/fail2ban_0.11.2-1.upstream1_all.deb
+  - name: Change root password
+    user:
+      name: root
+      password: "{{ PASSWD.stdout | password_hash('sha512') }}"
 
 
   # - name: Add ports to firewall
