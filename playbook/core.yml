@@ -172,8 +172,13 @@
         - "home_format=$DOM"
         - "wizard_run=1"
 
-    - name: Install rclone
-      shell: "curl https://rclone.org/install.sh && sudo bash"
+    - name: Download rclone installation script
+      get_url:
+        url: https://rclone.org/install.sh
+        dest: /tmp/install_rclone.sh
+
+    - name: Run rclone installation script
+      command: sudo bash /tmp/install_rclone.sh
 
     - name: Enable HTTP/2 globally
       lineinfile:
