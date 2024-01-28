@@ -184,11 +184,42 @@
     - name: Setup swap for 2G
       command: "{{ item }}"
       with_items:
-        - "sudo swapoff /swapfile"
-        - "sudo fallocate -l 2G /swapfile"
+        - "swapoff /swapfile"
+        - "fallocate -l 2G /swapfile"
         - "ls -lh /swapfile"
-        - "sudo mkswap /swapfile"
-        - "sudo swapon /swapfile"
+        - "mkswap /swapfile"
+        - "swapon /swapfile"
+      become: yes
+
+    - name: Optimize limits for www-data and mysql
+      blockinfile:
+        path: /etc/security/limits.conf
+        block: |
+          #optimized by navotera - share-system.com
+          www-data   soft  nofile   1048576
+          www-data   soft  nproc   1048576
+          nginx      soft  nofile   1048576
+          nginx      soft  nproc   1048576
+          mysql      soft  memlock   unlimited
+          mysql      hard  memlock   unlimited
+          mysql      hard  nofile   30720
+          mysql      soft  nofile   20480
+          mysql      soft  nproc    16384
+          mysql      soft  fsize    unlimited
+
+    - name: Configure system settings
+      blockinfile:
+        path: "{{ item.path }}"
+        block: "{{ item.block }}"
+      with_items:
+        - {
+            path: "/etc/pam.d/common-session",
+            block: "session required pam_limits.so",
+          }
+        - {
+            path: "/etc/sysctl.conf",
+            block: "fs.file-max = 2097152\nfs.nr_open = 1048576",
+          }
 
     - name: Optimize limits for www-data and mysql
       blockinfile:
@@ -222,17 +253,17 @@
 
     - name: Configure Apache MPM and modules
       shell: |
-        sudo a2enmod proxy_fcgi setenvif && sudo a2enconf php7.0-fpm ; sudo a2enconf php7.1-fpm ; sudo a2enconf php7.2-fpm ; sudo a2enconf php7.3-fpm ; sudo a2enconf php7.4-fpm
-        sudo a2dismod php7.0  ; sudo a2dismod php7.1 ; sudo a2dismod php7.2 ; sudo a2dismod php7.3 ; sudo a2dismod php7.4
-        sudo kill -9 `sudo ps -ef | grep php-fpm | grep -v grep | awk '{print $2}'`
-        sudo a2enmod http2
-        sudo service apache2 restart
-        sudo a2dismod mpm_prefork && sudo a2enmod mpm_event
-        sudo service apache2 restart
-        sudo service php7.2-fpm restart ; sudo service php7.3-fpm restart ; sudo service php7.4-fpm restart
-        apt remove php5.4-fpm
-        sudo service sshd restart
-        sudo service webmin start
+        a2enmod proxy_fcgi setenvif && a2enconf php7.0-fpm ; a2enconf php7.1-fpm ; a2enconf php7.2-fpm ; a2enconf php7.3-fpm ; a2enconf php7.4-fpm
+        a2dismod php7.0  ; a2dismod php7.1 ; a2dismod php7.2 ; a2dismod php7.3 ; a2dismod php7.4
+        kill -9 `ps -ef | grep php-fpm | grep -v grep | awk '{print $2}'`
+        a2enmod http2
+        service apache2 restart
+        a2dismod mpm_prefork && a2enmod mpm_event
+        service apache2 restart
+        service php7.2-fpm restart ; service php7.3-fpm restart ; service php7.4-fpm restart
+        apt remove php5.4-fpm      
+        service webmin start
+      become: yes
 
     - name: Enable start on boot for fail2ban
       service:
@@ -260,9 +291,4 @@
         - 9393 #monitorix
     
     - name: Reload firewalld
-      ansible.builtin.service:
-        name: firewalld
-        state: reloaded
-    
-    - name: Reload ssh
-      shell: service sshd restart
+      shell: firewall-cmd --reload
