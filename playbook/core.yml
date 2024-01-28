@@ -252,3 +252,8 @@
         - 9191 #webmin
         - 9292 #pamin
         - 9393 #monitorix
+     
+    - name: Reload firewalld
+      ansible.builtin.service:
+        name: firewalld
+        state: reloaded
