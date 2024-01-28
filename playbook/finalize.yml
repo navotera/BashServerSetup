@@ -26,7 +26,7 @@
       register: PASSWD
       no_log: true
 
-    - name: Use PASSWORD value in another task
+    - name: Show what is the password for debugging
       debug:
         msg: "The retrieved PASSWORD value is {{ PASSWD.stdout }}"
 
