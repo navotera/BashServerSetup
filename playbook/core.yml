@@ -80,9 +80,7 @@
         name: 
         - screen
         - monitorix
-        state: present
-
-    
+        state: present    
 
     - name: Install PHP and its dependencies
       apt:
