@@ -1,4 +1,4 @@
-- name: Preparing setup
+- name: Finalize
   hosts: localhost
   connection: local
   become: yes

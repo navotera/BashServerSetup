@@ -47,16 +47,16 @@
         state: present
 
     - name: Set timezone to Asia/Makassar
-      command: timedatectl set-timezone Asia/Makassar    
+      command: timedatectl set-timezone Asia/Makassar   
 
-    # - name:  Install virtualmin 
-    #   script: "{{ SETUP_PATH }}playbook/sh/install_virtualmin.sh"
-    #   args:
-    #     executable: /bin/bash
-    #   register: install_needed
-    #   retries: 5
-    #   until: install_needed is success
-    #   become: true
+    - name: Download Fail2ban deb package
+      get_url:
+        url: https://github.com/fail2ban/fail2ban/releases/download/0.11.2/fail2ban_0.11.2-1.upstream1_all.deb 
+        dest: /tmp/fail2ban_0.11.2-1.upstream1_all.deb
+
+    - name: Install Fail2ban
+      apt:
+        deb: /tmp/fail2ban_0.11.2-1.upstream1_all.deb  
 
     - name: Disable specific features in Virtualmin
       block:
@@ -252,7 +252,7 @@
         - 9191 #webmin
         - 9292 #pamin
         - 9393 #monitorix
-     
+    
     - name: Reload firewalld
       ansible.builtin.service:
         name: firewalld
