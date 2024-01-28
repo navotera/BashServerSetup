@@ -10,11 +10,13 @@ sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/n
 
 # wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/v2/init.sh  | bash
 cd /tmp && rm -rf BashServerSetup && git clone -b optimization https://github.com/navotera/BashServerSetup.git
+add-apt-repository ppa:ondrej/php
+add-apt-repository --yes --update ppa:deadsnakes/ppa
 apt update
 apt install software-properties-common -y
 #add-apt-repository --yes --update ppa:ansible/ansible
-add-apt-repository --yes --update ppa:deadsnakes/ppa
-apt-get update
+
+
 
 echo "${GREEN}installing python 3.9 and 3.12..${NC}"
 apt-get apt-get install python3.9 -y && apt-get install python3.12 -y
