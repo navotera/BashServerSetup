@@ -3,11 +3,7 @@
   connection: local
   vars:    
     SETUP_PATH: "/tmp/BashServerSetup/"
-  tasks:
-    # - name:  init 
-    #   script: "{{ SETUP_PATH }}playbook/sh/create_server_config.sh"
-    #   args:
-    #     executable: /bin/bash
+  tasks: 
 
     - name: Print hostname
       debug:

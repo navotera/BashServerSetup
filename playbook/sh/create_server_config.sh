@@ -29,6 +29,10 @@ hostname $hostname
 splitUrl=$(echo $PAMIN_URL | tr "/" "\n")                                             
 PAMIN=${PAMIN_URL##*/}
 
+
+wget "$PAMIN_URL"
+wget "$PAMIN_SERVICE_URL" -P serverInit/
+
 #unzip "$PAMIN", unzip not work
 tar -xvzf "$PAMIN"
 
