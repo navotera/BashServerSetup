@@ -75,6 +75,10 @@
         - fail2ban
         - sshd
 
+    - name: Install Screen
+      apt:
+        name: screen
+
     - name: Install PHP and its dependencies
       apt:
         name: 
@@ -180,6 +184,10 @@
     #  with_items:
     #    - "chmod +x {{ SETUP_PATH }}/app/modsecurity/v2/init.sh"
     #    - "sh {{ SETUP_PATH }}/app/modsecurity/v2/init.sh"
+    - name: Stop Swap files 
+      shell: swapoff /swapfile
+      become: yes
+      ignore_errors: yes 
 
     - name: Setup swap for 2G
       command: "{{ item }}"
