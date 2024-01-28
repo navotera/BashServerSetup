@@ -77,7 +77,12 @@
 
     - name: Install Screen
       apt:
-        name: screen
+        name: 
+        - screen
+        - monitorix
+        state: present
+
+    
 
     - name: Install PHP and its dependencies
       apt:
