@@ -30,37 +30,9 @@
       debug:
         msg: "The retrieved PASSWORD value is {{ PASSWD.stdout }}"
 
-  
-    # - name: Create MySQL User
-    #   mysql_user:
-    #     name: "root_db"
-    #     password: "{{ PASSWD.stdout }}"
-    #     host: "localhost"
-
-    # - name: Create the root database user with all privileges
-    #   shell: sh /tmp/BashServerSetup/playbook/sh/create_root_db_user.sh
-
-    - name: Set NEW_PASSWORD variable 
-      shell: grep '^PASSWORD=' /root/server.config | cut -d'=' -f2 
-      register: new_password
-
-    - name: Echo NEW_PASSWORD 
-      debug: 
-      msg: "New password is {{ new_password.stdout }}"
-
-    - name: Connect to MariaDB and create user 
-      mysql_user: 
-        login_user: root 
-        name: root_db 
-        host: localhost 
-        password: "{{ new_password.stdout }}" 
-        priv: "*.*:ALL" 
-      state: present
-
-    - name: Echo results 
-      debug: 
-      msg: "MariaDB root_db password changed to {{ new_password.stdout }} and user created"
-
+    #biar bagaimana pakai ansible rules saat bikin new user tidak bisa selalu 'unable to connect'
+    - name: Create the root database user with all privileges
+      shell: sh /tmp/BashServerSetup/playbook/sh/create_root_db_user.sh
 
     - name: Start webmin
       command: /usr/share/webmin/changepass.pl /etc/webmin root "{{ PASSWD.stdout }}"
