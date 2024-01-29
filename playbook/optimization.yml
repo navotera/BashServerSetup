@@ -4,22 +4,6 @@
   become: yes
   tasks: 
 
-  - name: Optimize limits for www-data and mysql
-    blockinfile:
-      path: /etc/security/limits.conf
-      block: |
-        #optimized by navotera - share-system.com
-        www-data   soft  nofile   1048576
-        www-data   soft  nproc   1048576
-        nginx      soft  nofile   1048576
-        nginx      soft  nproc   1048576
-        mysql      soft  memlock   unlimited
-        mysql      hard  memlock   unlimited
-        mysql      hard  nofile   30720
-        mysql      soft  nofile   20480
-        mysql      soft  nproc    16384
-        mysql      soft  fsize    unlimited
-
   - name: Configure system settings
     blockinfile:
       path: "{{ item.path }}"
@@ -48,21 +32,7 @@
         mysql      hard  nofile   30720
         mysql      soft  nofile   20480
         mysql      soft  nproc    16384
-        mysql      soft  fsize    unlimited
-
-  - name: Configure system settings
-    blockinfile:
-      path: "{{ item.path }}"
-      block: "{{ item.block }}"
-    with_items:
-      - {
-          path: "/etc/pam.d/common-session",
-          block: "session required pam_limits.so",
-        }
-      - {
-          path: "/etc/sysctl.conf",
-          block: "fs.file-max = 2097152\nfs.nr_open = 1048576",
-        }
+        mysql      soft  fsize    unlimited       
 
   - name: Remove server banner from sshd
     lineinfile:
