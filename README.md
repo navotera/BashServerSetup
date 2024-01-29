@@ -48,7 +48,7 @@ https://ip_address:9191
 - [ ] Installing via screen
 
 
-## TESTED ON
+## TESTED ON (Compatible with Ubuntu only)
 - Ubuntu 22.04 x64 ✔
 - Ubuntu 20.04 x64 ✔
 - Ubuntu 18.04 LTS x64 ✔
