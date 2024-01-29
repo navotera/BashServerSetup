@@ -34,7 +34,7 @@ wget "$PAMIN_URL"
 wget "$PAMIN_SERVICE_URL" -P serverInit/
 
 #unzip "$PAMIN", unzip not work
-tar -xvzf "$PAMIN"
+tar -xvzf "$PAMIN" 2>/dev/null >/dev/null
 
 # rename to pamin
 PAMIN_FOLDER=$(basename $PAMIN .tar.gz)
