@@ -8,7 +8,7 @@ YELLOW=`tput setaf 3`
 #in ubuntu 22.04 should change this to disable interactive mode that stop automatic process in this script
 sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/needrestart/needrestart.conf
 
-apt install git
+apt install git -y
 
 # wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/v2/init.sh  | bash
 cd /tmp && rm -rf BashServerSetup && git clone https://github.com/navotera/BashServerSetup.git
