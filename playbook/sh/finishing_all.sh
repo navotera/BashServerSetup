@@ -8,7 +8,7 @@ GREEN=`tput setaf 2`
 YELLOW=`tput setaf 3`
 
 # random password
-PASSWD=grep '^PASSWORD=' ~/server.config | cut -d'=' -f2
+PASSWD=$(grep '^PASSWORD=' ~/server.config | cut -d'=' -f2)
 # check IP addres
 IP_ADDRESS=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[1]}')
 
@@ -31,5 +31,5 @@ echo "No Warranty is provided"
 echo 
 echo "${GREEN}Please enjoy and wait for about 15 to 25 minutes to finish all the process then rebooting...${NC}"
 
-sleep 5
+rm -r /tmp/BashServerSetup 
 reboot
