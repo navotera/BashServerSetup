@@ -9,7 +9,7 @@ YELLOW=`tput setaf 3`
 sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/needrestart/needrestart.conf
 
 # wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/v2/init.sh  | bash
-cd /tmp && rm -rf BashServerSetup && git clone -b optimization https://github.com/navotera/BashServerSetup.git
+cd /tmp && rm -rf BashServerSetup && git clone https://github.com/navotera/BashServerSetup.git
 add-apt-repository ppa:ondrej/php
 add-apt-repository --yes --update ppa:deadsnakes/ppa
 apt update 2>/dev/null >/dev/null

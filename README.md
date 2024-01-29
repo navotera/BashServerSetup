@@ -28,7 +28,7 @@ service pamin start
 
 ## How to use ?
 ```unix
-curl https://raw.githubusercontent.com/navotera/BashServerSetup/init.sh | bash | tee /var/log/bashServerSetup_install.log
+curl https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh | bash | tee /var/log/bashServerSetup_install.log
 ```
 
 ## Run specific ansible playbook : 
