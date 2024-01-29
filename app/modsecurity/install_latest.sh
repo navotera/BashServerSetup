@@ -80,4 +80,4 @@ rm -rf modsecurity && echo "${GREEN}Finished, folder removed${ENDCOLOR}"
 
 #copy all the modsecurity to exception folder 
 mkdir /etc/apache2/modsecurity.d/exception
-cp 
+cp /tmp/BashServerSetup/app/modsecurity/exception/* /etc/apache2/modsecurity.d/exception/

@@ -13,8 +13,13 @@
 #webmin pass : can be found on server.config file
 #created by navotera : share-system.com
 
-JAIL_CONFIG_URL="https://raw.githubusercontent.com/navotera/serverAutomation/master/serverInit/jail.local"
-CORE_FILE_URL="https://raw.githubusercontent.com/navotera/serverAutomation/master/UbuntuServerInitiateBeforeReboot.sh"
+#in ubuntu 22.04 should change this to disable interactive mode that stop automatic process in this script
+sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/needrestart/needrestart.conf
+
+JAIL_CONFIG_URL="/tmp/BashServerSetup/serverInit/jail.local"
+CORE_FILE_URL="/tmp/BashServerSetup/core.sh"
+SETUP_PATH="/tmp/BashServerSetup/"
+
 # shoud call it dynamically
 # fix this later
 
@@ -35,7 +40,10 @@ IP_ADDRESS=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[
 
 # custom hostname
 # add validation hostname next
-hostname="opensynergic.com"
+ip_address=$(ip addr show eth0 | awk '/inet / {split($2, a, "."); print a[3];}')
+combined_string="${ip_address}.opensynergic.com"
+hostname $combined_string
+#hostname="opensynergic.com"
 #hostnamectl set-hostname abc
 
 
@@ -43,9 +51,9 @@ PMA_LATEST_VERSION_INFO_URL="https://www.phpmyadmin.net/home_page/version.php"
 PMA_VERSION=$(wget -q -O /tmp/pma_lastest.html $PMA_LATEST_VERSION_INFO_URL && sed -ne '1p' /tmp/pma_lastest.html);
 PAMIN_URL="https://files.phpmyadmin.net/phpMyAdmin/${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.tar.gz"
 
-echo "HOSTNAME=$hostname" > server.config
-echo "PAMIN_URL=$PAMIN_URL" >> server.config
-echo "PASSWORD=$PASSWD" >> server.config 
+echo "HOSTNAME=$hostname" > ~/server.config
+echo "PAMIN_URL=$PAMIN_URL" >> ~/server.config
+echo "PASSWORD=$PASSWD" >> ~/server.config 
 echo 
 echo "${GREEN}Starting the installation process \n (php package 7.3-7.4, Webmin, ModGeoIP2, Fail2ban, timezone to Asia/Makassar,mysql root admin, webmin root authentication, mod security, ssh private keys and other optimization..${NC}"
 echo 
@@ -70,16 +78,16 @@ sleep 5
 #exec 1>installServer.log 2>&1
 
 # check if its exsist
-mkdir serverInit
+#mkdir serverInit
 #cd serverInit
-wget "$JAIL_CONFIG_URL" -P serverInit/
-chmod 755 serverInit/jail.local
+#wget "$JAIL_CONFIG_URL" -P serverInit/
+
+chmod 755 "$SETUP_PATH"serverInit/jail.local
 
 
 
-#get and initiate the  
-wget "$CORE_FILE_URL" && chmod +x UbuntuServerInitiateBeforeReboot.sh 
-sh -x UbuntuServerInitiateBeforeReboot.sh
+#get and initiate the core installation file
+chmod +x "$CORE_FILE_URL" && sh -x "$CORE_FILE_URL"
 
 #create user root_db with credential provided
 service mysql start && sudo echo "CREATE USER 'root_db'@'localhost' IDENTIFIED BY '$PASSWD'; ALTER USER 'root_db'@'localhost' IDENTIFIED WITH mysql_native_password BY '$PASSWD'; GRANT ALL PRIVILEGES ON * . * TO 'root_db'@'localhost'; FLUSH PRIVILEGES;" | mysql  
@@ -95,13 +103,13 @@ echo
 # Doesn't work
 /usr/share/webmin/changepass.pl /etc/webmin root $PASSWD
 
-sudo rm Ubuntu* 
-sudo rm fail2ban*
-sudo rm install.sh
-sudo rm -rf serverInit
+sudo rm -rf "$SETUP_PATH"
 
 #disable other user read this file
 chmod 640 server.config 
+
+#restore the setting : 
+sed -i 's/#$nrconf{restart} = '\''a'\'';/\$nrconf{restart} = '\''i'\'';/' /etc/needrestart/needrestart.conf
 
 sudo reboot
 # reboot here  

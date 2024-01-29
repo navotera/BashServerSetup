@@ -1,0 +1,55 @@
+- name: Finalize
+  hosts: localhost
+  connection: local
+  become: yes
+  vars:
+    JAIL_CONFIG_URL: "/tmp/BashServerSetup/serverInit/jail.local"
+    CORE_FILE_URL: "/tmp/BashServerSetup/core.sh"
+    SETUP_PATH: "/tmp/BashServerSetup/"
+    IP_ADDRESS: "{{ ansible_default_ipv4.address }}"
+  tasks:
+    #- name: Change needrestart configuration
+    #  lineinfile:
+    #    path: /etc/needrestart/needrestart.conf
+    #    regexp: '#\$nrconf{restart} = '\''i'\'';'
+    #    line: '$nrconf{restart} = '\''a'\'';'
+
+  
+    - name: Start MySQL service
+      service:
+        name: mysql
+        state: started
+
+
+    - name: Get PASSWORD value
+      shell: grep '^PASSWORD=' ~/server.config | cut -d'=' -f2
+      register: PASSWD
+      no_log: true
+
+    - name: Show what is the password for debugging
+      debug:
+        msg: "The retrieved PASSWORD value is {{ PASSWD.stdout }}"
+
+    #biar bagaimana pakai ansible rules saat bikin new user tidak bisa selalu 'unable to connect'
+    - name: Create the root database user with all privileges
+      shell: sh /tmp/BashServerSetup/playbook/sh/create_root_db_user.sh
+
+    - name: Start webmin
+      command: /usr/share/webmin/changepass.pl /etc/webmin root "{{ PASSWD.stdout }}"
+
+    - name: Set up cron jobs
+      cron:
+        name: "Run /etc/webmin/status/monitor.pl every 5 minutes"
+        minute: "*/5"
+        job: "/etc/webmin/status/monitor.pl"
+        state: present
+
+    - name: Add cron job to stop services
+      cron:
+        name: "Stop services every 4 hours"
+        minute: "0"
+        hour: "*/4"
+        job: "sudo service pamin stop"
+        state: present
+
+
