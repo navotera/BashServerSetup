@@ -28,7 +28,7 @@ service pamin start
 
 ## How to use ?
 ```unix
-curl https://raw.githubusercontent.com/navotera/BashServerSetup/optimization/init.sh | bash | tee /var/log/bashServerSetup_install.log
+curl https://raw.githubusercontent.com/navotera/BashServerSetup/init.sh | bash | tee /var/log/bashServerSetup_install.log
 ```
 
 ## Run specific ansible playbook : 
@@ -52,7 +52,7 @@ https://ip_address:9191
 - Ubuntu 22.04 x64 ✔
 - Ubuntu 20.04 x64 ✔
 - Ubuntu 18.04 LTS x64 ✔
-- Ubuntu 20.10 x64 ❌ (virtualmin not compatible yet)
+- Ubuntu 2X.10 x64 ❌ (virtualmin not compatible yet)
 
 ### Notes :
 
