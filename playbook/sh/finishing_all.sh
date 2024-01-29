@@ -16,7 +16,7 @@ IP_ADDRESS=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[
 # Get the current IPv4 address
 IP_ADDRESS=$(hostname -I | awk '{print $1}')
 
-echo "${GREEN}Good Job all is finished!{NC}"
+echo "${GREEN}Good Job all is finished!${NC}"
 echo 
 echo "root & root_db password : ${YELLOW}${PASSWD}${NC}"
 echo "Password can only be used for webmin & phpmyadmin access, ssh access should use id_rsa authentication"
