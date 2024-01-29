@@ -49,17 +49,17 @@ systemctl daemon-reload
 service pamin start
 
 
-"HOSTNAME=$hostname" > ~/server.config
-"WEBMIN_URL=https://${IP_ADDRESS}:9191" >> ~/server.config
-"PAMIN_URL=http://${IP_ADDRESS}:9292" >> ~/server.config
-"PASSWORD=$PASSWD" >> ~/server.config 
+echo "HOSTNAME=$hostname" > ~/server.config 2>/dev/null
+echo "WEBMIN_URL=https://${IP_ADDRESS}:9191" >> ~/server.config 2>/dev/null  
+echo "PAMIN_URL=http://${IP_ADDRESS}:9292" >> ~/server.config 2>/dev/null
+echo "PASSWORD=$PASSWD" >> ~/server.config 2>/dev/null
 
 echo "Log can be found on ${GREEN}installServer.log${NC}"
 echo 
 echo "Created By navotera : https://opensynergic.com"
 echo "No Warranty is provided"
 echo 
-echo "${GREEN}Please enjoy and wait for about 15 to 25 minutes to finish all the process. Enjoy the your Coffee now...${NC}"
+echo "${GREEN}Please enjoy and wait for about 15 to 25 minutes to finish all the process then rebooting...${NC}"
 
 sleep 5
 
