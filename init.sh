@@ -35,5 +35,6 @@ sh /tmp/BashServerSetup/playbook/sh/create_server_config.sh && sh /tmp/BashServe
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/core.yml
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/optimization.yml
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/finalize.yml
+sh /tmp/BashServerSetup/playbook/sh/finishing_all.sh
 
 

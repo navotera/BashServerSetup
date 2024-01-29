@@ -52,7 +52,4 @@
         job: "sudo service pamin stop"
         state: present
 
-    - name: Reboot the server
-      command: reboot
-      async: 0
-      poll: 0
+

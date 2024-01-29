@@ -1,4 +1,4 @@
-- name: BashServerSetup Core setupx
+- name: Initiate Core Setup
   hosts: localhost
   connection: local
   vars:    
