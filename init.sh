@@ -21,7 +21,7 @@ apt install software-properties-common -y
 
 
 echo "${GREEN}installing python 3.9 and 3.12..${NC}"
-apt-get apt-get install python3.9 -y && apt-get install python3.12 -y
+apt install python3.9 -y && apt install python3.12 -y
 apt install python3-pip -y
 
 #cd /usr/bin && ls -lrth python* && unlink python && ln -s /usr/bin/python3.12 python
