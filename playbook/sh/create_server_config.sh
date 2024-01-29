@@ -49,7 +49,7 @@ systemctl daemon-reload
 service pamin start
 
 
-echo "HOSTNAME=$hostname" > ~/server.config 2>/dev/null
+echo "HOSTNAME=$hostname" >> ~/server.config 2>/dev/null
 echo "WEBMIN_URL=https://${IP_ADDRESS}:9191" >> ~/server.config 2>/dev/null  
 echo "PAMIN_URL=http://${IP_ADDRESS}:9292" >> ~/server.config 2>/dev/null
 echo "PASSWORD=$PASSWD" >> ~/server.config 2>/dev/null
