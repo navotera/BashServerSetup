@@ -1,0 +1,8 @@
+#only test file for debug a task
+
+- name: BashServer Setup Initiate
+  hosts: localhost
+  connection: local
+  become: yes
+  tasks: 
+  

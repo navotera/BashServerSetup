@@ -28,7 +28,7 @@ service pamin start
 
 ## How to use ?
 ```unix
-curl https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh | bash | tee /var/log/bashServerSetup_install.log
+curl https://raw.githubusercontent.com/navotera/BashServerSetup/test_virtualmin_using_roles/init.sh | bash | tee /var/log/bashServerSetup_install.log
 ```
 
 ## Run specific ansible playbook : 
@@ -58,3 +58,8 @@ https://ip_address:9191
 
 If you are using GCP server please follow this video to open port 9191 and 9292 : 
 https://www.youtube.com/watch?v=XFxdECTpiEg
+
+
+
+
+git clone https://github.com/navotera/test_virtualmin_using_roles/BashServerSetup.git
