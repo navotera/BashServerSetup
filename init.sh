@@ -18,7 +18,13 @@ apt update 2>/dev/null >/dev/null
 apt install software-properties-common -y
 #add-apt-repository --yes --update ppa:ansible/ansible
 
+# Update the SSH configuration file with the new timeout settings
+sudo sed -i "/^ClientAliveInterval/c\ClientAliveInterval 4460" /etc/ssh/sshd_config
+sudo sed -i "/^ClientAliveCountMax/c\ClientAliveCountMax 30" /etc/ssh/sshd_config
 
+
+# Restart the SSH service to apply the changes
+sudo systemctl restart ssh
 
 echo "${GREEN}installing python 3.9 and 3.12..${NC}"
 apt install python3.9 -y && apt install python3.12 -y
