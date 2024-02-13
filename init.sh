@@ -20,7 +20,7 @@ apt install software-properties-common -y
 
 # Update the SSH configuration file with the new timeout settings
 sudo sed -i "/^ClientAliveInterval/c\ClientAliveInterval 4460" /etc/ssh/sshd_config
-sudo sed -i "/^ClientAliveCountMax/c\ClientAliveCountMax 30" /etc/ssh/sshd_config
+sudo sed -i "/^ClientAliveCountMax/c\ClientAliveCountMax 6" /etc/ssh/sshd_config
 
 
 # Restart the SSH service to apply the changes
