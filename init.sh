@@ -11,7 +11,7 @@ sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/n
 apt install git -y
 
 # wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/v2/init.sh  | bash
-cd /tmp && rm -rf BashServerSetup && git clone https://github.com/navotera/BashServerSetup.git && cd BashServerSetpu && git checkout nginx
+cd /tmp && rm -rf BashServerSetup && git clone https://github.com/navotera/BashServerSetup.git && cd BashServerSetup && git checkout nginx
 add-apt-repository ppa:ondrej/php
 add-apt-repository --yes --update ppa:deadsnakes/ppa
 apt update 2>/dev/null >/dev/null
