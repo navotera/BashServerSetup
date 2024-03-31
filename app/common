@@ -1,5 +1,2 @@
-source /etc/apache2/envvars && /usr/sbin/apache2 -V
-
-
 test modsecurity : 
 curl 'http://abc.com/?q="><script>alert(1)</script>'

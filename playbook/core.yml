@@ -41,11 +41,6 @@
         name: bashtop
         state: present
 
-    - name: Install libapache2-mod-geoip
-      apt:
-        name: libapache2-mod-geoip
-        state: present
-
     - name: Set timezone to Asia/Makassar
       command: timedatectl set-timezone Asia/Makassar   
 
@@ -131,12 +126,6 @@
         regexp: "port=10000"
         replace: "port=9191"
 
-    - name: Enable Apache modules
-      command: a2enmod {{ item }}
-      with_items:
-        - expires
-        - headers
-
     - name: Update SSHD configuration
       lineinfile:
         path: /etc/ssh/sshd_config
@@ -179,34 +168,6 @@
 
     - name: Run rclone installation script
       command: sudo bash /tmp/install_rclone.sh
-
-    - name: Enable HTTP/2 globally
-      lineinfile:
-        path: /etc/apache2/apache2.conf
-        line: "Protocols h2 http/1.1"
-
-    #- name: Set execute permission and run init.sh script
-    #  command: "{{ item }}"
-    #  vars:
-    #    SETUP_PATH: /your/setup/path   # Replace with the actual setup path
-    #  with_items:
-    #    - "chmod +x {{ SETUP_PATH }}/app/modsecurity/v2/init.sh"
-    #    - "sh {{ SETUP_PATH }}/app/modsecurity/v2/init.sh"
-   
-
-    - name: Configure Apache MPM and modules
-      shell: |
-        a2enmod proxy_fcgi setenvif && a2enconf php7.0-fpm ; a2enconf php7.1-fpm ; a2enconf php7.2-fpm ; a2enconf php7.3-fpm ; a2enconf php7.4-fpm
-        a2dismod php7.0  ; a2dismod php7.1 ; a2dismod php7.2 ; a2dismod php7.3 ; a2dismod php7.4
-        kill -9 `ps -ef | grep php-fpm | grep -v grep | awk '{print $2}'`
-        a2enmod http2
-        service apache2 restart
-        a2dismod mpm_prefork && a2enmod mpm_event
-        service apache2 restart
-        service php7.2-fpm restart ; service php7.3-fpm restart ; service php7.4-fpm restart
-        apt remove php5.4-fpm      
-        service webmin start
-      become: yes
 
     - name: Enable start on boot for fail2ban
       service:
