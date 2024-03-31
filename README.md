@@ -1,6 +1,6 @@
 # Server Automation by Openjournalteam ⭐
 To help you setup you're server 😊
-Include : Webmin, Apache server and others. 
+Include : Webmin, Nginx server and others. 
 
 - Integrated with ModSecurity 2.9.6 from source (automatically enabled) 
   To disable add : `SecRuleEngine Off` to the virtualhost
@@ -28,7 +28,7 @@ service pamin start
 
 ## How to use ?
 ```unix
-curl https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh | bash | tee /var/log/bashServerSetup_install.log
+curl https://raw.githubusercontent.com/navotera/BashServerSetup/nginx/init.sh | bash | tee /var/log/bashServerSetup_install.log
 ```
 
 ## Run specific ansible playbook : 
