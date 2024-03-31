@@ -13,6 +13,8 @@ PASSWD=$(grep '^PASSWORD=' ~/server.config | cut -d'=' -f2)
 IP_ADDRESS=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[1]}')
 
 
+bash /tmp/BashServerSetup/app/modsecurity/v3/init.sh
+
 # Get the current IPv4 address
 IP_ADDRESS=$(hostname -I | awk '{print $1}')
 
