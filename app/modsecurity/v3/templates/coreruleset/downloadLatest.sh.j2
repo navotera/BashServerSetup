@@ -1,0 +1,5 @@
+ORG_NAME=coreruleset
+REPO_NAME=coreruleset
+LATEST_VERSION=$(curl -s https://api.github.com/repos/${ORG_NAME}/${REPO_NAME}/releases/latest | grep "tag_name" | cut -d'v' -f2 | cut -d'"' -f1)
+
+curl -L -o ${REPO_NAME}.zip https://github.com/${ORG_NAME}/${REPO_NAME}/archive/v${LATEST_VERSION}.zip
