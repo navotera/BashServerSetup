@@ -1,23 +1,6 @@
 Include /etc/nginx/modsec/modsecurity.conf
 Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/crs-setup.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-901-INITIALIZATION.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-905-COMMON-EXCEPTIONS.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-911-METHOD-ENFORCEMENT.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-913-SCANNER-DETECTION.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-920-PROTOCOL-ENFORCEMENT.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-921-PROTOCOL-ATTACK.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-930-APPLICATION-ATTACK-LFI.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-931-APPLICATION-ATTACK-RFI.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-932-APPLICATION-ATTACK-RCE.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-933-APPLICATION-ATTACK-PHP.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-941-APPLICATION-ATTACK-XSS.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-942-APPLICATION-ATTACK-SQLI.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/REQUEST-949-BLOCKING-EVALUATION.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/RESPONSE-950-DATA-LEAKAGES.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/RESPONSE-951-DATA-LEAKAGES-SQL.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/RESPONSE-952-DATA-LEAKAGES-JAVA.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/RESPONSE-953-DATA-LEAKAGES-PHP.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/RESPONSE-954-DATA-LEAKAGES-IIS.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/RESPONSE-959-BLOCKING-EVALUATION.conf
-Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/RESPONSE-980-CORRELATION.conf
+Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/plugins/*-config.conf
+Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/plugins/*-before.conf
+Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/plugins/*-after.conf
+Include /etc/nginx/modsec/coreruleset-{{json_output.json.tag_name.replace('v', '')}}/rules/*.conf
