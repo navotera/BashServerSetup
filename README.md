@@ -27,8 +27,16 @@ service pamin start
 - Disabled ssh login by password, only allow private key
 
 ## How to use ?
+
+### Apache2 Server
+
 ```unix
 curl https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh | bash | tee /var/log/bashServerSetup_install.log
+```
+
+### NGINX Server
+```unix
+curl https://raw.githubusercontent.com/navotera/BashServerSetup/nginx/init.sh | bash | tee /var/log/bashServerSetup_install.log
 ```
 
 ## Run specific ansible playbook : 
