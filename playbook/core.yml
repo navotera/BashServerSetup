@@ -101,6 +101,7 @@
         - php7.4-curl
         - php7.4-mcrypt
         - php7.4-gmp
+        - php7.4-gd
         - php8.1
         - php8.1-fpm
         - php8.1-common
@@ -111,6 +112,18 @@
         - php8.1-curl
         - php8.1-mcrypt
         - php8.1-gmp
+        - php8.1-gd
+        - php8.2
+        - php8.2-fpm
+        - php8.2-common
+        - php8.2-mysql
+        - php8.2-xml
+        - php8.2-mbstring
+        - php8.2-imagick
+        - php8.2-curl
+        - php8.2-mcrypt
+        - php8.2-gmp
+        - php8.2-gd
 
     - name: Modify PHP configuration for all domains
       command: virtualmin modify-php-ini --all-domains --ini-name {{ item.ini_name }} --ini-value {{ item.ini_value }}
