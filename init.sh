@@ -15,9 +15,14 @@ YELLOW=`tput setaf 3`
 echo "Select an option:"
 echo "1. Install Apache2 with Virtualmin (default)"
 echo "2. Install Nginx with Virtualmin"
+#!/bin/bash
 
-# Prompt the user for input with a timeout of 10 seconds
-read -t 10 -p "Enter your choice (1 or 2, or press Enter for default) within 10 seconds: " choice
+echo "Select an option:"
+echo "1. Install Apache2 with Virtualmin (default)"
+echo "2. Install Nginx with Virtualmin"
+
+# Use the timeout command to give the user 10 seconds to input their choice
+choice=$(timeout 10 bash -c 'read -p "Enter your choice (1 or 2, or press Enter for default) within 10 seconds: " input; echo $input')
 
 # Set the default choice if no input is provided within 10 seconds
 if [ -z "$choice" ]; then
@@ -27,21 +32,7 @@ fi
 
 echo "You selected option $choice."
 
-# Handle the user's choice
-case $choice in
-    1)
-        echo "Installing Apache2 with Virtualmin..."
-        # Add the commands to install Apache2 with Virtualmin here
-        ;;
-    2)
-        echo "Installing Nginx with Virtualmin..."
-        # Add the commands to install Nginx with Virtualmin here
-        ;;
-    *)
-        echo "Invalid choice. Exiting."
-        exit 1
-        ;;
-esac
+
 
 
 
@@ -84,15 +75,19 @@ echo "${GREEN}installing ansible..${NC}"
 
 sh /tmp/BashServerSetup/playbook/sh/create_server_config.sh 
 
+
+# Handle the user's choice
 case $choice in
     1)
+        echo "Installing Apache2 with Virtualmin..."
         sh /tmp/BashServerSetup/playbook/sh/install_virtualmin_apache2.sh
         ;;
     2)
+        echo "Installing Nginx with Virtualmin..."
         sh /tmp/BashServerSetup/playbook/sh/install_virtualmin_nginx.sh
         ;;
     *)
-        echo "Invalid choice. Exiting..."
+        echo "Invalid choice. Exiting."
         exit 1
         ;;
 esac
