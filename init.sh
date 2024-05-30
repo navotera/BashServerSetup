@@ -64,24 +64,27 @@ echo "${GREEN}installing ansible..${NC}"
 sh /tmp/BashServerSetup/playbook/sh/create_server_config.sh 
 
 
+#preparing install the virtualmin 
+HostName=$(grep '^HOSTNAME=' ~/server.config | cut -d'=' -f2)
+sudo wget -O /tmp/install_virtualmin.sh http://software.virtualmin.com/gpl/scripts/install.sh
+
+
+
 # Handle the user's choice
 case $choice in
     1)
-        echo "Installing Apache2 with Virtualmin..."
-        sh /tmp/BashServerSetup/playbook/sh/install_virtualmin_apache2.sh
+        echo "${YELLOW}Installing Apache2 with Virtualmin...${HostName}${NC}"        
+        VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install_virtualmin.sh --minimal --force --hostname "$HostName"        
         ;;
     2)
-        echo "Installing Nginx with Virtualmin..."
-        sh /tmp/BashServerSetup/playbook/sh/install_virtualmin_nginx.sh
+        echo "${GREEN}Installing Nginx with Virtualmin...with ${HostName} ${NC}"
+        VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install_virtualmin.sh --minimal --force --hostname "$HostName" -b LEMP
         ;;
     *)
         echo "Invalid choice. Exiting."
         exit 1
         ;;
 esac
-
-#setup the swap for 1G
-
 
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/core.yml
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/optimization.yml
