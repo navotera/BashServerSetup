@@ -1,6 +1,8 @@
 #!/bin/bash
 
-REPO_URL=https://github.com/navotera/BashServerSetup.git
+REPO_URL="--branch apache2-nginx2 https://github.com/navotera/BashServerSetup.git"
+
+cd /tmp && rm -rf BashServerSetup && git clone $REPO_URL
 
 RED=`tput setaf 1`
 NC=`tput sgr0` # No Color
@@ -29,7 +31,7 @@ sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/n
 apt install git -y
 
 # wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/v2/init.sh  | bash
-cd /tmp && rm -rf BashServerSetup && git clone https://github.com/navotera/BashServerSetup.git
+
 add-apt-repository ppa:ondrej/php
 add-apt-repository --yes --update ppa:deadsnakes/ppa
 apt update 2>/dev/null >/dev/null
