@@ -23,6 +23,7 @@ IP_ADDRESS=$(hostname -I | awk '{print $1}')
 LAST_THREE_DIGITS=$(echo "$IP_ADDRESS" | awk -F. '{print $NF}')
 # Combine with "abc.com"
 hostname="${LAST_THREE_DIGITS}opensynergic.com"
+echo $hostname
 hostname $hostname
 
 # get pamin folder's name
