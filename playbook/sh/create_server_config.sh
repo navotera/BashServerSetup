@@ -22,7 +22,7 @@ IP_ADDRESS=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[
 IP_ADDRESS=$(hostname -I | awk '{print $1}')
 LAST_THREE_DIGITS=$(echo "$IP_ADDRESS" | awk -F. '{print $NF}')
 # Combine with "abc.com"
-hostname="${LAST_THREE_DIGITS}opensynergic.com"
+hostname="opensynergic${LAST_THREE_DIGITS}.com"
 echo $hostname
 hostname $hostname
 
