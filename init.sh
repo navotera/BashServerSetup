@@ -65,20 +65,22 @@ sh /tmp/BashServerSetup/playbook/sh/create_server_config.sh
 
 
 #preparing install the virtualmin 
+#hostname started with number is invalid, so add "a"
 HostName=$(grep '^HOSTNAME=' ~/server.config | cut -d'=' -f2)
 sudo wget -O /tmp/install_virtualmin.sh http://software.virtualmin.com/gpl/scripts/install.sh
+hostName=a${HostName}
 
 
 
 # Handle the user's choice
 case $choice in
     1)
-        echo "${YELLOW}Installing Apache2 with Virtualmin...${HostName}${NC}"        
-        VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install_virtualmin.sh --minimal --force --hostname "$HostName"        
+        echo "${YELLOW}Installing Apache2 with Virtualmin...${hostName}${NC}"        
+        VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install_virtualmin.sh --minimal --force --hostname "$hostName"        
         ;;
     2)
-        echo "${GREEN}Installing Nginx with Virtualmin...with ${HostName} ${NC}"
-        VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install_virtualmin.sh --minimal --force --hostname "$HostName" -b LEMP
+        echo "${GREEN}Installing Nginx with Virtualmin...with ${hostName} ${NC}"
+        VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install_virtualmin.sh --minimal --force --hostname "$hostName" -b LEMP
         ;;
     *)
         echo "Invalid choice. Exiting."
