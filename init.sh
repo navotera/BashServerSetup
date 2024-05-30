@@ -68,7 +68,7 @@ sh /tmp/BashServerSetup/playbook/sh/create_server_config.sh
 #hostname started with number is invalid, so add "a"
 HostName=$(grep '^HOSTNAME=' ~/server.config | cut -d'=' -f2)
 sudo wget -O /tmp/install_virtualmin.sh http://software.virtualmin.com/gpl/scripts/install.sh
-hostName=a${HostName}
+hostName=${HostName}
 
 
 
