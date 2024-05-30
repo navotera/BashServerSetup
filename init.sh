@@ -2,7 +2,7 @@
 
 REPO_URL="--branch apache2-nginx2 https://github.com/navotera/BashServerSetup.git"
 
-#cd /tmp && rm -rf BashServerSetup && git clone $REPO_URL
+cd /tmp && rm -rf BashServerSetup && git clone $REPO_URL
 
 RED=`tput setaf 1`
 NC=`tput sgr0` # No Color
