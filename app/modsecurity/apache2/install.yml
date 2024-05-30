@@ -1,0 +1,127 @@
+- name: Nginx::install Modsecurity 3 latest version
+  hosts: all
+  connection: local
+  become: yes  
+
+  vars:
+    modsecurity_download_url: "https://api.github.com/repos/SpiderLabs/ModSecurity/releases/latest"
+    modsecurity_repo: "https://github.com/SpiderLabs/ModSecurity-apache"
+    coreruleset_repo: "https://github.com/coreruleset/coreruleset.git"
+    wordpress_plugin_repo: "https://github.com/coreruleset/wordpress-rule-exclusions-plugin.git"
+    unicode_mapping_url: "https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping"
+
+  tasks:
+
+    - name: Install required packages
+      apt:
+        name:
+          - g++
+          - flex
+          - bison
+          - curl
+          - apache2-dev
+          - doxygen
+          - libyajl-dev
+          - ssdeep
+          - liblua5.2-dev
+          - libgeoip-dev
+          - libtool
+          - dh-autoreconf
+          - libcurl4-gnutls-dev
+          - libxml2
+          - libpcre++-dev
+          - libxml2-dev
+          - git
+        state: present
+        update_cache: yes
+
+    - name: Create directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - /var/cache/modsecurity
+        - /etc/apache2/modsecurity.d/exception
+
+    - name: Download ModSecurity
+      unarchive:
+        remote_src: yes
+        src: "{{ modsecurity_download_url | regex_search('browser_download_url.*' + ansible_machine + '.*zip') | first }}"
+        dest: /tmp
+        creates: /tmp/ModSecurity
+      register: modsecurity_download
+
+    - name: Build and install ModSecurity
+      shell: "cd /tmp/ModSecurity*/; ./build.sh && ./configure && make && make install"
+      when: modsecurity_download.changed
+
+    - name: Move ModSecurity configuration
+      command: "mv -- '/tmp/ModSecurity*/modsecurity.conf-recommended' '/etc/apache2/modsecurity.d/modsecurity.conf'"
+      when: modsecurity_download.changed
+
+    - name: Clone ModSecurity Apache connector
+      git:
+        repo: "{{ modsecurity_repo }}"
+        dest: /tmp/modsecurity-apache
+        force: yes
+
+    - name: Build and install ModSecurity Apache connector
+      shell: "cd /tmp/modsecurity-apache; ./autogen.sh && ./configure --with-libmodsecurity=/usr/local/modsecurity/ && make && make install"
+
+    - name: Enable ModSecurity in Apache
+      lineinfile:
+        path: /etc/apache2/apache2.conf
+        line: "LoadModule security3_module /usr/lib/apache2/modules/mod_security3.so"
+
+    - name: Enable ModSecurity rules
+      lineinfile:
+        path: /etc/apache2/modsecurity.d/modsecurity.conf
+        regexp: "^SecRuleEngine"
+        line: "SecRuleEngine On"
+
+    - name: Clone OWASP CoreRuleSet
+      git:
+        repo: "{{ coreruleset_repo }}"
+        dest: /etc/apache2/modsecurity.d/owasp-crs
+        force: yes
+
+    - name: Copy CoreRuleSet configuration
+      copy:
+        src: /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example
+        remote_src: yes
+        dest: /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
+
+    - name: Clone WordPress plugin for CoreRuleSet
+      git:
+        repo: "{{ wordpress_plugin_repo }}"
+        dest: /etc/apache2/modsecurity.d/owasp-crs/plugins/wordpress-rule-exclusions-plugin
+        force: yes
+
+    - name: Download Unicode mapping
+      get_url:
+        url: "{{ unicode_mapping_url }}"
+        dest: /etc/apache2/modsecurity.d/unicode.mapping
+
+    - name: Create ModSecurity initialization file
+      copy:
+        content: |
+          # Default Debian dir for modsecurity persistent data
+          SecDataDir /var/cache/modsecurity
+
+          # Include OWASP ModSecurity CRS rules if installed
+          Include "/etc/apache2/modsecurity.d/modsecurity.conf"
+          Include "/etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf"
+          Include "/etc/apache2/modsecurity.d/owasp-crs/rules/*.conf"
+        dest: /etc/apache2/modsecurity.d/init.conf
+
+    - name: Copy ModSecurity exception rules
+      copy:
+        src: /tmp/BashServerSetup/app/modsecurity/exception/
+        dest: /etc/apache2/modsecurity.d/exception/
+        mode: 0644
+
+    - name: Restart Apache
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: apache2

@@ -14,8 +14,8 @@ echo "1. Install Apache2 with Virtualmin (default)"
 echo "2. Install Nginx with Virtualmin"
 
 # Give the user 3 seconds to input their choice
-echo -n "Enter your choice (1 or 2, or press Enter for default) within 3 seconds: "
-read -r -t 5 choice
+echo -n "Enter your choice (1 or 2, or press Enter for default) within 10 seconds: "
+read -r -t 10 choice
 
 # Set the default choice if no input is provided within 3 seconds
 if [ -z "$choice" ]; then

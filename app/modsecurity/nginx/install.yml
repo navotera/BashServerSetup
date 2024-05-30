@@ -1,0 +1,166 @@
+- name: install Modsecurity 3 latest version
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Get nginx version number
+      shell: nginx -v 2>&1 | awk -F' ' '{print $3}' | cut -d / -f 2
+      register: nginx_version
+
+    - name: Create ModsecDir
+      file:
+        path: /etc/nginx/modsec
+        state: directory
+
+    - name: download nginx version -> {{nginx_version.stdout}}
+      shell: |
+        mkdir -p nginx 
+        cd nginx 
+        rm nginx-{{nginx_version.stdout}}.tar.gz
+        wget http://nginx.org/download/nginx-{{nginx_version.stdout}}.tar.gz 
+        tar zxvf nginx-{{nginx_version.stdout}}.tar.gz
+
+    - name: Install needed packages
+      apt:
+        pkg: "{{ item }}"
+        state: present
+      with_items:
+        - apt-utils
+        - autoconf
+        - automake
+        - build-essential
+        - libpcre3-dev
+        - libcurl4-openssl-dev
+        - libgeoip-dev
+        - liblmdb-dev
+        - libpcre++-dev
+        - libtool
+        - libyajl-dev
+        - libxml2-dev
+        - pkgconf
+        - zlib1g-dev
+        - doxygen
+        - valgrind
+      register: install_needed
+      retries: 5
+      until: install_needed is success
+
+    - name: Clone the from repo
+      shell: "cd nginx && rm -rf ModSecurity && git clone --depth 1 -b v3/master --single-branch https://github.com/SpiderLabs/ModSecurity "
+      retries: 10
+
+    - name: ModSec::makeInstall git
+      shell: "cd nginx/ModSecurity && git submodule init && git submodule update"
+      register: make_success
+      retries: 10
+      until: make_success is success
+
+    - name: ModSec::makeInstall Build
+      shell: "cd nginx/ModSecurity && sh build.sh && ./configure"
+      register: build
+      retries: 50
+      until: build is success
+
+    - name: ModSec::make
+      shell: "cd nginx/ModSecurity && make"
+      register: make
+      retries: 5
+      until: make is success
+      debugger: on_failed
+      async: 1800
+      poll: 10
+
+    - name: ModSec::make_install
+      shell: "cd nginx/ModSecurity && make install"
+      register: make_install
+      retries: 8
+      until: make_install is success
+      debugger: on_failed
+      async: 1800
+      poll: 10
+
+    - name: ModSec::CloneConnector
+      shell: "cd nginx && git clone --depth 1 https://github.com/SpiderLabs/ModSecurity-nginx"
+      retries: 10
+
+    - name: ModSec::MakeModuleConnector
+      block:
+        - name: ModSecConnector::buildNormally
+          shell: "cd nginx/nginx-{{nginx_version.stdout}} && ./configure --with-compat --add-dynamic-module=../ModSecurity-nginx && make modules"
+          retries: 1
+
+      rescue:
+        - name: ModSecConnector::buildWithoutPCRE
+          shell: "cd nginx/nginx-{{nginx_version.stdout}} && ./configure --with-compat --without-pcre2 --add-dynamic-module=../ModSecurity-nginx && make modules"
+          retries: 1
+
+    - name: Check that the folder nginx/modules exist
+      stat:
+        path: /etc/nginx/modules-availables
+      register: modules_folder_result
+
+    - name: ModSec::CopyToNginxModulesFolder
+      shell: |
+        cp nginx/nginx-{{nginx_version.stdout}}/objs/ngx_http_modsecurity_module.so /etc/nginx/modules-available/
+        ln -sf /etc/nginx/modules-available/ngx_http_modsecurity_module.so /etc/nginx/modules-enabled/ngx_http_modsecurity_module.so
+
+    - name: Nginx::loadModuleModsecurity
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        insertbefore: BOF
+        line: "{{ item.line }}"
+      with_items:
+        - {
+            line: "load_module /etc/nginx/modules-enabled/ngx_http_modsecurity_module.so;",
+          }
+
+    - name: ModSec::Rules::makeDir
+      file:
+        path: /etc/nginx/modsec
+        state: directory
+
+    - name: ModSec::Rules::downloadRule
+      get_url:
+        url: 'https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended'
+        dest: '/etc/nginx/modsec/'
+
+    - name: ModSec::Rules::downloadUnicode
+      get_url:
+        url: 'https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping'
+        dest: '/etc/nginx/modsec/'
+
+    - name: ModSec::Rules::renamePrevModConfig
+      shell: 'mv /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf'
+
+    - name: ModSec::Rules::activate
+      shell: "sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/nginx/modsec/modsecurity.conf"
+
+    - name: Modsec::edit::SecRequestBodyLimit
+      shell: "sed -i 's/SecRequestBodyLimit 13107200/SecRequestBodyLimit 52428800/' /etc/nginx/modsec/modsecurity.conf"
+
+    - name: ModSec::CoreRule::Mkdir
+      shell: "mkdir coreruleset"
+      ignore_errors: yes
+
+    - name: Get latest version of coreruleset
+      uri:
+        url: https://api.github.com/repos/coreruleset/coreruleset/releases/latest
+        return_content: yes
+      register: json_output 
+
+    - name: Download the latest version of coreruleset
+      get_url:
+        url: "https://github.com/coreruleset/coreruleset/archive/{{ json_output.json.tag_name }}.zip"
+        dest: "/tmp/coreruleset.zip"
+
+    - name: ModSec::CoreRule::Extract
+      ansible.builtin.unarchive:
+        src: /tmp/coreruleset.zip
+        dest: /etc/nginx/modsec/
+
+    - name: ModSec::CoreRule::setCoresetFile 
+      shell: "cd /etc/nginx/modsec/coreruleset-{{ json_output.json.tag_name.replace('v', '') }}/ && cp crs-setup.conf.example crs-setup.conf"
+
+    - name: ModSec::CoreRule::Copy ModSec main file
+      template:
+        src: /tmp/BashServerSetup/app/modsecurity/v3/templates/main.conf.j2
+        dest: /etc/nginx/modsec/main.conf
