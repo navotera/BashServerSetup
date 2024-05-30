@@ -31,7 +31,8 @@ service pamin start
 ### Apache2 Server
 
 ```unix
-curl https://raw.githubusercontent.com/navotera/BashServerSetup/apache2-nginx2/init.sh | bash | tee /var/log/bashServerSetup_install.log
+wget https://raw.githubusercontent.com/navotera/BashServerSetup/apache2-nginx2/init.sh && chmod +x init.sh && ./init.sh | tee /var/log/bashServerSetup_install.log
+
 ```
 
 ### NGINX Server

@@ -10,8 +10,8 @@ GREEN=`tput setaf 2`
 YELLOW=`tput setaf 3`
 
 echo "Select an option:"
-echo "1. Install Apache2 with Virtualmin (default)"
-echo "2. Install Nginx with Virtualmin"
+echo "1. Install ${YELLOW}Apache2${NC} with Virtualmin (default)"
+echo "2. Install ${GREEN}Nginx${NC} with Virtualmin"
 
 # Give the user 3 seconds to input their choice
 echo -n "Enter your choice (1 or 2, or press Enter for default) within 10 seconds: "
@@ -32,7 +32,7 @@ apt install git -y
 
 # wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/v2/init.sh  | bash
 
-add-apt-repository ppa:ondrej/php
+add-apt-repository --yes --update ppa:ondrej/php 
 add-apt-repository --yes --update ppa:deadsnakes/ppa
 apt update 2>/dev/null >/dev/null
 apt install software-properties-common -y
