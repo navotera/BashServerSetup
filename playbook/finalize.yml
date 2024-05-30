@@ -53,3 +53,33 @@
         state: present
 
 
+    - name: Disable current swap
+      command: swapoff /swapfile
+      ignore_errors: yes
+
+    - name: Get memory information
+      setup:
+        filter: ansible_memtotal_mb
+
+    - name: Set swap file size based on memory
+      set_fact:
+        swap_size_gb: "{{ 2 if ansible_memtotal_mb < 4096 else 6 }}"
+
+    - name: Create a new swap file
+      command: fallocate -l {{ swap_size_gb }}G /swapfile
+
+    - name: Display swap file information
+      command: ls -lh /swapfile
+
+    - name: Format swap file
+      command: mkswap /swapfile
+
+    - name: Enable the new swap file
+      command: swapon /swapfile
+
+    - name: Add the swap file to /etc/fstab
+      lineinfile:
+        path: /etc/fstab
+        line: '/swapfile none swap sw 0 0'
+        state: present
+

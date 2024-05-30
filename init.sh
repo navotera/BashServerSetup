@@ -2,7 +2,7 @@
 
 REPO_URL="--branch apache2-nginx2 https://github.com/navotera/BashServerSetup.git"
 
-cd /tmp && rm -rf BashServerSetup && git clone $REPO_URL
+#cd /tmp && rm -rf BashServerSetup && git clone $REPO_URL
 
 RED=`tput setaf 1`
 NC=`tput sgr0` # No Color
@@ -13,21 +13,17 @@ echo "Select an option:"
 echo "1. Install Apache2 with Virtualmin (default)"
 echo "2. Install Nginx with Virtualmin"
 
-# Use the timeout command to give the user 10 seconds to input their choice
-choice=$(timeout 10 bash -c 'read -p "Enter your choice (1 or 2, or press Enter for default) within 10 seconds: " input; echo $input')
+# Give the user 3 seconds to input their choice
+echo -n "Enter your choice (1 or 2, or press Enter for default) within 3 seconds: "
+read -r -t 5 choice
 
-# Set the default choice if no input is provided within 10 seconds
+# Set the default choice if no input is provided within 3 seconds
 if [ -z "$choice" ]; then
-    echo "No choice made within 10 seconds. Proceeding with the default option (1)."
+    echo "No choice made within 3 seconds. Proceeding with the default option (1)."
     choice=1
+else
+    echo "" # Add a newline after the countdown
 fi
-
-echo "You selected option $choice."
-
-
-exit
-
-
 
 #in ubuntu 22.04 should change this to disable interactive mode that stop automatic process in this script
 sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/needrestart/needrestart.conf
