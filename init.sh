@@ -25,7 +25,7 @@ fi
 echo "You selected option $choice."
 
 
-exit
+exit()
 
 
 
