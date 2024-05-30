@@ -10,17 +10,38 @@ GREEN=`tput setaf 2`
 YELLOW=`tput setaf 3`
 
 
+#!/bin/bash
 
 echo "Select an option:"
 echo "1. Install Apache2 with Virtualmin (default)"
 echo "2. Install Nginx with Virtualmin"
-read -p "Enter your choice (1 or 2, or press Enter for default) within 10 seconds: " -t 10 choice
+
+# Prompt the user for input with a timeout of 10 seconds
+read -t 10 -p "Enter your choice (1 or 2, or press Enter for default) within 10 seconds: " choice
 
 # Set the default choice if no input is provided within 10 seconds
 if [ -z "$choice" ]; then
     echo "No choice made within 10 seconds. Proceeding with the default option (1)."
     choice=1
 fi
+
+echo "You selected option $choice."
+
+# Handle the user's choice
+case $choice in
+    1)
+        echo "Installing Apache2 with Virtualmin..."
+        # Add the commands to install Apache2 with Virtualmin here
+        ;;
+    2)
+        echo "Installing Nginx with Virtualmin..."
+        # Add the commands to install Nginx with Virtualmin here
+        ;;
+    *)
+        echo "Invalid choice. Exiting."
+        exit 1
+        ;;
+esac
 
 
 
