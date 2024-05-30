@@ -9,14 +9,6 @@ NC=`tput sgr0` # No Color
 GREEN=`tput setaf 2`
 YELLOW=`tput setaf 3`
 
-
-#!/bin/bash
-
-echo "Select an option:"
-echo "1. Install Apache2 with Virtualmin (default)"
-echo "2. Install Nginx with Virtualmin"
-#!/bin/bash
-
 echo "Select an option:"
 echo "1. Install Apache2 with Virtualmin (default)"
 echo "2. Install Nginx with Virtualmin"
