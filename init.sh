@@ -81,13 +81,6 @@ case $choice in
 esac
 
 #setup the swap for 1G
-sudo swapoff /swapfile
-sudo fallocate -l 2G /swapfile
-ls -lh /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-
 
 
 apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/core.yml

@@ -52,7 +52,6 @@
         job: "sudo service pamin stop"
         state: present
 
-
     - name: Disable current swap
       command: swapoff /swapfile
       ignore_errors: yes
