@@ -1,5 +1,7 @@
 #!/bin/bash
 
+REPO_URL=https://github.com/navotera/BashServerSetup.git
+
 RED=`tput setaf 1`
 NC=`tput sgr0` # No Color
 GREEN=`tput setaf 2`
