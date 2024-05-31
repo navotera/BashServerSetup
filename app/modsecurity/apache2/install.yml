@@ -4,11 +4,15 @@
   become: yes  
 
   vars:
+    type: "apache2"
     modsecurity_download_url: "https://api.github.com/repositories/1320594/releases/latest"
-    modsecurity_repo: "https://github.com/SpiderLabs/ModSecurity-apache"
+    modsecurity_web_server_repo: "https://github.com/SpiderLabs/ModSecurity-apache"
     coreruleset_repo: "https://github.com/coreruleset/coreruleset.git"
     wordpress_plugin_repo: "https://github.com/coreruleset/wordpress-rule-exclusions-plugin.git"
     unicode_mapping_url: "https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping"
+    base_dir: "/tmp/modsecurity"
+    modsec_webserver_dir: "/tmp/modsecurity/webserver/{{ type }}"
+    webserver_modsec_dir: "/etc/apache2/modsecurity.d"
 
   tasks:
 
@@ -41,7 +45,7 @@
         state: directory
       loop:
         - /var/cache/modsecurity
-        - /etc/apache2/modsecurity.d/exception
+        - "{{webserver_modsec_dir}}/exception"
 
 
     - name: Fetch the latest release data from GitHub API
@@ -58,16 +62,16 @@
       register: tarball_url_result
 
 
-    - name: Create the /tmp/modsecurity directory if it doesn't exist
+    - name: Create the {{base_dir}} directory if it doesn't exist
       file:
-        path: /tmp/modsecurity
+        path: "{{base_dir}}"
         state: directory
         mode: '0755'
 
     - name: Download the tarball file to /tmp/modsecurity directory
       get_url:
         url: "{{ tarball_url_result.results[0].ansible_facts.tarball_url }}"
-        dest: /tmp/modsecurity/
+        dest: "{{base_dir}}"
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
     - name: change file name 
@@ -76,25 +80,25 @@
 
     - name: Extract the tarball file to /tmp/modsecurity directory
       unarchive:
-        src: /tmp/modsecurity/modsecurity.tar.gz
-        dest: /tmp/modsecurity/
+        src: "{{base_dir}}/modsecurity.tar.gz"
+        dest: "{{base_dir}}"
         remote_src: yes
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
     - name: Remove the tarball file and rename folder
       shell: |
-        rm -f /tmp/modsecurity/modsecurity.tar.gz
-        for folder in /tmp/modsecurity/*/; do
-          mv "$folder" "/tmp/modsecurity/modsecurity/"
+        rm -f {{base_dir}}/modsecurity.tar.gz
+        for folder in {{base_dir}}/*/; do
+          mv "$folder" "{{base_dir}}/modsecurity/"
         done
-        mv /tmp/modsecurity/modsecurity/* /tmp/modsecurity
-        rm -r /tmp/modsecurity/modsecurity
+        mv {{base_dir}}/modsecurity/* {{base_dir}}
+        rm -r {{base_dir}}/modsecurity
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
     - name: Run ./build.sh
       command: ./build.sh
       args:
-        chdir: /tmp/modsecurity
+        chdir: "{{base_dir}}"
       retries: 50
       until: build is success
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
@@ -102,13 +106,13 @@
     - name: Run ./configure
       command: ./configure
       args:
-        chdir: /tmp/modsecurity
+        chdir: "{{base_dir}}"
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
     - name: Run make
       command: make
       args:
-        chdir: /tmp/modsecurity
+        chdir: "{{base_dir}}"
       retries: 4
       until: make is success
       debugger: on_failed
@@ -119,35 +123,47 @@
     - name: Run make install
       command: make install
       args:
-        chdir: /tmp/modsecurity
+        chdir: "{{base_dir}}"
       become: yes  # Run as root
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
-    - name: End play if no tarball URL is found ------------------------------
-      meta: end_play
-
-
-    - name: Build and install ModSecurity
-      shell: "cd /tmp/modsecurity*/; ./build.sh && ./configure && make && make install"
-      when: modsecurity_download.changed
-
+  
     - name: Move ModSecurity configuration
-      command: "mv -- '/tmp/ModSecurity*/modsecurity.conf-recommended' '/etc/apache2/modsecurity.d/modsecurity.conf'"
-      when: modsecurity_download.changed
+      copy: 
+          remote_src=True 
+          src="{{ base_dir }}/modsecurity.conf-recommended" 
+          dest="/etc/apache2/modsecurity.d/modsecurity.conf"
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
 
     - name: Clone ModSecurity Apache connector
       git:
-        repo: "{{ modsecurity_repo }}"
-        dest: /tmp/modsecurity-apache
+        repo: "{{ modsecurity_web_server_repo }}"
+        dest: "{{modsec_webserver_dir}}"
         force: yes
 
+
     - name: Build and install ModSecurity Apache connector
-      shell: "cd /tmp/modsecurity-apache; ./autogen.sh && ./configure --with-libmodsecurity=/usr/local/modsecurity/ && make && make install"
+      block:
+        - name: Run commands with retries
+          ansible.builtin.command:
+            cmd: "{{ item }}"
+            chdir: "{{modsec_webserver_dir}}"
+          retries: 3
+          delay: 10
+          with_items:
+            - "./autogen.sh"
+            - "./configure --with-libmodsecurity=/usr/local/modsecurity/"
+            - "make"
+            - "make install"
+      ignore_errors: true
+
 
     - name: Enable ModSecurity in Apache
       lineinfile:
         path: /etc/apache2/apache2.conf
         line: "LoadModule security3_module /usr/lib/apache2/modules/mod_security3.so"
+
 
     - name: Enable ModSecurity rules
       lineinfile:
@@ -158,25 +174,25 @@
     - name: Clone OWASP CoreRuleSet
       git:
         repo: "{{ coreruleset_repo }}"
-        dest: /etc/apache2/modsecurity.d/owasp-crs
+        dest: "{{webserver_modsec_dir}}/owasp-crs"
         force: yes
 
     - name: Copy CoreRuleSet configuration
       copy:
-        src: /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example
+        src: "{{webserver_modsec_dir}}/owasp-crs/crs-setup.conf.example"
         remote_src: yes
-        dest: /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
+        dest: "{{webserver_modsec_dir}}/owasp-crs/crs-setup.conf"
 
     - name: Clone WordPress plugin for CoreRuleSet
       git:
         repo: "{{ wordpress_plugin_repo }}"
-        dest: /etc/apache2/modsecurity.d/owasp-crs/plugins/wordpress-rule-exclusions-plugin
+        dest: "{{webserver_modsec_dir}}/owasp-crs/plugins/wordpress-rule-exclusions-plugin"
         force: yes
 
     - name: Download Unicode mapping
       get_url:
         url: "{{ unicode_mapping_url }}"
-        dest: /etc/apache2/modsecurity.d/unicode.mapping
+        dest: "{{webserver_modsec_dir}}/unicode.mapping"
 
     - name: Create ModSecurity initialization file
       copy:
@@ -185,19 +201,22 @@
           SecDataDir /var/cache/modsecurity
 
           # Include OWASP ModSecurity CRS rules if installed
-          Include "/etc/apache2/modsecurity.d/modsecurity.conf"
-          Include "/etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf"
-          Include "/etc/apache2/modsecurity.d/owasp-crs/rules/*.conf"
-        dest: /etc/apache2/modsecurity.d/init.conf
-
-    - name: Copy ModSecurity exception rules
-      copy:
-        src: /tmp/BashServerSetup/app/modsecurity/exception/
-        dest: /etc/apache2/modsecurity.d/exception/
-        mode: 0644
+          Include "{{webserver_modsec_dir}}/modsecurity.conf"
+          Include "{{webserver_modsec_dir}}/owasp-crs/crs-setup.conf"
+          Include "{{webserver_modsec_dir}}/owasp-crs/rules/*.conf"
+        dest: "{{webserver_modsec_dir}}/init.conf" 
 
     - name: Restart Apache
       systemd:
         state: restarted
         daemon_reload: yes
         name: apache2
+
+
+    - name: End play if no tarball URL is found ------------------------------
+      meta: end_play 
+
+  
+  
+
+    
