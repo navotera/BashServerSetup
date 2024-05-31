@@ -1,8 +1,9 @@
 #!/bin/bash
 
 REPO_URL="--branch apache2-nginx2 https://github.com/navotera/BashServerSetup.git"
+BASE_FOLDER="/var/BashServerSetup/"
 
-cd /tmp && rm -rf BashServerSetup && git clone $REPO_URL
+cd $BASE_FOLDER && rm -rf $BASE_FOLDER && git clone $REPO_URL
 
 RED=`tput setaf 1`
 NC=`tput sgr0` # No Color
@@ -61,7 +62,7 @@ echo "${GREEN}installing ansible..${NC}"
 #apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml
 
 
-sh /tmp/BashServerSetup/playbook/sh/create_server_config.sh 
+sh ${BASE_FOLDER}playbook/sh/create_server_config.sh 
 
 
 #preparing install the virtualmin 
@@ -88,9 +89,9 @@ case $choice in
         ;;
 esac
 
-apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/core.yml
-apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/optimization.yml
-apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/finalize.yml
-sh /tmp/BashServerSetup/playbook/sh/finishing_all.sh
+apt install ansible -y && ansible-playbook ${BASE_FOLDER}playbook/core.yml
+apt install ansible -y && ansible-playbook ${BASE_FOLDER}playbook/optimization.yml
+apt install ansible -y && ansible-playbook ${BASE_FOLDER}playbook/finalize.yml
+sh ${BASE_FOLDER}playbook/sh/finishing_all.sh
 
 

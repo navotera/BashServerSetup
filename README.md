@@ -46,10 +46,16 @@ ansible-playbook /tmp/BashServerSetup/playbook/init.yml
 ```
 
 ## After success installing 
-Access password on **server.config** or Change passsword 
-```sudo -i passwd```  
-Access the webmin to initiate the configuration 
-https://ip_address:9191
+1. Access password on **server.config** or Change passsword ```sudo -i passwd```  
+2. Change the hostname by using command ```hostname YOUR_HOSTNAME``` [optional]
+3. Start the webmin ```service webmin start``` and access to https://ip_address:9191
+
+
+## ModSecurity installation [Optional]
+if you want install Modsecurity you can run this : 
+```ansible-playbook /tmp/BashServerSetup/app/modsecurity/apache2/install.yml``` --> for **Apache**
+```ansible-playbook /tmp/BashServerSetup/app/modsecurity/nginx/install.yml``` --> for **Nginx**
+
 
 ## TODO
 - [ ] Live Progress

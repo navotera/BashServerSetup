@@ -1,5 +1,5 @@
 - name: Nginx::install Modsecurity 3 latest version
-  hosts: all
+  hosts: localhost
   connection: local
   become: yes  
 
@@ -43,16 +43,92 @@
         - /var/cache/modsecurity
         - /etc/apache2/modsecurity.d/exception
 
-    - name: Download ModSecurity
+
+    - name: Fetch the latest release data from GitHub API
+      uri:
+        url: "https://api.github.com/repositories/1320594/releases/latest"
+        return_content: yes
+      register: release_data
+
+    - name: Extract the browser_download_url ending with .tar.gz
+      set_fact:
+        tarball_url: "{{ item.browser_download_url }}"
+      with_items: "{{ release_data.json.assets }}"
+      when: item.browser_download_url | regex_search('.tar.gz$')
+      register: tarball_url_result
+
+
+    - name: Create the /tmp/modsecurity directory if it doesn't exist
+      file:
+        path: /tmp/modsecurity
+        state: directory
+        mode: '0755'
+
+    - name: Download the tarball file to /tmp/modsecurity directory
+      get_url:
+        url: "{{ tarball_url_result.results[0].ansible_facts.tarball_url }}"
+        dest: /tmp/modsecurity/
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+    - name: change file name 
+      shell : for file in /tmp/modsecurity/*.tar.gz; do mv "$file" /tmp/modsecurity/modsecurity.tar.gz; done
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+    - name: Extract the tarball file to /tmp/modsecurity directory
       unarchive:
+        src: /tmp/modsecurity/modsecurity.tar.gz
+        dest: /tmp/modsecurity/
         remote_src: yes
-        src: "{{ modsecurity_download_url | regex_search('browser_download_url.*' + ansible_machine + '.*zip') | first }}"
-        dest: /tmp
-        creates: /tmp/ModSecurity
-      register: modsecurity_download
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+    - name: Remove the tarball file and rename folder
+      shell: |
+        rm -f /tmp/modsecurity/modsecurity.tar.gz
+        for folder in /tmp/modsecurity/*/; do
+          mv "$folder" "/tmp/modsecurity/modsecurity/"
+        done
+        mv /tmp/modsecurity/modsecurity/* /tmp/modsecurity
+        rm -r /tmp/modsecurity/modsecurity
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+    - name: Run ./build.sh
+      command: ./build.sh
+      args:
+        chdir: /tmp/modsecurity
+      retries: 50
+      until: build is success
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+    - name: Run ./configure
+      command: ./configure
+      args:
+        chdir: /tmp/modsecurity
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+    - name: Run make
+      command: make
+      args:
+        chdir: /tmp/modsecurity
+      retries: 4
+      until: make is success
+      debugger: on_failed
+      async: 1800
+      poll: 10
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+    - name: Run make install
+      command: make install
+      args:
+        chdir: /tmp/modsecurity
+      become: yes  # Run as root
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+    - name: End play if no tarball URL is found ------------------------------
+      meta: end_play
+
 
     - name: Build and install ModSecurity
-      shell: "cd /tmp/ModSecurity*/; ./build.sh && ./configure && make && make install"
+      shell: "cd /tmp/modsecurity*/; ./build.sh && ./configure && make && make install"
       when: modsecurity_download.changed
 
     - name: Move ModSecurity configuration
