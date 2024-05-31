@@ -4,7 +4,7 @@
   become: yes  
 
   vars:
-    modsecurity_download_url: "https://api.github.com/repos/SpiderLabs/ModSecurity/releases/latest"
+    modsecurity_download_url: "https://api.github.com/repositories/1320594/releases/latest"
     modsecurity_repo: "https://github.com/SpiderLabs/ModSecurity-apache"
     coreruleset_repo: "https://github.com/coreruleset/coreruleset.git"
     wordpress_plugin_repo: "https://github.com/coreruleset/wordpress-rule-exclusions-plugin.git"
@@ -46,7 +46,7 @@
 
     - name: Fetch the latest release data from GitHub API
       uri:
-        url: "https://api.github.com/repositories/1320594/releases/latest"
+        url: "{{modsecurity_download_url}}"
         return_content: yes
       register: release_data
 
