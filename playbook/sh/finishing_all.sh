@@ -29,7 +29,7 @@ echo
 echo "Created By navotera : https://opensynergic.com"
 echo "No Warranty is provided"
 echo 
-echo "${GREEN}Please enjoy and wait for about 15 to 25 minutes to finish all the process then rebooting...${NC}"
+echo "${GREEN}All information can be retrieve to ~/server.config.${NC}"
 
-rm -r /tmp/BashServerSetup 
+
 reboot

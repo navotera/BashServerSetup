@@ -10,7 +10,7 @@ YELLOW=`tput setaf 3`
 PMA_LATEST_VERSION_INFO_URL="https://www.phpmyadmin.net/home_page/version.php"
 PMA_VERSION=$(wget -q -O /tmp/pma_lastest.html $PMA_LATEST_VERSION_INFO_URL && sed -ne '1p' /tmp/pma_lastest.html);
 PAMIN_URL="https://files.phpmyadmin.net/phpMyAdmin/${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.tar.gz"
-SETUP_PATH="/tmp/BashServerSetup/"
+SETUP_PATH="/var/BashServerSetup/"
 
 # random password
 PASSWD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 1)
@@ -54,13 +54,6 @@ echo "HOSTNAME=$hostname" >> ~/server.config 2>/dev/null
 echo "WEBMIN_URL=https://${IP_ADDRESS}:9191" >> ~/server.config 2>/dev/null  
 echo "PAMIN_URL=http://${IP_ADDRESS}:9292" >> ~/server.config 2>/dev/null
 echo "PASSWORD=$PASSWD" >> ~/server.config 2>/dev/null
-
-echo "Log can be found on ${GREEN}installServer.log${NC}"
-echo 
-echo "Created By navotera : https://opensynergic.com"
-echo "No Warranty is provided"
-echo 
-echo "${GREEN}Please enjoy and wait for about 15 to 25 minutes to finish all the process then rebooting...${NC}"
 
 sleep 5
 
