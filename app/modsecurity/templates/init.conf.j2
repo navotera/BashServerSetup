@@ -1,0 +1,7 @@
+Include /etc/nginx/modsec/modsecurity.conf
+Include /etc/nginx/modsec/coreruleset-{{crs_version}}/crs-setup.conf
+Include /etc/nginx/modsec/coreruleset-{{crs_version}}/plugins/*-config.conf
+Include /etc/nginx/modsec/coreruleset-{{crs_version}}/plugins/*-before.conf
+Include /etc/nginx/modsec/coreruleset-{{crs_version}}/plugins/*-after.conf
+Include /etc/nginx/modsec/coreruleset-{{crs_version}}/rules/*.conf
+#Include /etc/nginx/modsec/exception/ojs.conf
