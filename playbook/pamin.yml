@@ -1,0 +1,74 @@
+- name: Download and setup phpMyAdmin
+  hosts: localhost
+  connection: local
+  become: yes
+  vars:
+    pma_latest_version_info_url: "https://www.phpmyadmin.net/home_page/version.php"     
+
+  tasks:
+    - name: Get the latest phpMyAdmin version
+      uri:
+        url: "{{ pma_latest_version_info_url }}"
+        return_content: yes
+      register: pma_version_page
+
+    - name: Extract phpMyAdmin version from HTML
+      set_fact:
+        pma_version: "{{ pma_version_page.content.split(' ')[0] }}"
+
+    - name: Set phpMyAdmin URL
+      set_fact:
+        pamin_url: "https://files.phpmyadmin.net/phpMyAdmin/{{ pma_version }}/phpMyAdmin-{{ pma_version }}-all-languages.tar.gz"
+
+    - name: Download phpMyAdmin
+      get_url:
+        url: "{{ pamin_url }}"
+        dest: "/tmp/"
+      register: download_pma
+
+    - name: Extract phpMyAdmin
+      ansible.builtin.unarchive:
+        src: "/tmp/phpMyAdmin-{{ pma_version }}-all-languages.tar.gz"
+        dest: "/tmp/"
+        remote_src: yes
+
+    - name: Rename phpMyAdmin folder
+      ansible.builtin.command:
+        cmd: mv /tmp/phpMyAdmin-{{ pma_version }}-all-languages /tmp/pamin
+
+    - name: Create Pamin service file 
+      copy:
+        content: |
+          [Unit]
+          Description=PHPMyAdmin Service
+          Documentation=https://openjournaltheme.com
+          After=network.target
+
+          [Service]
+          Type=simple
+          User=root
+          Group=root
+          WorkingDirectory=/etc/pamin/
+          ExecStart=/usr/bin/env php -S 0.0.0.0:9292
+          Restart=on-failure
+
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/pamin.service     
+
+    - name: Move pamin to /etc
+      ansible.builtin.command:
+        cmd: mv /tmp/pamin /etc/pamin
+
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: Start pamin service
+      ansible.builtin.service:
+        name: pamin
+        state: started
+
+    - name: Wait for the service to start
+      ansible.builtin.wait_for:
+        timeout: 5

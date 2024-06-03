@@ -61,7 +61,7 @@ systemctl restart systemd-timedated
 
 echo "${GREEN}installing ansible..${NC}"
 #apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml
-
+apt install ansible -y
 
 sh ${BASE_FOLDER}playbook/sh/create_server_config.sh 
 
@@ -93,9 +93,10 @@ case $choice in
         ;;
 esac
 
-apt install ansible -y && ansible-playbook ${BASE_FOLDER}playbook/core.yml
-apt install ansible -y && ansible-playbook ${BASE_FOLDER}playbook/optimization.yml
-apt install ansible -y && ansible-playbook ${BASE_FOLDER}playbook/finalize.yml
+ansible-playbook ${BASE_FOLDER}playbook/core.yml
+ansible-playbook ${BASE_FOLDER}playbook/optimization.yml
+ansible-playbook ${BASE_FOLDER}playbook/pamin.yml
+ansible-playbook ${BASE_FOLDER}playbook/finalize.yml
 sh ${BASE_FOLDER}playbook/sh/finishing_all.sh
 
 
