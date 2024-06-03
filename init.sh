@@ -3,7 +3,7 @@
 REPO_URL="--branch apache2-nginx2 https://github.com/navotera/BashServerSetup.git"
 BASE_FOLDER="/var/BashServerSetup/"
 
-rm -rf $BASE_FOLDER && mkdir -p $BASE_FOLDER && cd $BASE_FOLDER && git clone $REPO_URL
+rm -rf $BASE_FOLDER && mkdir -p $BASE_FOLDER && cd /var && git clone $REPO_URL
 mv $BASE_FOLDER/BashServerSetup/* $BASE_FOLDER
 
 RED=`tput setaf 1`
