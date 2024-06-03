@@ -28,7 +28,7 @@ service pamin start
 
 ## How to use ?
 
-### Apache2 Server
+### Apache2 & Nginx Server
 
 ```unix
 wget https://raw.githubusercontent.com/navotera/BashServerSetup/apache2-nginx2/init.sh && chmod +x init.sh && ./init.sh | tee /var/log/bashServerSetup_install.log
@@ -37,7 +37,7 @@ wget https://raw.githubusercontent.com/navotera/BashServerSetup/apache2-nginx2/i
 
 ### NGINX Server
 ```unix
-curl https://raw.githubusercontent.com/navotera/BashServerSetup/nginx/init.sh | bash | tee /var/log/bashServerSetup_install.log
+same, just use pick nginx as webserver option on installation process
 ```
 
 ## Run specific ansible playbook : 

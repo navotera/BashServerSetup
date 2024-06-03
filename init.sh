@@ -81,6 +81,9 @@ case $choice in
         ;;
     2)
         echo "${GREEN}Installing Nginx with Virtualmin...with ${hostName} ${NC}"
+        sudo add-apt-repository -y ppa:ondrej/nginx
+        sudo apt update
+        apt-get install -y nginx
         VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install_virtualmin.sh --minimal --force --hostname "$hostName" -b LEMP
         ;;
     *)

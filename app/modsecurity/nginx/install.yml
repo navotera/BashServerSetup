@@ -230,9 +230,7 @@
       get_url:
         url: 'https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping'
         dest: '{{webserver_modsec_dir}}'
-
-
-    
+  
 
     - name: ModSec::Rules::renamePrevModConfig
       shell: 'mv {{webserver_modsec_dir}}/modsecurity.conf-recommended {{webserver_modsec_dir}}/modsecurity.conf'
