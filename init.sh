@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPO_URL="--branch apache2-nginx2 https://github.com/navotera/BashServerSetup.git"
-BASE_FOLDER="/var/BashServerSetup/"
+BASE_FOLDER="/tmp/BashServerSetup/"
 
 cd $BASE_FOLDER && rm -rf $BASE_FOLDER && git clone $REPO_URL
 
