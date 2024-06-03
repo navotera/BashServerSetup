@@ -11,8 +11,8 @@
     wordpress_plugin_repo: "https://github.com/coreruleset/wordpress-rule-exclusions-plugin.git"
     unicode_mapping_url: "https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping"
     base_dir: "/tmp/modsecurity"
-    modsec_webserver_dir: "/tmp/modsecurity/webserver/{{ type }}"
-    webserver_modsec_dir: "/etc/apache2/modsecurity.d"
+    modsec_webserver_dir: "/tmp/modsecurity/{{ type }}"
+    webserver_modsec_dir: "/etc/{{type}}/modsecurity.d"
 
   tasks:
 
@@ -95,37 +95,22 @@
         rm -r {{base_dir}}/modsecurity
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
-    - name: Run ./build.sh
-      command: ./build.sh
-      args:
-        chdir: "{{base_dir}}"
-      retries: 50
-      until: build is success
-      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
-    - name: Run ./configure
-      command: ./configure
-      args:
-        chdir: "{{base_dir}}"
-      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+    - name: Build and install ModSecurity 
+      block:
+        - name: Build and install ModSecurity item build, configure, make and make install
+          ansible.builtin.command:
+            cmd: "{{ item }}"
+            chdir: "{{base_dir}}/"
+          retries: 3
+          delay: 10
+          with_items:
+            - "./build.sh"
+            - "./configure"
+            - "make"
+            - "make install"
+      ignore_errors: true
 
-    - name: Run make
-      command: make
-      args:
-        chdir: "{{base_dir}}"
-      retries: 4
-      until: make is success
-      debugger: on_failed
-      async: 1800
-      poll: 10
-      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
-
-    - name: Run make install
-      command: make install
-      args:
-        chdir: "{{base_dir}}"
-      become: yes  # Run as root
-      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
   
     - name: Move ModSecurity configuration
@@ -148,7 +133,7 @@
         - name: Run commands with retries
           ansible.builtin.command:
             cmd: "{{ item }}"
-            chdir: "{{modsec_webserver_dir}}"
+            chdir: "{{modsec_webserver_dir}}/"
           retries: 3
           delay: 10
           with_items:
