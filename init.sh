@@ -27,6 +27,25 @@ else
     echo "" # Add a newline after the countdown
 fi
 
+
+
+# Function to prompt for installing ModSecurity
+prompt_install_modsecurity() {
+    read -t 20 -p "Do you want to install ModSecurity also? (y/n): " yn
+    yn=${yn:-n}  # Default to "n" if no input is provided within 20 seconds
+    case $yn in
+        [Yy]* ) install_modsecurity;;
+        [Nn]* ) echo "Skipping ModSecurity installation.";;
+        * ) echo "Please answer yes or no.";;
+    esac
+}
+
+
+
+prompt_install_modsecurity
+
+
+
 #in ubuntu 22.04 should change this to disable interactive mode that stop automatic process in this script
 sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/needrestart/needrestart.conf
 
@@ -114,6 +133,25 @@ echo "${GREEN}Finalizing.${NC}"
 ansible-playbook ${BASE_FOLDER}playbook/finalize.yml
 
 
+
+
+# Function to install ModSecurity
+install_modsecurity() {
+    if systemctl status apache2 >/dev/null 2>&1; then
+        echo "${GREEN} Installing modsecurity for apache2 ${NC}"
+        ansible-playbook ${BASE_FOLDER}app/modsecurity/apache2/install.yml
+    elif systemctl status nginx >/dev/null 2>&1; then
+        echo "${GREEN} Installing modsecurity for nginx ${NC}"
+        ansible-playbook ${BASE_FOLDER}app/modsecurity/nginx/install.yml
+    else
+        echo "${YELLOW}Skipping... No supported web server detected (Apache2 or Nginx).${NC}"
+    fi
+}
+
+
 sh ${BASE_FOLDER}playbook/sh/finishing_all.sh
+
+
+
 
 
