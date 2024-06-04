@@ -183,7 +183,6 @@
         dest: "{{modsec_webserver_dir}}"
         remote_src: yes
     
-
     - name: MakeModuleConnector
       block:
         - name: Build and install Nginx connector item build, configure, make and make install
@@ -250,7 +249,6 @@
         return_content: yes
       register: json_output 
 
-
     - name: Set CRS latest version
       ansible.builtin.set_fact:
         crs_version: "{{ json_output.json.tag_name | regex_replace('^v', '') }}"
@@ -272,7 +270,6 @@
     - name: ModSec::CoreRule::setCoresetFile 
       shell: "cd {{webserver_modsec_dir}}/coreruleset-{{ crs_version }}/ && cp crs-setup.conf.example crs-setup.conf"
 
- 
 
     - name: Create ModSecurity initialization file
       copy:
@@ -283,7 +280,7 @@
           Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/plugins/*-before.conf
           Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/plugins/*-after.conf
           Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/rules/*.conf
-          #Include {{webserver_modsec_dir}}/exception/ojs.conf
+          #Include {{webserver_modsec_dir}}/ojs/ojs.conf
         dest: "{{webserver_modsec_dir}}/init.conf" 
 
 
