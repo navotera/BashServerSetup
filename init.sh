@@ -48,7 +48,7 @@ esac
 
 
 
-apt update 2>/dev/null >/dev/null
+
 apt install software-properties-common -y
 #add-apt-repository --yes --update ppa:ansible/ansible
 
@@ -74,7 +74,7 @@ systemctl restart systemd-timedated
 echo "${GREEN}installing ansible..${NC}"
 #apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml
 
-
+sudo apt update
 sh ${BASE_FOLDER}playbook/sh/create_server_config.sh 
 
 
@@ -84,7 +84,7 @@ HostName=$(grep '^HOSTNAME=' ~/server.config | cut -d'=' -f2)
 sudo wget -O /tmp/install_virtualmin.sh http://software.virtualmin.com/gpl/scripts/install.sh
 hostName=${HostName}
 
-sudo apt update
+
 
 # Handle the user's choice
 case $choice in
