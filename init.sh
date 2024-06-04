@@ -136,8 +136,6 @@ ansible-playbook ${BASE_FOLDER}playbook/pamin.yml
 echo "${GREEN}Finalizing.${NC}"
 ansible-playbook ${BASE_FOLDER}playbook/finalize.yml
 
-
-
 # Function to install ModSecurity
 install_modsecurity() {
     if [[ $INSTALL_MODSECURITY == "y" ]]; then
