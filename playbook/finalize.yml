@@ -3,9 +3,9 @@
   connection: local
   become: yes
   vars:
-    JAIL_CONFIG_URL: "/tmp/BashServerSetup/serverInit/jail.local"
-    CORE_FILE_URL: "/tmp/BashServerSetup/core.sh"
-    SETUP_PATH: "/tmp/BashServerSetup/"
+    JAIL_CONFIG_URL: "/var/BashServerSetup/serverInit/jail.local"
+    CORE_FILE_URL: "/var/BashServerSetup/core.sh"
+    SETUP_PATH: "/var/BashServerSetup/"
     IP_ADDRESS: "{{ ansible_default_ipv4.address }}"
   tasks:
     #- name: Change needrestart configuration
@@ -32,7 +32,7 @@
 
     #biar bagaimana pakai ansible rules saat bikin new user tidak bisa selalu 'unable to connect'
     - name: Create the root database user with all privileges
-      shell: sh /tmp/BashServerSetup/playbook/sh/create_root_db_user.sh
+      shell: sh {{SETUP_PATH}}/playbook/sh/create_root_db_user.sh
 
     - name: Start webmin
       command: /usr/share/webmin/changepass.pl /etc/webmin root "{{ PASSWD.stdout }}"
