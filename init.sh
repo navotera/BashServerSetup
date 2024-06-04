@@ -31,7 +31,7 @@ fi
 
 prompt_install_modsecurity() {
     while true; do
-        read -t 20 -p "${GREEN}Do you want to install ModSecurity also? (y/n):${NC} " yn
+        read -t 20 -p "${GREEN}Do you want to install ModSecurity also? (y/n select in 20 seconds default n):${NC} " yn
         yn=${yn:-n}  # Default to "n" if no input is provided within 20 seconds
         yn=$(echo "$yn" | tr '[:upper:]' '[:lower:]')  # Convert to lowercase
 
