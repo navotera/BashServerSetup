@@ -138,6 +138,7 @@ ansible-playbook ${BASE_FOLDER}playbook/finalize.yml
 
 # Function to install ModSecurity
 echo "${GREEN} Installing modsecurity ${NC}"
+install_modsecurity
 install_modsecurity() {
     if [[ $INSTALL_MODSECURITY == "y" ]]; then
         if systemctl status apache2 >/dev/null 2>&1; then          
