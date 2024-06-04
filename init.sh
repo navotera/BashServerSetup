@@ -34,8 +34,20 @@ apt install git -y
 
 # wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/v2/init.sh  | bash
 
-add-apt-repository --yes --update ppa:ondrej/php 
-add-apt-repository --yes --update ppa:deadsnakes/ppa
+add-apt-repository --yes ppa:ondrej/php 
+add-apt-repository --yes ppa:deadsnakes/ppa
+
+
+case $choice in   
+    2)
+        sudo add-apt-repository -y ppa:ondrej/nginx    
+esac
+
+
+
+
+
+
 apt update 2>/dev/null >/dev/null
 apt install software-properties-common -y
 #add-apt-repository --yes --update ppa:ansible/ansible
@@ -61,7 +73,7 @@ systemctl restart systemd-timedated
 
 echo "${GREEN}installing ansible..${NC}"
 #apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml
-apt install ansible -y
+
 
 sh ${BASE_FOLDER}playbook/sh/create_server_config.sh 
 
@@ -72,7 +84,7 @@ HostName=$(grep '^HOSTNAME=' ~/server.config | cut -d'=' -f2)
 sudo wget -O /tmp/install_virtualmin.sh http://software.virtualmin.com/gpl/scripts/install.sh
 hostName=${HostName}
 
-
+sudo apt update
 
 # Handle the user's choice
 case $choice in
@@ -81,9 +93,7 @@ case $choice in
         VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install_virtualmin.sh --minimal --force --hostname "$hostName"        
         ;;
     2)
-        echo "${GREEN}Installing Nginx with Virtualmin...with ${hostName} ${NC}"
-        sudo add-apt-repository -y ppa:ondrej/nginx
-        sudo apt update
+        echo "${GREEN}Installing Nginx with Virtualmin...with ${hostName} ${NC}"        
         apt-get install -y nginx
         VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install_virtualmin.sh --minimal --force --hostname "$hostName" -b LEMP
         ;;
@@ -93,10 +103,24 @@ case $choice in
         ;;
 esac
 
+apt install ansible -y
+
+
+echo "${GREEN}Core Setup${NC}"
 ansible-playbook ${BASE_FOLDER}playbook/core.yml
+
+echo "${GREEN}Optimizing.${NC}"
 ansible-playbook ${BASE_FOLDER}playbook/optimization.yml
+
+
+echo "${GREEN}Setup Pamin.${NC}"
 ansible-playbook ${BASE_FOLDER}playbook/pamin.yml
+
+
+echo "${GREEN}Finalizing.${NC}"
 ansible-playbook ${BASE_FOLDER}playbook/finalize.yml
+
+
 sh ${BASE_FOLDER}playbook/sh/finishing_all.sh
 
 

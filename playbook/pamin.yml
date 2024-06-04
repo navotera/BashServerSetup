@@ -3,10 +3,11 @@
   connection: local
   become: yes
   vars:
-    pma_latest_version_info_url: "https://www.phpmyadmin.net/home_page/version.php"     
+    pma_latest_version_info_url: "https://www.phpmyadmin.net/home_page/version.php"    
+    pma_base_url: "https://files.phpmyadmin.net/phpMyAdmin" 
 
   tasks:
-    - name: Get the latest phpMyAdmin version
+    - name: Get the latest phpMyAdmin version info page
       uri:
         url: "{{ pma_latest_version_info_url }}"
         return_content: yes
@@ -14,12 +15,17 @@
 
     - name: Extract phpMyAdmin version from HTML
       set_fact:
-        pma_version: "{{ pma_version_page.content.split(' ')[0] }}"
+        pma_version: "{{ pma_version_page.content.split()[0] }}"
 
-    - name: Set phpMyAdmin URL
+    - name: Set phpMyAdmin download URL
       set_fact:
-        pamin_url: "https://files.phpmyadmin.net/phpMyAdmin/{{ pma_version }}/phpMyAdmin-{{ pma_version }}-all-languages.tar.gz"
+        pamin_url: "{{ pma_base_url }}/{{ pma_version }}/phpMyAdmin-{{ pma_version }}-all-languages.zip"
 
+    - name: Debug phpMyAdmin download URL
+      ansible.builtin.debug:
+        msg: "The latest phpMyAdmin download URL is {{ pamin_url }}"
+
+  
     - name: Download phpMyAdmin
       get_url:
         url: "{{ pamin_url }}"
@@ -28,13 +34,13 @@
 
     - name: Extract phpMyAdmin
       ansible.builtin.unarchive:
-        src: "/tmp/phpMyAdmin-{{ pma_version }}-all-languages.tar.gz"
+        src: "/tmp/phpMyAdmin-{{ pma_version }}-all-languages.zip"
         dest: "/tmp/"
         remote_src: yes
 
-    - name: Rename phpMyAdmin folder
-      ansible.builtin.command:
-        cmd: mv /tmp/phpMyAdmin-{{ pma_version }}-all-languages /tmp/pamin
+    - name: move phpMyAdmin folder
+      shell: |
+        mv /tmp/phpMyAdmin-{{ pma_version }}-all-languages /tmp/pamin
 
     - name: Create Pamin service file 
       copy:
@@ -57,8 +63,8 @@
         dest: /etc/systemd/system/pamin.service     
 
     - name: Move pamin to /etc
-      ansible.builtin.command:
-        cmd: mv /tmp/pamin /etc/pamin
+      shell: |
+        mv /tmp/pamin /etc/pamin
 
     - name: Reload systemd daemon
       ansible.builtin.systemd:
