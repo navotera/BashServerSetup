@@ -42,7 +42,7 @@ same, just use pick nginx as webserver option on installation process
 
 ## Run specific ansible playbook : 
 ```unix
-ansible-playbook /tmp/BashServerSetup/playbook/init.yml
+ansible-playbook /var/BashServerSetup/playbook/init.yml
 ```
 
 ## After success installing 

@@ -32,8 +32,6 @@ sed -i 's/#$nrconf{restart} = '\''i'\'';/\$nrconf{restart} = '\''a'\'';/' /etc/n
 
 apt install git -y
 
-# wget -O - https://github.com/navotera/BashServerSetup/raw/master/app/modsecurity/v2/init.sh  | bash
-
 add-apt-repository --yes ppa:ondrej/php 
 add-apt-repository --yes ppa:deadsnakes/ppa
 
@@ -42,12 +40,6 @@ case $choice in
     2)
         sudo add-apt-repository -y ppa:ondrej/nginx    
 esac
-
-
-
-
-
-
 
 apt install software-properties-common -y
 #add-apt-repository --yes --update ppa:ansible/ansible
@@ -85,7 +77,6 @@ sh ${BASE_FOLDER}playbook/sh/create_server_config.sh
 HostName=$(grep '^HOSTNAME=' ~/server.config | cut -d'=' -f2)
 sudo wget -O /tmp/install_virtualmin.sh http://software.virtualmin.com/gpl/scripts/install.sh
 hostName=${HostName}
-
 
 
 # Handle the user's choice

@@ -13,8 +13,7 @@
     modsec_webserver_dir: "/tmp/modsecurity/{{type}}/"
     webserver_modsec_dir: "/etc/{{type}}/modsecurity.d"  
     connector_dir: "/tmp/nginx-connector"
-    init_conf_url: "https://raw.githubusercontent.com/navotera/BashServerSetup/master/app/modsecurity/templates/init.conf.j2"
-
+    
   tasks:
   
     - name: Install required packages
@@ -236,10 +235,10 @@
       shell: 'mv {{webserver_modsec_dir}}/modsecurity.conf-recommended {{webserver_modsec_dir}}/modsecurity.conf'
 
     - name: ModSec::Rules::activate
-      shell: "sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/nginx/modsec/modsecurity.conf"
+      shell: "sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' {{webserver_modsec_dir}}/modsecurity.conf"
 
     - name: Modsec::edit::SecRequestBodyLimit
-      shell: "sed -i 's/SecRequestBodyLimit 13107200/SecRequestBodyLimit 52428800/' /etc/nginx/modsec/modsecurity.conf"
+      shell: "sed -i 's/SecRequestBodyLimit 13107200/SecRequestBodyLimit 52428800/' {{webserver_modsec_dir}}/modsecurity.conf"
 
     - name: ModSec::CoreRule::Mkdir
       shell: "mkdir coreruleset"
@@ -273,18 +272,20 @@
     - name: ModSec::CoreRule::setCoresetFile 
       shell: "cd {{webserver_modsec_dir}}/coreruleset-{{ crs_version }}/ && cp crs-setup.conf.example crs-setup.conf"
 
-    - name: Download the init.conf.j2 to {{base_dir}}
-      ansible.builtin.get_url:
-        url: '{{init_conf_url}}'
-        dest: '{{base_dir}}/init.conf.j2'
-        mode: '0644'
+ 
 
-    - name: Template the Nginx ModSecurity configuration
-      ansible.builtin.template:
-          src: '{{base_dir}}/init.conf.j2'
-          dest: '{{webserver_modsec_dir}}/init.conf'
-      vars:
-        crs_version: "{{ crs_version }}"
+    - name: Create ModSecurity initialization file
+      copy:
+        content: |
+          Include {{webserver_modsec_dir}}/modsecurity.conf
+          Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/crs-setup.conf
+          Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/plugins/*-config.conf
+          Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/plugins/*-before.conf
+          Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/plugins/*-after.conf
+          Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/rules/*.conf
+          #Include {{webserver_modsec_dir}}/exception/ojs.conf
+        dest: "{{webserver_modsec_dir}}/init.conf" 
+
 
 
     - name: End play  ------------------------------
