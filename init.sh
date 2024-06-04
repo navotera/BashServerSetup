@@ -75,6 +75,8 @@ echo "${GREEN}installing ansible..${NC}"
 #apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml
 
 sudo apt update
+
+echo "${GREEN}setup server config file${NC}"
 sh ${BASE_FOLDER}playbook/sh/create_server_config.sh 
 
 
