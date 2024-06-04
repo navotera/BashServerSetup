@@ -137,13 +137,12 @@ echo "${GREEN}Finalizing.${NC}"
 ansible-playbook ${BASE_FOLDER}playbook/finalize.yml
 
 # Function to install ModSecurity
+echo "${GREEN} Installing modsecurity ${NC}"
 install_modsecurity() {
     if [[ $INSTALL_MODSECURITY == "y" ]]; then
-        if systemctl status apache2 >/dev/null 2>&1; then
-            echo "${GREEN} Installing modsecurity for apache2 ${NC}"
+        if systemctl status apache2 >/dev/null 2>&1; then          
             ansible-playbook ${BASE_FOLDER}app/modsecurity/apache2/install.yml
-        elif systemctl status nginx >/dev/null 2>&1; then
-            echo "${GREEN} Installing modsecurity for nginx ${NC}"
+        elif systemctl status nginx >/dev/null 2>&1; then            
             ansible-playbook ${BASE_FOLDER}app/modsecurity/nginx/install.yml
         else
             echo "No supported web server detected (Apache2 or Nginx)."
