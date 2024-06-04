@@ -2,6 +2,7 @@
 
 REPO_URL="--branch apache2-nginx2 https://github.com/navotera/BashServerSetup.git"
 BASE_FOLDER="/var/BashServerSetup/"
+INSTALL_MODSECURITY="n"
 
 rm -rf $BASE_FOLDER && mkdir -p $BASE_FOLDER && cd /var && git clone $REPO_URL
 
@@ -28,16 +29,19 @@ else
 fi
 
 
-
-# Function to prompt for installing ModSecurity
 prompt_install_modsecurity() {
-    read -t 20 -p "Do you want to install ModSecurity also? (y/n): " yn
-    yn=${yn:-n}  # Default to "n" if no input is provided within 20 seconds
-    case $yn in
-        [Yy]* ) install_modsecurity;;
-        [Nn]* ) echo "Skipping ModSecurity installation.";;
-        * ) echo "Please answer yes or no.";;
-    esac
+    while true; do
+        read -t 20 -p "Do you want to install ModSecurity also? (y/n): " yn
+        yn=${yn:-n}  # Default to "n" if no input is provided within 20 seconds
+        yn=$(echo "$yn" | tr '[:upper:]' '[:lower:]')  # Convert to lowercase
+
+        if [[ "$yn" == "y" || "$yn" == "n" ]]; then
+            INSTALL_MODSECURITY=$yn
+            break
+        else
+            echo "Invalid input. Please answer 'y' or 'n'."
+        fi
+    done
 }
 
 
@@ -134,17 +138,20 @@ ansible-playbook ${BASE_FOLDER}playbook/finalize.yml
 
 
 
-
 # Function to install ModSecurity
 install_modsecurity() {
-    if systemctl status apache2 >/dev/null 2>&1; then
-        echo "${GREEN} Installing modsecurity for apache2 ${NC}"
-        ansible-playbook ${BASE_FOLDER}app/modsecurity/apache2/install.yml
-    elif systemctl status nginx >/dev/null 2>&1; then
-        echo "${GREEN} Installing modsecurity for nginx ${NC}"
-        ansible-playbook ${BASE_FOLDER}app/modsecurity/nginx/install.yml
+    if [[ $INSTALL_MODSECURITY == "y" ]]; then
+        if systemctl status apache2 >/dev/null 2>&1; then
+            echo "${GREEN} Installing modsecurity for apache2 ${NC}"
+            ansible-playbook ${BASE_FOLDER}app/modsecurity/apache2/install.yml
+        elif systemctl status nginx >/dev/null 2>&1; then
+            echo "${GREEN} Installing modsecurity for nginx ${NC}"
+            ansible-playbook ${BASE_FOLDER}app/modsecurity/nginx/install.yml
+        else
+            echo "No supported web server detected (Apache2 or Nginx)."
+        fi
     else
-        echo "${YELLOW}Skipping... No supported web server detected (Apache2 or Nginx).${NC}"
+        echo "Skipping ModSecurity installation."
     fi
 }
 
