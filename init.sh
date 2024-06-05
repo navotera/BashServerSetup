@@ -11,6 +11,8 @@ RED=`tput setaf 1`
 NC=`tput sgr0` # No Color
 GREEN=`tput setaf 2`
 YELLOW=`tput setaf 3`
+MAGENTA=$(tput setaf 5)
+GREY=$(tput setaf 7)  #
 
 echo "Select an option:"
 echo "1. Install ${YELLOW}Apache2${NC} with Virtualmin (default)"
@@ -31,7 +33,7 @@ fi
 
 prompt_install_modsecurity() {
     while true; do
-        read -t 10 -p "${GREEN}Do you want to install ModSecurity also? (y/n select in 10 seconds default n):${NC} " yn
+        read -t 10 -p "${MAGENTA}Do you want to install ModSecurity also?${NC} (${GREEN}y${NC}/${RED}n${NC} select in 10 seconds default n): " yn
         yn=${yn:-n}  # Default to "n" if no input is provided within 20 seconds
         yn=$(echo "$yn" | tr '[:upper:]' '[:lower:]')  # Convert to lowercase
 
