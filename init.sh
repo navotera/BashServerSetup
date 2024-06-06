@@ -149,7 +149,7 @@ install_modsecurity() {
             ansible-playbook ${BASE_FOLDER}app/modsecurity/nginx/install.yml
         else
             echo "${RED}No supported web server detected (Apache2 or Nginx).${NC}"
-            echo "${YELLOW} Try to run this script again ${NC}
+            echo "${YELLOW} Try to run this script again ${NC}"
         fi
     else
         echo "Skipping ModSecurity installation."
