@@ -1,0 +1,199 @@
+- name: Nginx::install Modsecurity 3 latest version
+  hosts: localhost
+  connection: local
+  become: yes  
+
+  vars:
+    type: "apache2"
+    modsecurity_download_url: "https://api.github.com/repositories/1320594/releases/latest"
+    modsecurity_web_server_repo: "https://github.com/SpiderLabs/ModSecurity-apache"
+    coreruleset_repo: "https://github.com/coreruleset/coreruleset.git"
+    wordpress_plugin_repo: "https://github.com/coreruleset/wordpress-rule-exclusions-plugin.git"
+    unicode_mapping_url: "https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping"
+    base_dir: "/tmp/modsecurity"
+    modsec_webserver_dir: "/tmp/modsecurity/{{ type }}"
+    webserver_modsec_dir: "/etc/{{type}}/modsecurity.d"
+
+  tasks:
+
+    - name: Install required packages
+      apt:
+        name:
+          - g++
+          - flex
+          - bison
+          - curl
+          - apache2-dev
+          - doxygen
+          - libyajl-dev
+          - ssdeep
+          - liblua5.2-dev
+          - libgeoip-dev
+          - libtool
+          - dh-autoreconf
+          - libcurl4-gnutls-dev
+          - libxml2
+          - libpcre++-dev
+          - libxml2-dev
+          - git
+        state: present
+        update_cache: yes
+
+    - name: Create directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - /var/cache/modsecurity
+        - "{{webserver_modsec_dir}}/exception"
+
+
+    - name: Fetch the latest release data from GitHub API
+      uri:
+        url: "{{modsecurity_download_url}}"
+        return_content: yes
+      register: release_data
+
+    - name: Extract the browser_download_url ending with .tar.gz
+      set_fact:
+        tarball_url: "{{ item.browser_download_url }}"
+      with_items: "{{ release_data.json.assets }}"
+      when: item.browser_download_url | regex_search('.tar.gz$')
+      register: tarball_url_result
+
+
+    - name: Create the {{base_dir}} directory if it doesn't exist
+      file:
+        path: "{{base_dir}}"
+        state: directory
+        mode: '0755'
+
+    - name: Download the tarball file to /tmp/modsecurity directory
+      get_url:
+        url: "{{ tarball_url_result.results[0].ansible_facts.tarball_url }}"
+        dest: "{{base_dir}}"
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+
+    - name: change file name 
+      shell : for file in /tmp/modsecurity/*.tar.gz; do mv "$file" /tmp/modsecurity/modsecurity.tar.gz; done
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+    - name: Extract the tarball file to /tmp/modsecurity directory
+      unarchive:
+        src: "{{base_dir}}/modsecurity.tar.gz"
+        dest: "{{base_dir}}"
+        remote_src: yes
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+    - name: Remove the tarball file and rename folder
+      shell: |
+        rm -f {{base_dir}}/modsecurity.tar.gz
+        for folder in {{base_dir}}/*/; do
+          mv "$folder" "{{base_dir}}/modsecurity/"
+        done
+        mv {{base_dir}}/modsecurity/* {{base_dir}}
+        rm -r {{base_dir}}/modsecurity
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+
+    - name: Build and install ModSecurity
+      shell: |
+        ./configure
+        make
+        make install
+      args:
+        chdir: "{{ base_dir }}/"
+      retries: 3
+      delay: 10
+      register: result
+      until: result.rc == 0
+      ignore_errors: true  
+
+  
+    - name: Move ModSecurity configuration
+      copy: 
+          remote_src=True 
+          src="{{ base_dir }}/modsecurity.conf-recommended" 
+          dest="/etc/apache2/modsecurity.d/modsecurity.conf"
+      when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
+
+
+    - name: Clone ModSecurity Apache connector
+      git:
+        repo: "{{ modsecurity_web_server_repo }}"
+        dest: "{{modsec_webserver_dir}}"
+        force: yes
+
+    - name: Build and install ModSecurity Connector
+      shell: |
+        ./autogen.sh
+        ./configure --with-libmodsecurity=/usr/local/modsecurity/
+        make
+        make install
+      args:
+        chdir: "{{ base_dir }}/"
+      retries: 3
+      delay: 10
+      register: result
+      until: result.rc == 0
+      ignore_errors: true  
+
+
+    - name: Enable ModSecurity in Apache
+      lineinfile:
+        path: /etc/apache2/apache2.conf
+        line: "LoadModule security3_module /usr/lib/apache2/modules/mod_security3.so"
+
+
+    - name: Enable ModSecurity rules
+      lineinfile:
+        path: /etc/apache2/modsecurity.d/modsecurity.conf
+        regexp: "^SecRuleEngine"
+        line: "SecRuleEngine On"
+
+    - name: Clone OWASP CoreRuleSet
+      git:
+        repo: "{{ coreruleset_repo }}"
+        dest: "{{webserver_modsec_dir}}/owasp-crs"
+        force: yes
+
+    - name: Copy CoreRuleSet configuration
+      copy:
+        src: "{{webserver_modsec_dir}}/owasp-crs/crs-setup.conf.example"
+        remote_src: yes
+        dest: "{{webserver_modsec_dir}}/owasp-crs/crs-setup.conf"
+
+    - name: Clone WordPress plugin for CoreRuleSet
+      git:
+        repo: "{{ wordpress_plugin_repo }}"
+        dest: "{{webserver_modsec_dir}}/owasp-crs/plugins/wordpress-rule-exclusions-plugin"
+        force: yes
+
+    - name: Download Unicode mapping
+      get_url:
+        url: "{{ unicode_mapping_url }}"
+        dest: "{{webserver_modsec_dir}}/unicode.mapping"
+
+    - name: Create ModSecurity initialization file
+      copy:
+        content: |
+          # Default Debian dir for modsecurity persistent data
+          SecDataDir /var/cache/modsecurity
+
+          # Include OWASP ModSecurity CRS rules if installed
+          Include "{{webserver_modsec_dir}}/modsecurity.conf"
+          Include "{{webserver_modsec_dir}}/owasp-crs/crs-setup.conf"
+          Include "{{webserver_modsec_dir}}/owasp-crs/rules/*.conf"
+        dest: "{{webserver_modsec_dir}}/init.conf" 
+
+    - name: Restart Apache
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: apache2
+
+
+  
+
+    

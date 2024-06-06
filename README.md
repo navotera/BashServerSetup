@@ -28,27 +28,34 @@ service pamin start
 
 ## How to use ?
 
-### Apache2 Server
+### Apache2 & Nginx Server
 
 ```unix
-curl https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh | bash | tee /var/log/bashServerSetup_install.log
+wget https://raw.githubusercontent.com/navotera/BashServerSetup/apache2-nginx2/init.sh && chmod +x init.sh && ./init.sh | tee /var/log/bashServerSetup_install.log
+
 ```
 
 ### NGINX Server
 ```unix
-curl https://raw.githubusercontent.com/navotera/BashServerSetup/nginx/init.sh | bash | tee /var/log/bashServerSetup_install.log
+same, just use pick nginx as webserver option on installation process
 ```
 
 ## Run specific ansible playbook : 
 ```unix
-ansible-playbook /tmp/BashServerSetup/playbook/init.yml
+ansible-playbook /var/BashServerSetup/playbook/init.yml
 ```
 
 ## After success installing 
-Access password on **server.config** or Change passsword 
-```sudo -i passwd```  
-Access the webmin to initiate the configuration 
-https://ip_address:9191
+1. Access password on **server.config** or Change passsword ```sudo -i passwd```  
+2. Change the hostname by using command ```hostname YOUR_HOSTNAME``` [optional]
+3. Start the webmin ```service webmin start``` and access to https://ip_address:9191
+
+
+## ModSecurity installation [Optional]
+if you want install Modsecurity you can run this : 
+```ansible-playbook /tmp/BashServerSetup/app/modsecurity/apache2/install.yml``` --> for **Apache**
+```ansible-playbook /tmp/BashServerSetup/app/modsecurity/nginx/install.yml``` --> for **Nginx**
+
 
 ## TODO
 - [ ] Live Progress
