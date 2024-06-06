@@ -28,7 +28,7 @@ service pamin start
 
 ## How to use ?
 
-It is recommended to use *screen* to inititate the installation process due to the installation may take more than 30 minutes (depend on computing power of server)
+It is recommended to use [screen](https://www.howtogeek.com/662422/how-to-use-linuxs-screen-command/) to inititate the installation process due to the installation may take more than 30 minutes (depend on computing power of server)
 
 ### Apache2 & Nginx Server
 
