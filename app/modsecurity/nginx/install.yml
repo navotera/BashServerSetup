@@ -270,16 +270,19 @@
     - name: ModSec::CoreRule::setCoresetFile 
       shell: "cd {{webserver_modsec_dir}}/coreruleset-{{ crs_version }}/ && cp crs-setup.conf.example crs-setup.conf"
 
+    - name: Rename to owasp-crs
+      shell: "mv {{webserver_modsec_dir}}/coreruleset-{{ crs_version }} {{webserver_modsec_dir}}/owasp-crs"
+
 
     - name: Create ModSecurity initialization file
       copy:
         content: |
           Include {{webserver_modsec_dir}}/modsecurity.conf
-          Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/crs-setup.conf
-          Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/plugins/*-config.conf
-          Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/plugins/*-before.conf
-          Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/plugins/*-after.conf
-          Include {{webserver_modsec_dir}}/coreruleset-{{crs_version}}/rules/*.conf
+          Include {{webserver_modsec_dir}}/owasp-crs/crs-setup.conf
+          Include {{webserver_modsec_dir}}/owasp-crs/plugins/*-config.conf
+          Include {{webserver_modsec_dir}}/owasp-crs/plugins/*-before.conf
+          Include {{webserver_modsec_dir}}/owasp-crs/plugins/*-after.conf
+          Include {{webserver_modsec_dir}}/owasp-crs/rules/*.conf
           #Include {{webserver_modsec_dir}}/ojs/ojs.conf
         dest: "{{webserver_modsec_dir}}/init.conf" 
 
