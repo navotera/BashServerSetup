@@ -74,9 +74,7 @@
         dest: "{{base_dir}}"
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
-    - name: End play if no tarball URL is found ------------------------------
-      meta: end_play 
-
+   
     - name: change file name 
       shell : for file in /tmp/modsecurity/*.tar.gz; do mv "$file" /tmp/modsecurity/modsecurity.tar.gz; done
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
@@ -98,22 +96,41 @@
         rm -r {{base_dir}}/modsecurity
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
-    - name: Build and install ModSecurity 
-      block:
-        - name: Build and install ModSecurity item build, configure, make and make install
-          ansible.builtin.command:
-            cmd: "{{ item }}"
-            chdir: "{{base_dir}}/"
-          retries: 3
-          delay: 10
-          with_items:
-            - "./configure"
-            - "make"
-            - "make install"
-      ignore_errors: true
+    # - name: Run ./configure ModSecurity on {{base_dir}}
+    #   shell: |        
+    #     ./configure      
+    #   args:
+    #     chdir: "{{ base_dir }}/"
+    #   retries: 3
 
-    - name: End play if no tarball URL is found ------------------------------
-      meta: end_play 
+    # - name: Run *make* ModSecurity on {{base_dir}}
+    #   shell: |        
+    #     make      
+    #   args:
+    #     chdir: "{{ base_dir }}/"
+    #   retries: 3
+    
+    # - name: Run *make install* ModSecurity on {{base_dir}}
+    #   shell: |        
+    #     make install      
+    #   args:
+    #     chdir: "{{ base_dir }}/"
+    #   retries: 3
+
+
+    - name: Build and install ModSecurity
+      shell: |
+        ./configure
+        make
+        make install
+      args:
+        chdir: "{{ base_dir }}/"
+      retries: 3
+      delay: 10
+      register: result
+      until: result.rc == 0
+      ignore_errors: true  
+
   
     - name: Move ModSecurity configuration
       copy: 
