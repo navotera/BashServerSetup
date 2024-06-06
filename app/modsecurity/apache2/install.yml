@@ -162,7 +162,7 @@
     #         - "make install"
     #   ignore_errors: true
 
-    - name: Build and install ModSecurity
+    - name: Build and install ModSecurity Connector
       shell: |
         ./autogen.sh
         ./configure --with-libmodsecurity=/usr/local/modsecurity/
