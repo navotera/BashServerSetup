@@ -30,17 +30,12 @@ service pamin start
 
 It is recommended to use [screen](https://www.howtogeek.com/662422/how-to-use-linuxs-screen-command/) to inititate the installation process due to the installation may take more than 30 minutes (depend on computing power of server)
 
-### Apache2 & Nginx Server
+### Apache2/Nginx setup
 
 ```unix
 wget https://raw.githubusercontent.com/navotera/BashServerSetup/init.sh && chmod +x init.sh && ./init.sh | tee /var/log/bashServerSetup_install.log
-
 ```
 
-### NGINX Server
-```unix
-same, just use pick nginx as webserver option on installation process
-```
 
 ## Run specific ansible playbook : 
 ```unix
