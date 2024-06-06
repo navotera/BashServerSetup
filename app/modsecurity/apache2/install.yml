@@ -74,7 +74,7 @@
         dest: "{{base_dir}}"
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
-   
+
     - name: change file name 
       shell : for file in /tmp/modsecurity/*.tar.gz; do mv "$file" /tmp/modsecurity/modsecurity.tar.gz; done
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
@@ -147,20 +147,34 @@
         force: yes
 
 
-    - name: Build and install ModSecurity Apache connector
-      block:
-        - name: Run commands with retries
-          ansible.builtin.command:
-            cmd: "{{ item }}"
-            chdir: "{{modsec_webserver_dir}}/"
-          retries: 3
-          delay: 10
-          with_items:
-            - "./autogen.sh"
-            - "./configure --with-libmodsecurity=/usr/local/modsecurity/"
-            - "make"
-            - "make install"
-      ignore_errors: true
+    # - name: Build and install ModSecurity Apache connector
+    #   block:
+    #     - name: Run commands with retries
+    #       ansible.builtin.command:
+    #         cmd: "{{ item }}"
+    #         chdir: "{{modsec_webserver_dir}}/"
+    #       retries: 3
+    #       delay: 10
+    #       with_items:
+    #         - "./autogen.sh"
+    #         - "./configure --with-libmodsecurity=/usr/local/modsecurity/"
+    #         - "make"
+    #         - "make install"
+    #   ignore_errors: true
+
+    - name: Build and install ModSecurity
+      shell: |
+        ./autogen.sh
+        ./configure --with-libmodsecurity=/usr/local/modsecurity/
+        make
+        make install
+      args:
+        chdir: "{{ base_dir }}/"
+      retries: 3
+      delay: 10
+      register: result
+      until: result.rc == 0
+      ignore_errors: true  
 
 
     - name: Enable ModSecurity in Apache
@@ -217,9 +231,6 @@
         name: apache2
 
 
-   
-
-  
   
 
     
