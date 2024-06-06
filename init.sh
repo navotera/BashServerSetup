@@ -100,7 +100,7 @@ sh ${BASE_FOLDER}playbook/sh/create_server_config.sh
 #preparing install the virtualmin 
 #hostname started with number is invalid, so add "a"
 HostName=$(grep '^HOSTNAME=' ~/server.config | cut -d'=' -f2)
-sudo wget -O /tmp/install_virtualmin.sh http://software.virtualmin.com/gpl/scripts/install.sh
+sudo wget -O ${BASE_FOLDER}install_virtualmin.sh http://software.virtualmin.com/gpl/scripts/install.sh
 hostName=${HostName}
 
 
@@ -108,12 +108,12 @@ hostName=${HostName}
 case $choice in
     1)
         echo "${YELLOW}Installing Apache2 with Virtualmin...${hostName}${NC}"        
-        VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install_virtualmin.sh --minimal --force --hostname "$hostName"        
+        VIRTUALMIN_NONINTERACTIVE=1 /bin/sh ${BASE_FOLDER}install_virtualmin.sh --minimal --force --hostname "$hostName"        
         ;;
     2)
         echo "${GREEN}Installing Nginx with Virtualmin...with ${hostName} ${NC}"        
         apt-get install -y nginx
-        VIRTUALMIN_NONINTERACTIVE=1 /bin/sh /tmp/install_virtualmin.sh --minimal --force --hostname "$hostName" -b LEMP
+        VIRTUALMIN_NONINTERACTIVE=1 /bin/sh ${BASE_FOLDER}install_virtualmin.sh --minimal --force --hostname "$hostName" -b LEMP
         ;;
     *)
         echo "Invalid choice. Exiting."
@@ -148,7 +148,8 @@ install_modsecurity() {
         elif systemctl status nginx >/dev/null 2>&1; then            
             ansible-playbook ${BASE_FOLDER}app/modsecurity/nginx/install.yml
         else
-            echo "No supported web server detected (Apache2 or Nginx)."
+            echo "${RED}No supported web server detected (Apache2 or Nginx).${NC}"
+            echo "${YELLOW} Try to run this script again ${NC}
         fi
     else
         echo "Skipping ModSecurity installation."
