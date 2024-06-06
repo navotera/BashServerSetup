@@ -98,21 +98,18 @@
         rm -r {{base_dir}}/modsecurity
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
-
-    - name: Build and install ModSecurity 
-      block:
-        - name: Build and install ModSecurity item build, configure, make and make install
-          ansible.builtin.command:
-            cmd: "{{ item }}"
-            chdir: "{{base_dir}}/"
-          retries: 3
-          delay: 10
-          with_items:
-            - "./build.sh"
-            - "./configure"
-            - "make"
-            - "make install"
-      ignore_errors: true
+    - name: ./configure and install ModSecurity
+      shell: |       
+        ./configure
+        make
+        make install
+      args:
+        chdir: "{{ base_dir }}/"
+      retries: 3
+      delay: 10
+      register: result
+      until: result.rc == 0
+      ignore_errors: true  
 
     - name: Get nginx version number
       shell: nginx -v 2>&1 | awk -F' ' '{print $3}' | cut -d / -f 2
@@ -183,20 +180,34 @@
         dest: "{{modsec_webserver_dir}}"
         remote_src: yes
     
-    - name: MakeModuleConnector
-      block:
-        - name: Build and install Nginx connector item build, configure, make and make install
-          ansible.builtin.command:
-            cmd: "{{ item }}"
-            chdir: "{{modsec_webserver_dir}}/nginx-{{nginx_version.stdout}}/"
-          retries: 3
-          delay: 10
-          with_items:
-            - "./configure --with-compat --add-dynamic-module={{connector_dir}}"
-            - "make modules"  
-            - "./configure --with-compat --without-pcre2 --add-dynamic-module={{connector_dir}}" 
-            - "make modules"        
-      ignore_errors: true
+    # - name: MakeModuleConnector
+    #   block:
+    #     - name: Build and install Nginx connector item build, configure, make and make install
+    #       ansible.builtin.command:
+    #         cmd: "{{ item }}"
+    #         chdir: "{{modsec_webserver_dir}}/nginx-{{nginx_version.stdout}}/"
+    #       retries: 3
+    #       delay: 10
+    #       with_items:
+    #         - "./configure --with-compat --add-dynamic-module={{connector_dir}}"
+    #         - "make modules"  
+    #         - "./configure --with-compat --without-pcre2 --add-dynamic-module={{connector_dir}}" 
+    #         - "make modules"        
+    #   ignore_errors: true
+
+    - name: ./configure and MakeModuleConnector
+      shell: |        
+        ./configure --with-compat --without-pcre2 --add-dynamic-module={{connector_dir}}
+        make modules
+      args:
+        chdir: "{{modsec_webserver_dir}}/nginx-{{nginx_version.stdout}}/"
+      retries: 3
+      delay: 10
+      register: result
+      until: result.rc == 0
+      ignore_errors: true  
+    
+
 
     - name: Check that the folder nginx/modules exist
       stat:

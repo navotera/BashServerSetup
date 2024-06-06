@@ -16,28 +16,28 @@
 
   tasks:
 
-    # - name: Install required packages
-    #   apt:
-    #     name:
-    #       - g++
-    #       - flex
-    #       - bison
-    #       - curl
-    #       - apache2-dev
-    #       - doxygen
-    #       - libyajl-dev
-    #       - ssdeep
-    #       - liblua5.2-dev
-    #       - libgeoip-dev
-    #       - libtool
-    #       - dh-autoreconf
-    #       - libcurl4-gnutls-dev
-    #       - libxml2
-    #       - libpcre++-dev
-    #       - libxml2-dev
-    #       - git
-    #     state: present
-    #     update_cache: yes
+    - name: Install required packages
+      apt:
+        name:
+          - g++
+          - flex
+          - bison
+          - curl
+          - apache2-dev
+          - doxygen
+          - libyajl-dev
+          - ssdeep
+          - liblua5.2-dev
+          - libgeoip-dev
+          - libtool
+          - dh-autoreconf
+          - libcurl4-gnutls-dev
+          - libxml2
+          - libpcre++-dev
+          - libxml2-dev
+          - git
+        state: present
+        update_cache: yes
 
     - name: Create directories
       file:
@@ -96,27 +96,6 @@
         rm -r {{base_dir}}/modsecurity
       when: tarball_url_result.results[0].ansible_facts.tarball_url is defined
 
-    # - name: Run ./configure ModSecurity on {{base_dir}}
-    #   shell: |        
-    #     ./configure      
-    #   args:
-    #     chdir: "{{ base_dir }}/"
-    #   retries: 3
-
-    # - name: Run *make* ModSecurity on {{base_dir}}
-    #   shell: |        
-    #     make      
-    #   args:
-    #     chdir: "{{ base_dir }}/"
-    #   retries: 3
-    
-    # - name: Run *make install* ModSecurity on {{base_dir}}
-    #   shell: |        
-    #     make install      
-    #   args:
-    #     chdir: "{{ base_dir }}/"
-    #   retries: 3
-
 
     - name: Build and install ModSecurity
       shell: |
@@ -145,22 +124,6 @@
         repo: "{{ modsecurity_web_server_repo }}"
         dest: "{{modsec_webserver_dir}}"
         force: yes
-
-
-    # - name: Build and install ModSecurity Apache connector
-    #   block:
-    #     - name: Run commands with retries
-    #       ansible.builtin.command:
-    #         cmd: "{{ item }}"
-    #         chdir: "{{modsec_webserver_dir}}/"
-    #       retries: 3
-    #       delay: 10
-    #       with_items:
-    #         - "./autogen.sh"
-    #         - "./configure --with-libmodsecurity=/usr/local/modsecurity/"
-    #         - "make"
-    #         - "make install"
-    #   ignore_errors: true
 
     - name: Build and install ModSecurity Connector
       shell: |
