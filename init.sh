@@ -104,11 +104,14 @@ sudo wget -O ${BASE_FOLDER}install_virtualmin.sh http://software.virtualmin.com/
 hostName=${HostName}
 
 
+apt install ansible -y
+
 # Handle the user's choice
 case $choice in
     1)
         echo "${YELLOW}Installing Apache2 with Virtualmin...${hostName}${NC}"        
         VIRTUALMIN_NONINTERACTIVE=1 /bin/sh ${BASE_FOLDER}install_virtualmin.sh --minimal --force --hostname "$hostName"        
+        ansible-playbook ${BASE_FOLDER}playbook/apache2_optimization.yml
         ;;
     2)
         echo "${GREEN}Installing Nginx with Virtualmin...with ${hostName} ${NC}"        
@@ -121,7 +124,7 @@ case $choice in
         ;;
 esac
 
-apt install ansible -y
+
 
 
 echo "${GREEN}Core Setup${NC}"
