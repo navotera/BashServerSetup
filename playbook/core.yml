@@ -26,10 +26,10 @@
         - net-tools
         state: present
       
-    - name: Install PyMySQL using pip
-      pip:
-        name: pymysql
-        state: present
+    # - name: Install PyMySQL using pip
+    #   pip:
+    #     name: pymysql
+    #     state: present
 
 
     - apt_repository:
@@ -185,11 +185,6 @@
 
     - name: Run rclone installation script
       command: sudo bash /tmp/install_rclone.sh
-
-    - name: Enable HTTP/2 globally
-      lineinfile:
-        path: /etc/apache2/apache2.conf
-        line: "Protocols h2 http/1.1"
 
 
     - name: Enable start on boot for fail2ban

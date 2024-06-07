@@ -22,9 +22,14 @@
             apt remove php5.4-fpm      
             service webmin start
         become: yes
-        
+
       - name: Enable Apache modules
         command: a2enmod {{ item }}
         with_items:
           - expires
           - headers
+      
+      - name: Enable HTTP/2 globally
+        lineinfile:
+        path: /etc/apache2/apache2.conf
+        line: "Protocols h2 http/1.1"
