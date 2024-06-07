@@ -20,6 +20,8 @@ hostname="opensynergic${LAST_THREE_DIGITS}.com"
 echo $hostname
 hostname $hostname
 
+rm ~/server.config
+touch ~/server.config
 
 echo "${GREEN}Creating server.config${NC}"
 echo "HOSTNAME=$hostname" >> ~/server.config 2>/dev/null

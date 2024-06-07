@@ -33,7 +33,7 @@ It is recommended to use [screen](https://www.howtogeek.com/662422/how-to-use-li
 ### Apache2/Nginx setup
 
 ```unix
-wget https://raw.githubusercontent.com/navotera/BashServerSetup/init.sh && chmod +x init.sh && ./init.sh | tee /var/log/bashServerSetup_install.log
+wget https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh && chmod +x init.sh && ./init.sh | tee /var/log/bashServerSetup_install.log
 ```
 
 
@@ -49,7 +49,7 @@ ansible-playbook /var/BashServerSetup/playbook/init.yml
 4. PHPMyadmin Start by ```service pamin start``` access to https://ip_address:9292
 
 
-## ModSecurity installation [Optional]
+## ModSecurity installation (if failed)
 if you want install Modsecurity you can run this : 
 ```ansible-playbook /tmp/BashServerSetup/app/modsecurity/apache2/install.yml``` --> for **Apache**
 ```ansible-playbook /tmp/BashServerSetup/app/modsecurity/nginx/install.yml``` --> for **Nginx**
