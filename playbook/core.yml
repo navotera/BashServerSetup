@@ -32,14 +32,23 @@
     #     state: present
 
 
-    - apt_repository:
-        repo: ppa:bashtop-monitor/bashtop
-        update_cache: yes
+    - name: Clone the bashtop repository
+      ansible.builtin.git:
+        repo: 'https://github.com/aristocratos/bashtop.git'
+        dest: /tmp/bashtop
 
-    - name: Add bashtop repository and install bashtop
-      apt:
-        name: bashtop
-        state: present    
+    - name: Install bashtop
+      ansible.builtin.command:
+        cmd: make install
+        chdir: /tmp/bashtop
+      args:
+        creates: /usr/local/bin/bashtop
+
+    - name: Clean up the temporary directory
+      ansible.builtin.file:
+        path: /tmp/bashtop
+        state: absent
+        force: true  
 
     - name: Set timezone to Asia/Makassar
       command: timedatectl set-timezone Asia/Makassar   
@@ -68,7 +77,7 @@
       with_items:
         - mysql
         - fail2ban
-        - sshd
+        - ssh
 
     - name: Install Screen
       apt:
