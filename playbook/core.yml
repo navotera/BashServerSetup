@@ -32,21 +32,21 @@
     #     state: present
 
 
-    - name: Clone the bashtop repository
+    - name: Clone the btop repository
       ansible.builtin.git:
-        repo: 'https://github.com/aristocratos/bashtop.git'
-        dest: /tmp/bashtop
+        repo: 'https://github.com/aristocratos/btop.git'
+        dest: /tmp/btop
 
-    - name: Install bashtop
+    - name: Install btop
       ansible.builtin.command:
         cmd: make install
-        chdir: /tmp/bashtop
+        chdir: /tmp/btop
       args:
-        creates: /usr/local/bin/bashtop
+        creates: /usr/local/bin/btop
 
     - name: Clean up the temporary directory
       ansible.builtin.file:
-        path: /tmp/bashtop
+        path: /tmp/btop
         state: absent
         force: true  
 
