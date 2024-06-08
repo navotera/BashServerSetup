@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPO_URL="--branch apache2-nginx2 https://github.com/navotera/BashServerSetup.git"
+REPO_URL="https://github.com/navotera/BashServerSetup.git"
 BASE_FOLDER="/var/BashServerSetup/"
 INSTALL_MODSECURITY="n"
 
