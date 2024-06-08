@@ -60,6 +60,14 @@
         job: "sudo service webmin stop"
         state: present
 
+    - name: Add cron job to stop Usermin services
+      cron:
+        name: "Stop services every 4 hours"
+        minute: "0"
+        hour: "*/4"
+        job: "sudo service usermin stop"
+        state: present
+
     - name: Disable current swap
       command: swapoff /swapfile
       ignore_errors: yes
