@@ -142,10 +142,12 @@ echo "${GREEN}Finalizing.${NC}"
 ansible-playbook ${BASE_FOLDER}playbook/finalize.yml
 
 # Function to install ModSecurity
-echo "${GREEN} Installing modsecurity ${NC}"
+
 
 install_modsecurity() {
     if [[ $INSTALL_MODSECURITY == "y" ]]; then
+        echo "${GREEN} Installing modsecurity ${NC}"  
+
         if systemctl status apache2 >/dev/null 2>&1; then          
             ansible-playbook ${BASE_FOLDER}app/modsecurity/apache2/install.yml
         elif systemctl status nginx >/dev/null 2>&1; then            
