@@ -131,7 +131,7 @@
         - php8.2-gmp
         - php8.2-gd
         - php8.2-intl
-      ignore_error: true
+      ignore_errors: true
         
 
   
