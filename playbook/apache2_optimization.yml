@@ -31,5 +31,5 @@
       
       - name: Enable HTTP/2 globally
         lineinfile:
-        path: /etc/apache2/apache2.conf
-        line: "Protocols h2 http/1.1"
+          path: /etc/apache2/apache2.conf
+          line: "Protocols h2 http/1.1"
