@@ -67,6 +67,11 @@ if you want install Modsecurity you can run this :
 - Ubuntu 18.04 LTS x64 ✔
 - Ubuntu 2X.10 x64 ❌ (virtualmin not compatible yet)
 
+
+## Compatibility issue : 
+- Ubuntu 24.04 cannot install modsecurity 3 (due to libpcre++-dev is not available)
+
+
 ### Notes :
 
 If you are using GCP server please follow this video to open port 9191 and 9292 : 
