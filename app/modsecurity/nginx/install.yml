@@ -22,7 +22,9 @@
 
     - name: Debug the is_ubuntu_2404 variable
       debug:
-        msg: "Is Ubuntu 24.04 is {{ is_ubuntu_2404 }}"
+        msg: |
+          "Is Ubuntu 24.04 is {{ is_ubuntu_2404 }}"
+          "Ubuntu vesion is {{ ansible_distribution_version }}"
 
     - name: Add Jammy main repository
       ansible.builtin.apt_repository:

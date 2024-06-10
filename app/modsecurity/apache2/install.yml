@@ -16,6 +16,39 @@
 
   tasks:
 
+    - name: Check if the distribution version is 24.04
+      ansible.builtin.set_fact:
+        is_ubuntu_2404: "{{ ansible_distribution_release == 'noble' }}"
+
+    - name: Debug the is_ubuntu_2404 variable
+      debug:
+        msg: |
+          "Is Ubuntu 24.04 is {{ is_ubuntu_2404 }}"
+          "Ubuntu vesion is {{ ansible_distribution_version }}"
+
+    - name: Add Jammy main repository
+      ansible.builtin.apt_repository:
+        repo: "deb http://archive.ubuntu.com/ubuntu jammy main restricted universe multiverse"
+        state: present
+      when: is_ubuntu_2404
+
+    - name: Add Jammy updates repository
+      ansible.builtin.apt_repository:
+        repo: "deb http://archive.ubuntu.com/ubuntu jammy-updates main restricted universe multiverse"
+        state: present
+      when: is_ubuntu_2404
+
+    - name: Add Jammy security repository
+      ansible.builtin.apt_repository:
+        repo: "deb http://archive.ubuntu.com/ubuntu jammy-security main restricted universe multiverse"
+        state: present
+      when: is_ubuntu_2404
+
+    - name: Update the package list
+      ansible.builtin.apt:
+        update_cache: yes
+      when: is_ubuntu_2404
+
     - name: Install required packages
       apt:
         name:
