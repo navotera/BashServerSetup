@@ -7,57 +7,57 @@
 
   tasks: 
 
-  # - name: Configure system settings
-  #   blockinfile:
-  #     path: "{{ item.path }}"
-  #     block: "{{ item.block }}"
-  #   with_items:
-  #     - {
-  #         path: "/etc/pam.d/common-session",
-  #         block: "session required pam_limits.so",
-  #       }
-  #     - {
-  #         path: "/etc/sysctl.conf",
-  #         block: "fs.file-max = 2097152\nfs.nr_open = 1048576",
-  #       }
+  - name: Configure system settings
+    blockinfile:
+      path: "{{ item.path }}"
+      block: "{{ item.block }}"
+    with_items:
+      - {
+          path: "/etc/pam.d/common-session",
+          block: "session required pam_limits.so",
+        }
+      - {
+          path: "/etc/sysctl.conf",
+          block: "fs.file-max = 2097152\nfs.nr_open = 1048576",
+        }
 
-  # - name: Optimize limits for www-data and mysql
-  #   blockinfile:
-  #     path: /etc/security/limits.conf
-  #     block: |
-  #       #optimized by navotera - share-system.com
-  #       www-data   soft  nofile   1048576
-  #       www-data   soft  nproc   1048576
-  #       nginx      soft  nofile   1048576
-  #       nginx      soft  nproc   1048576
-  #       mysql      soft  memlock   unlimited
-  #       mysql      hard  memlock   unlimited
-  #       mysql      hard  nofile   30720
-  #       mysql      soft  nofile   20480
-  #       mysql      soft  nproc    16384
-  #       mysql      soft  fsize    unlimited       
+  - name: Optimize limits for www-data and mysql
+    blockinfile:
+      path: /etc/security/limits.conf
+      block: |
+        #optimized by navotera - share-system.com
+        www-data   soft  nofile   1048576
+        www-data   soft  nproc   1048576
+        nginx      soft  nofile   1048576
+        nginx      soft  nproc   1048576
+        mysql      soft  memlock   unlimited
+        mysql      hard  memlock   unlimited
+        mysql      hard  nofile   30720
+        mysql      soft  nofile   20480
+        mysql      soft  nproc    16384
+        mysql      soft  fsize    unlimited       
 
-  # - name: Remove server banner from sshd
-  #   lineinfile:
-  #     path: /etc/pam.d/sshd
-  #     state: present
-  #     backrefs: yes
-  #     regexp: '^[^#]*\<pam_motd.so\>'
-  #     line: "#&"
+  - name: Remove server banner from sshd
+    lineinfile:
+      path: /etc/pam.d/sshd
+      state: present
+      backrefs: yes
+      regexp: '^[^#]*\<pam_motd.so\>'
+      line: "#&"
 
-  # - name: Stop Swap files 
-  #   shell: swapoff /swapfile
-  #   become: yes
-  #   ignore_errors: yes 
+  - name: Stop Swap files 
+    shell: swapoff /swapfile
+    become: yes
+    ignore_errors: yes 
 
-  # - name: Setup swap for 2G
-  #   command: "{{ item }}"
-  #   with_items:      
-  #     - "fallocate -l 2G /swapfile"
-  #     - "ls -lh /swapfile"
-  #     - "mkswap /swapfile"
-  #     - "swapon /swapfile"
-  #   become: yes
+  - name: Setup swap for 2G
+    command: "{{ item }}"
+    with_items:      
+      - "fallocate -l 2G /swapfile"
+      - "ls -lh /swapfile"
+      - "mkswap /swapfile"
+      - "swapon /swapfile"
+    become: yes
 
 
   - name: Copy sysctl.conf to backup location
