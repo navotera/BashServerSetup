@@ -36,7 +36,6 @@ It is recommended to use [screen](https://www.howtogeek.com/662422/how-to-use-li
 wget https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh && chmod +x init.sh && ./init.sh | tee /var/log/bashServerSetup_install.log
 ```
 
-
 ## Run specific ansible playbook : 
 ```unix
 ansible-playbook /var/BashServerSetup/playbook/init.yml
@@ -51,8 +50,8 @@ ansible-playbook /var/BashServerSetup/playbook/init.yml
 
 ## ModSecurity installation (if failed)
 if you want install Modsecurity you can run this : 
-```ansible-playbook /tmp/BashServerSetup/app/modsecurity/apache2/install.yml``` --> for **Apache**
-```ansible-playbook /tmp/BashServerSetup/app/modsecurity/nginx/install.yml``` --> for **Nginx**
+```ansible-playbook /var/BashServerSetup/app/modsecurity/apache2/install.yml``` --> for **Apache**
+```ansible-playbook /var/BashServerSetup/app/modsecurity/nginx/install.yml``` --> for **Nginx**
 
 
 ## TODO
