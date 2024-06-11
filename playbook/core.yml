@@ -2,89 +2,90 @@
   hosts: localhost
   connection: local
   vars:    
-    SETUP_PATH: "/tmp/BashServerSetup/"
+    SETUP_PATH: "/var/BashServerSetup/"
   tasks: 
 
-    - name: Print hostname
-      debug:
-        msg: "Hostname of the target host is {{ ansible_fqdn }}"   
+    # - name: Print hostname
+    #   debug:
+    #     msg: "Hostname of the target host is {{ ansible_fqdn }}"   
 
-    - name: Upgrade the package
-      apt:
-        name: 
-        - imagemagick
-        - libmagickwand-dev
-        - imagemagick
-        - php-dev
-        - libdigest-perl-md5-perl
-        - htop
-        - ncdu
-        - zip
-        - screen
-        - nfs-common
-        - nethogs
-        - net-tools
-        state: present
+    # - name: Upgrade the package
+    #   apt:
+    #     name: 
+    #     - imagemagick
+    #     - libmagickwand-dev
+    #     - imagemagick
+    #     - php-dev
+    #     - libdigest-perl-md5-perl
+    #     - htop
+    #     - ncdu
+    #     - zip
+    #     - screen
+    #     - nfs-common
+    #     - nethogs
+    #     - net-tools
+    #     state: present
 
 
-    - name: Clone the btop repository
-      ansible.builtin.git:
-        repo: 'https://github.com/aristocratos/btop.git'
-        dest: /tmp/btop
+    # - name: Clone the btop repository
+    #   ansible.builtin.git:
+    #     repo: 'https://github.com/aristocratos/btop.git'
+    #     dest: /tmp/btop
 
-    - name: Install btop
-      ansible.builtin.command:
-        cmd: make install
-        chdir: /tmp/btop
-      args:
-        creates: /usr/local/bin/btop
+    # - name: Install btop
+    #   ansible.builtin.command:
+    #     cmd: make install
+    #     chdir: /tmp/btop
+    #   args:
+    #     creates: /usr/local/bin/btop
 
-    - name: Clean up the temporary directory
-      ansible.builtin.file:
-        path: /tmp/btop
-        state: absent
-        force: true  
+    # - name: Clean up the temporary directory
+    #   ansible.builtin.file:
+    #     path: /tmp/btop
+    #     state: absent
+    #     force: true  
 
-    - name: Set timezone to Asia/Makassar
-      command: timedatectl set-timezone Asia/Makassar   
+    # - name: Set timezone to Asia/Makassar
+    #   command: timedatectl set-timezone Asia/Makassar   
 
-    - name: Download Fail2ban deb package
-      get_url:
-        url: https://github.com/fail2ban/fail2ban/releases/download/0.11.2/fail2ban_0.11.2-1.upstream1_all.deb 
-        dest: /tmp/fail2ban_0.11.2-1.upstream1_all.deb
+    # - name: Download Fail2ban deb package
+    #   get_url:
+    #     url: https://github.com/fail2ban/fail2ban/releases/download/0.11.2/fail2ban_0.11.2-1.upstream1_all.deb 
+    #     dest: /tmp/fail2ban_0.11.2-1.upstream1_all.deb
 
-    - name: Install Fail2ban
-      apt:
-        deb: /tmp/fail2ban_0.11.2-1.upstream1_all.deb  
+    # - name: Install Fail2ban
+    #   apt:
+    #     deb: /tmp/fail2ban_0.11.2-1.upstream1_all.deb  
 
-    - name: Disable specific features in Virtualmin
-      block:
-        - name: Disable DNS feature
-          command: virtualmin disable-feature --dns --all-domains
+    # - name: Disable specific features in Virtualmin
+    #   block:
+    #     - name: Disable DNS feature
+    #       command: virtualmin disable-feature --dns --all-domains
 
-        - name: Disable Mail feature
-          command: virtualmin disable-feature --mail --all-domains    
+    #     - name: Disable Mail feature
+    #       command: virtualmin disable-feature --mail --all-domains    
 
-    - name: Stop services
-      service:
+    # - name: Stop services
+    #   service:
+    #     name: "{{ item }}"
+    #     state: stopped
+    #   with_items:
+    #     - mysql
+    #     - fail2ban
+    #     - ssh
+
+    # - name: Install Screen
+    #   apt:
+    #     name: 
+    #     - screen
+    #     - monitorix
+    #     state: present    
+
+    - name: Install PHP dependencies
+      ansible.builtin.apt:
         name: "{{ item }}"
-        state: stopped
-      with_items:
-        - mysql
-        - fail2ban
-        - ssh
-
-    - name: Install Screen
-      apt:
-        name: 
-        - screen
-        - monitorix
-        state: present    
-
-    - name: Install PHP and its dependencies
-      apt:
-        name: 
-        - software-properties-common
+        state: present
+      loop:
         - php7.3
         - php7.3-fpm
         - php7.3-imagick
@@ -131,6 +132,18 @@
         - php8.2-gmp
         - php8.2-gd
         - php8.2-intl
+        - php8.3
+        - php8.3-fpm
+        - php8.3-common
+        - php8.3-mysql
+        - php8.3-xml
+        - php8.3-mbstring
+        - php8.3-imagick
+        - php8.3-curl
+        - php8.3-mcrypt
+        - php8.3-gmp
+        - php8.3-gd
+        - php8.3-intl
       ignore_errors: true
         
 

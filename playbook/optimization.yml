@@ -60,21 +60,16 @@
   #   become: yes
 
 
-  # - name: Ensure the backup directory exists
-  #   ansible.builtin.file:
-  #     path: /etc/sysctl_backup
-  #     state: directory
-  #     mode: '0755'
-
-  # - name: Copy sysctl.conf to backup location
-  #   ansible.builtin.copy:
-  #     src: /etc/sysctl.conf
-  #     dest: /etc/sysctl.conf.bak
-  #     backup: yes
+  - name: Copy sysctl.conf to backup location
+    ansible.builtin.copy:
+      src: /etc/sysctl.conf
+      dest: /etc/sysctl.conf.bak
+      backup: yes
 
   - name: Move sysctl.conf to new location
-    ansible.builtin.command:
-      cmd: cp {{ SETUP_PATH }}manual_optimization/sysnctl.conf /etc/sysctl.conf 
-    args:
-      removes: /etc/sysctl.conf
+    shell: |
+      rm  /etc/sysctl.conf
+      cp {{ SETUP_PATH }}manual_optimization/sysctl.conf /etc/sysctl.conf 
+      
+    
 
