@@ -16,7 +16,7 @@ Example to disable :
 ```unix
 service webmin start
 ```
-- Registering Phpmyadmin as service so you can running it by executing this command and access it with port 9292 🆕
+- Registering Phpmyadmin as service so you can running it by executing this command and access it with port 9292 
 ```unix
 service pamin start
 ```
@@ -45,7 +45,7 @@ ansible-playbook /var/BashServerSetup/playbook/init.yml
 1. Access password on **server.config** or Change passsword ```sudo -i passwd```  
 2. Change the hostname by using command ```hostname YOUR_HOSTNAME``` [optional]
 3. Start the webmin ```service webmin start``` and access to **https://ip_address:9191**
-4. PHPMyadmin Start by ```service pamin start``` access to **https://ip_address:9292**
+4. PHPMyadmin Start by ```service pamin start``` access to <span style="color:blue">https://ip_address:9292</span>
 
 
 ## ModSecurity installation (if failed)
