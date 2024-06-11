@@ -45,7 +45,7 @@ ansible-playbook /var/BashServerSetup/playbook/init.yml
 1. Access password on **server.config** or Change passsword ```sudo -i passwd```  
 2. Change the hostname by using command ```hostname YOUR_HOSTNAME``` [optional]
 3. Start the webmin ```service webmin start``` and access to **https://ip_address:9191**
-4. PHPMyadmin Start by ```service pamin start``` access to <span style="color:blue">https://ip_address:9292</span>
+4. PHPMyadmin Start by ```service pamin start``` access to **https://ip_address:9292**
 
 
 ## ModSecurity installation (if failed)
