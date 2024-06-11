@@ -1,8 +1,8 @@
 # Server Automation by Openjournalteam ⭐
-To help you setup you're server 😊
-Include : Webmin, Apache server and others. 
+To help you setup your server 😊
+Include : Webmin, Apache/Nginx server and others. 
 
-- Integrated with ModSecurity 2.9.6 from source (automatically enabled) 
+- Integrated with ModSecurity 3 from source, choose upon installation prompt
   To disable add : `SecRuleEngine Off` to the virtualhost
 - Fail2ban
 - Server Optimization
@@ -68,8 +68,8 @@ if you want install Modsecurity you can run this :
 - Ubuntu 2X.10 x64 ❌ (virtualmin not compatible yet)
 
 
-## Compatibility issue : 
-- Ubuntu 24.04 cannot install modsecurity 3 (due to libpcre++-dev is not available)
+## Known issue : 
+- On some case, installation of virtualmin may failed, you need to rerun the script from initiation. 
 
 
 ### Notes :
