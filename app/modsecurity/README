@@ -1,5 +1,11 @@
-V2. 
 
+# How to add 
 
-
-V3. 
+In your virtualhost site configuration (/etc/apache2/sites-available/vhost.conf), add this : 
+```
+modsecurity on
+modsecurity_rules_file /etc/apache2/modsecurity.d/modsecurity.conf
+modsecurity_rules_file /etc/apache2/modsecurity.d/openjournaltheme/custom_rules_exception.conf
+modsecurity_rules_file /etc/apache2/modsecurity.d/openjournaltheme/custom_rules_exception2.conf
+modsecurity_rules_file /etc/apache2/modsecurity.d/crs_init.conf
+```

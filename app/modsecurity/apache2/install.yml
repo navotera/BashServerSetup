@@ -215,10 +215,10 @@
           SecDataDir /var/cache/modsecurity
 
           # Include OWASP ModSecurity CRS rules if installed
-          Include "{{webserver_modsec_dir}}/modsecurity.conf"
+          #Include "{{webserver_modsec_dir}}/modsecurity.conf"
           Include "{{webserver_modsec_dir}}/owasp-crs/crs-setup.conf"
           Include "{{webserver_modsec_dir}}/owasp-crs/rules/*.conf"
-        dest: "{{webserver_modsec_dir}}/init.conf" 
+        dest: "{{webserver_modsec_dir}}/crs_init.conf" 
 
     - name: Restart Apache
       systemd:

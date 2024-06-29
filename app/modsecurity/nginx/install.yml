@@ -321,14 +321,14 @@
     - name: Create ModSecurity initialization file
       copy:
         content: |
-          Include {{webserver_modsec_dir}}/modsecurity.conf
+          #Include {{webserver_modsec_dir}}/modsecurity.conf
           Include {{webserver_modsec_dir}}/owasp-crs/crs-setup.conf
           Include {{webserver_modsec_dir}}/owasp-crs/plugins/*-config.conf
           Include {{webserver_modsec_dir}}/owasp-crs/plugins/*-before.conf
           Include {{webserver_modsec_dir}}/owasp-crs/plugins/*-after.conf
           Include {{webserver_modsec_dir}}/owasp-crs/rules/*.conf
           #Include {{webserver_modsec_dir}}/ojs/ojs.conf
-        dest: "{{webserver_modsec_dir}}/init.conf" 
+        dest: "{{webserver_modsec_dir}}/crs_init.conf" 
 
 
 
