@@ -9,3 +9,18 @@ modsecurity_rules_file /etc/apache2/modsecurity.d/openjournaltheme/custom_rules_
 modsecurity_rules_file /etc/apache2/modsecurity.d/openjournaltheme/custom_rules_exception2.conf
 modsecurity_rules_file /etc/apache2/modsecurity.d/crs_init.conf
 ```
+
+It is crucial to put rule exclusions in the correct place, otherwise they may not work.
+Since many of the rules use the *RunTime Mode* so it should be placed before the crs_init.conf loaded
+crs_init.conf example content : 
+```
+    Include /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf 
+	Include /etc/apache2/modsecurity.d/owasp-crs/plugins/*-config.conf
+	Include /etc/apache2/modsecurity.d/owasp-crs/plugins/*-before.conf 
+	Include /etc/apache2/modsecurity.d/owasp-crs/rules/*.conf 
+	Include /etc/apache2/modsecurity.d/owasp-crs/plugins/*-after.conf 
+```
+
+
+
+https://coreruleset.org/docs/concepts/false_positives_tuning/
