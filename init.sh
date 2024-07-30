@@ -89,7 +89,7 @@ service apport restart
 systemctl restart systemd-timedated
 
 apt -y install software-properties-common
-apt-add-repository ppa:ansible/ansible
+apt-add-repository ppa:ansible/ansible -y
 
 #apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml
 
