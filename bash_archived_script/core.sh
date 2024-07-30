@@ -55,8 +55,8 @@ virtualmin modify-php-ini --all-domains --ini-name post_max_size --ini-value 500
 virtualmin disable-feature --all-domains --dns --mail --logrotate --virtualmin-dav
 
 #version fail2ban 0.11.2
-sudo wget https://github.com/fail2ban/fail2ban/releases/download/0.11.2/fail2ban_0.11.2-1.upstream1_all.deb
-sudo dpkg -i fail2ban_0.11.2-1.upstream1_all.deb
+sudo wget https://github.com/fail2ban/fail2ban/releases/download/1.1.0/fail2ban_1.1.0-1.upstream1_all.deb
+sudo dpkg -i fail2ban_1.1.0-1.upstream1_all.deb
 cp serverInit/jail.local /etc/fail2ban/jail.local
 cp serverInit/fail2ban/filter.d/modsec.conf /etc/fail2ban/fail2ban/filter.d/modsec.conf
 cp serverInit/fail2ban/filter.d/wordpress-auth.conf /etc/fail2ban/fail2ban/filter.d/wordpress-auth.conf

@@ -50,12 +50,12 @@
 
     - name: Download Fail2ban deb package
       get_url:
-        url: https://github.com/fail2ban/fail2ban/releases/download/0.11.2/fail2ban_0.11.2-1.upstream1_all.deb 
-        dest: /tmp/fail2ban_0.11.2-1.upstream1_all.deb
+        url: https://github.com/fail2ban/fail2ban/releases/download/1.1.0/fail2ban_1.1.0-1.upstream1_all.deb
+        dest: /tmp/fail2ban_1.1.0-1.upstream1_all.deb
 
     - name: Install Fail2ban
       apt:
-        deb: /tmp/fail2ban_0.11.2-1.upstream1_all.deb  
+        deb: /tmp/fail2ban_1.1.0-1.upstream1_all.deb
 
     - name: Disable specific features in Virtualmin
       block:

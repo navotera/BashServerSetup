@@ -12,6 +12,35 @@
         name: zip
         state: present
 
+
+    - name: Add Toolchain PPA
+      ansible.builtin.apt_repository:
+        repo: ppa:ubuntu-toolchain-r/test
+        state: present
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install GCC and G++ version 10
+      ansible.builtin.apt:
+        name:
+          - gcc-10
+          - g++-10
+        state: present
+
+    - name: Set GCC 10 as the default alternative
+      ansible.builtin.command:
+        cmd: update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+      args:
+        warn: false
+
+    - name: Set G++ 10 as the default alternative
+      ansible.builtin.command:
+        cmd: update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+      args:
+        warn: false
+
     - name: Upgrade all packages
       apt:
         upgrade: yes

@@ -88,7 +88,9 @@ apt install python3-pip -y
 service apport restart
 systemctl restart systemd-timedated
 
-echo "${GREEN}installing ansible..${NC}"
+apt -y install software-properties-common
+apt-add-repository ppa:ansible/ansible
+
 #apt install ansible -y && ansible-playbook /tmp/BashServerSetup/playbook/init.yml
 
 sudo apt update
@@ -104,7 +106,11 @@ sudo wget -O ${BASE_FOLDER}install_virtualmin.sh http://software.virtualmin.com/
 hostName=${HostName}
 
 
+echo "${GREEN}installing ansible..${NC}"
+#install latest 
 apt install ansible -y
+
+
 
 # Handle the user's choice
 case $choice in
