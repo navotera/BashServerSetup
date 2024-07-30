@@ -152,7 +152,7 @@
       get_url:
         url: https://rclone.org/install.sh
         dest: /tmp/install_rclone.sh
-      ignore_error: true
+      ignore_errors: true
 
     - name: Run rclone installation script
       command: sudo bash /tmp/install_rclone.sh
