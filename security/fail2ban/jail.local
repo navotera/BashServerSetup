@@ -71,9 +71,9 @@ bantime  = 100h
 findtime  = 1m
 maxretry = 5
 
-[wp-login]
+[wordpress-login]
 enabled = true
-filter = wp-login
+filter = wordpress-login
 port = http,https
 action = iptables-multiport[name=WPLogin, port="http,https"]
 logpath = /var/log/virtualmin/*_access_log
