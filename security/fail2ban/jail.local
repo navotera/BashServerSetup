@@ -1,0 +1,101 @@
+[DEFAULT]
+# "bantime.increment" allows to use database for searching of previously banned ip's to increase a 
+# default ban time using special formula, default it is banTime * 1, 2, 4, 8, 16, 32...
+bantime.increment = true
+
+# "bantime.rndtime" is the max number of seconds using for mixing with random time 
+# to prevent "clever" botnets calculate exact time IP can be unbanned again:
+#bantime.rndtime = 
+
+# "bantime.maxtime" is the max number of seconds using the ban time can reach (doesn't grow further)
+#bantime.maxtime = 
+
+# "bantime.factor" is a coefficient to calculate exponent growing of the formula or common multiplier,
+# default value of factor is 1 and with default value of formula, the ban time 
+# grows by 1, 2, 4, 8, 16 ...
+bantime.factor = 1
+
+# "bantime.formula" used by default to calculate next value of ban time, default value below,
+# the same ban time growing will be reached by multipliers 1, 2, 4, 8, 16, 32...
+bantime.formula = ban.Time * (1<<(ban.Count if ban.Count<20 else 20)) * banFactor
+
+# following example can be used for small initial ban time (bantime=60) - it grows more aggressive at begin,
+# for bantime=60 the multipliers are minutes and equal: 1 min, 5 min, 30 min, 1 hour, 5 hour, 12 hour, 1 day, 2 day
+bantime.multipliers = 1 5 30 60 300 720 1440 2880
+
+# "bantime.overalljails" (if true) specifies the search of IP in the database will be executed 
+# cross over all jails, if false (default), only current jail of the ban IP will be searched
+#bantime.overalljails = false
+
+[recidive]
+
+logpath  = /var/log/fail2ban.log
+banaction = %(banaction_allports)s
+bantime  = 1w
+findtime = 1d
+
+
+[postfix-sasl]
+
+filter   = postfix[mode=auth]
+port     = smtp,465,submission,imap,imaps,pop3,pop3s
+# You might consider monitoring /var/log/mail.warn instead if you are
+# running postfix since it would provide the same log lines at the
+# "warn" level but overall at the smaller filesize.
+logpath  = %(postfix_log)s
+backend  = %(postfix_backend)s
+enabled = true
+
+
+[sshd]
+# To use more aggressive sshd modes set filter parameter "mode" in jail.local:
+# normal (default), ddos, extra or aggressive (combines all).
+# See "tests/files/logs/sshd" or "filter.d/sshd.conf" for usage example and details.
+#mode   = normal
+port    = ssh
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+enabled = true
+action = iptables-multiport[]
+maxretry = 3
+findtime = 5
+bantime = 2y
+
+[wordpress-xmlrpc]
+enabled = true
+port = http,https
+filter = wordpress-xmlrpc
+logpath = /var/log/virtualmin/*_access_log
+ignoreip = 127.0.0.1/8
+bantime  = 100h
+findtime  = 1m
+maxretry = 5
+
+[wp-login]
+enabled = true
+filter = wp-login
+port = http,https
+action = iptables-multiport[name=WPLogin, port="http,https"]
+logpath = /var/log/virtualmin/*_access_log
+bantime = 14h
+findtime = 1m
+maxretry = 15
+
+[404-http]
+enabled = true
+port = http,https
+filter = 404-http
+logpath = /var/log/virtualmin/*_access_log
+ignoreip = 127.0.0.1/8
+bantime  = 6h
+findtime  = 2m
+maxretry = 40
+
+[403-http]
+enabled = false
+port = http,https
+filter = 403-http
+logpath = /var/log/virtualmin/*_access_log
+bantime = 4h
+maxretry = 60
+findtime = 1h

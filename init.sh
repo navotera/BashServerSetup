@@ -80,6 +80,7 @@ sudo systemctl restart ssh
 echo "${GREEN}installing python 3.9 and 3.12..${NC}"
 apt install python3.9 -y && apt install python3.12 -y
 apt install python3-pip -y
+apt-get install sqlite3 -y
 
 #cd /usr/bin && ls -lrth python* && unlink python && ln -s /usr/bin/python3.12 python
 #cd /usr/bin && ls -lrth python* && unlink python3 && ln -s /usr/bin/python3.12 python3
