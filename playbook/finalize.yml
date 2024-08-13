@@ -121,6 +121,7 @@
         - "#edited by serverAutomation by navotera :: share-system.com"
         - "ClientAliveInterval 1200"
         - "ClientAliveCountMax 3"
+        - "LoginGraceTime 0"
       
 
     - name: Disable root SSH login with password
