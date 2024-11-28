@@ -61,7 +61,7 @@ CTRL+A+D
 
 5. Later if you want to enter the screen 
 ```
-screen -r [the_screen_code] 
+screen -r 
 ```
 
 ## Run specific ansible playbook : 
