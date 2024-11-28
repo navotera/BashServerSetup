@@ -43,7 +43,7 @@ vi ~/.ssh/authorized_keys
 2. Download the script 
 
 ```unix
-wget https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh 
+wget https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh && chmod +x init.sh
 ```
 
 3. Run the script in screen (it takes quite long to install all the things)
