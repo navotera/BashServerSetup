@@ -36,6 +36,9 @@ It is recommended to use [screen](https://www.howtogeek.com/662422/how-to-use-li
 ```
 mkdir ~/.ssh/ && touch ~/.ssh/authorized_keys 
 ```
+```
+vi ~/.ssh/authorized_keys
+```
 
 2. Download the script 
 
