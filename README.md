@@ -48,7 +48,7 @@ wget https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh
 
 3. Run the script in screen (it takes quite long to install all the things)
 ```unix 
-screen
+apt install screen && screen
 ```
 
 ```unix
