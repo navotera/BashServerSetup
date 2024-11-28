@@ -32,8 +32,33 @@ It is recommended to use [screen](https://www.howtogeek.com/662422/how-to-use-li
 
 ### Apache2/Nginx setup
 
+1. Add your public ssh key first : 
+```
+mkdir ~/.ssh/ && touch ~/.ssh/authorized_keys 
+```
+
+2. Download the script 
+
 ```unix
-wget https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh && chmod +x init.sh && ./init.sh | tee /var/log/bashServerSetup_install.log
+wget https://raw.githubusercontent.com/navotera/BashServerSetup/master/init.sh 
+```
+
+3. Run the script in screen (it takes quite long to install all the things)
+```unix 
+screen
+```
+
+```unix
+./init.sh | tee /var/log/bashServerSetup_install
+```
+
+4. Exit screen and you can leave the PC 
+CTRL+A+D 
+
+
+5. Later if you want to enter the screen 
+```
+screen -r [the_screen_code] 
 ```
 
 ## Run specific ansible playbook : 
