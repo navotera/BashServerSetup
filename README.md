@@ -55,7 +55,8 @@ apt install screen && screen
 ./init.sh | tee /var/log/bashServerSetup_install
 ```
 
-4. Exit screen and you can leave the PC 
+4. Exit screen and you can leave the PC : 
+
 CTRL+A+D 
 
 
