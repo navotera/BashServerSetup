@@ -9,22 +9,31 @@
       debug:
         msg: "Hostname of the target host is {{ ansible_fqdn }}"   
 
-    - name: Upgrade the package
+    - name: Install packages on Ubuntu 22.04 or later
+      hosts: all
+      become: yes
+      tasks:
+        - name: Check Ubuntu version
+          ansible.builtin.debug:
+            msg: "Running on Ubuntu version {{ ansible_facts['distribution_version'] }}"
+
+    - name: Run script if Ubuntu version is <= 22.04
       apt:
-        name: 
-        - imagemagick
-        - libmagickwand-dev
-        - imagemagick
-        - php-dev
-        - libdigest-perl-md5-perl
-        - htop
-        - ncdu
-        - zip
-        - screen
-        - nfs-common
-        - nethogs
-        - net-tools
+        name:
+          - imagemagick
+          - libmagickwand-dev
+          - php-dev
+          - libdigest-perl-md5-perl
+          - htop
+          - ncdu
+          - zip
+          - screen
+          - nfs-common
+          - nethogs
+          - net-tools
         state: present
+      when: ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_version'] | version_compare('22.04', '>=')
+
    
     - name: Clean up the temporary directory
       ansible.builtin.file:

@@ -94,13 +94,14 @@ if you want install Modsecurity you can run this :
 ## TESTED ON (Compatible with Ubuntu only)
 - Ubuntu 24.04 x64 ✔
 - Ubuntu 22.04 x64 ✔
-- Ubuntu 20.04 x64 ✔
+- Ubuntu 20.04 x64 ✔ 
 - Ubuntu 18.04 LTS x64 ✔
 - Ubuntu 2X.10 x64 ❌ (virtualmin not compatible yet)
 
 
 ## Known issue : 
 - On some case, installation of virtualmin may failed, you need to rerun the script from initiation. 
+- https://stackoverflow.com/questions/66869441/unable-to-install-g-and-build-essentials-in-ubuntu-20-04
 
 
 ### Notes :
