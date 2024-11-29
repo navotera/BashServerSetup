@@ -92,7 +92,7 @@ if you want install Modsecurity you can run this :
 
 
 ## TESTED ON (Compatible with Ubuntu only)
-- Ubuntu 24.04 x64 ✔
+- Ubuntu 24.04 x64 ✔ [Recommended]
 - Ubuntu 22.04 x64 ✔
 - Ubuntu 20.04 x64 ✔ 
 - Ubuntu 18.04 LTS x64 ✔
