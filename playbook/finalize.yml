@@ -14,7 +14,10 @@
     #    regexp: '#\$nrconf{restart} = '\''i'\'';'
     #    line: '$nrconf{restart} = '\''a'\'';'
 
-  
+    - name: Reload firewalld
+      shell: pip3 install passlib
+
+
     - name: Start MySQL service
       service:
         name: mysql
