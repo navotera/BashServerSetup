@@ -25,12 +25,7 @@
         - nethogs
         - net-tools
         state: present
-
-
-    - name: Install btop via snap
-      shell :  snap install btop
    
-
     - name: Clean up the temporary directory
       ansible.builtin.file:
         path: /tmp/btop
@@ -137,6 +132,8 @@
         - php8.3-gd
         - php8.3-intl
       ignore_errors: true
-        
+    
+    - name: Install btop via snap
+      shell :  snap install btop     
 
   
