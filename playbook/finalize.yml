@@ -14,8 +14,13 @@
     #    regexp: '#\$nrconf{restart} = '\''i'\'';'
     #    line: '$nrconf{restart} = '\''a'\'';'
 
-    - name: Reload firewalld
+    - name: Install passlib
       shell: pip3 install passlib
+      ignore_errors: yes
+
+    - name: Install passlib
+      shell: apt install python3-passlib
+      ignore_errors: yes
 
 
     - name: Start MySQL service
@@ -47,9 +52,9 @@
         job: "/etc/webmin/status/monitor.pl"
         state: present
 
-    - name: Add cron job to stop services
+    - name: Add cron job to pamin services
       cron:
-        name: "Stop services every 4 hours"
+        name: "Stop pamin services every 4 hours"
         minute: "0"
         hour: "*/4"
         job: "sudo service pamin stop"
@@ -57,7 +62,7 @@
 
     - name: Add cron job to stop Webmin services
       cron:
-        name: "Stop services every 4 hours"
+        name: "Stop webmin services every 4 hours"
         minute: "0"
         hour: "*/4"
         job: "sudo service webmin stop"
@@ -65,7 +70,7 @@
 
     - name: Add cron job to stop Usermin services
       cron:
-        name: "Stop services every 4 hours"
+        name: "Stop usermin services every 4 hours"
         minute: "0"
         hour: "*/4"
         job: "sudo service usermin stop"
