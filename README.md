@@ -102,6 +102,7 @@ if you want install Modsecurity you can run this :
 ## Known issue : 
 - On some case, installation of virtualmin may failed, you need to rerun the script from initiation. 
 - https://stackoverflow.com/questions/66869441/unable-to-install-g-and-build-essentials-in-ubuntu-20-04
+- if cannot access webmin on 9191, run `service webmin restart`
 
 
 ### Notes :
